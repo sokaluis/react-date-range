@@ -98,8 +98,8 @@ the first stable release builds trust.
 | Item | Status | Notes |
 |------|--------|-------|
 | Choose hosting | 🔲 | Vercel (free, auto-deploy from GitHub), Netlify, or GitHub Pages |
-| Create demo app | 🔲 | Simple Vite + React app importing the package and rendering `<DateRangePicker />` |
-| Verify local dev | 🔲 | `npm run dev` in demo dir and play with the component |
+| Create demo app | ✅ | Simple Vite + React app importing the package and rendering `<DateRangePicker />` — see `demo/` |
+| Verify local dev | ✅ | `cd demo && npm run dev` — typecheck and build pass |
 | Deploy | 🔲 | Hook up to chosen platform |
 | Add link to README | 🔲 | Badge or link under "Demo" section |
 
@@ -126,3 +126,23 @@ npm run test:ci
 
 All commands should exit 0. The spike `npm ci` calls require internet access
 (first time) but are cached locally after that.
+
+## Running the demo locally
+
+```bash
+cd demo
+npm ci       # fresh install, resolves @cyberlz/react-date-range from npm registry
+npm run dev  # Vite dev server — default http://localhost:5173
+```
+
+Or for a production-like check:
+
+```bash
+cd demo
+npm ci
+npm run typecheck  # tsc --noEmit
+npm run build      # vite build
+npm run preview    # serve the built output
+```
+
+The demo imports `@cyberlz/react-date-range` from `https://registry.npmjs.org/` (verified in `demo/package-lock.json`).

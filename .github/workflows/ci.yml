@@ -54,6 +54,11 @@ jobs:
         working-directory: spikes/scroll-strictmode
         run: npm ci && npm run typecheck
 
+      # ── Published alpha demo (registry install) ─────────
+      - name: 'Demo: build published alpha app'
+        working-directory: demo
+        run: npm ci && npm run typecheck && npm run build
+
       # ── SSR import safety (CJS + ESM) ─────────────────
       - name: 'Spike: ssr-import tests'
         working-directory: spikes/ssr-import

@@ -9,7 +9,7 @@
 ## Quick path
 
 1. Validate alpha in a clean consumer project (`npm install @cyberlz/react-date-range@alpha`) → ✅ done (2026-06-25)
-2. Build a minimal demo (Vite + React, single-page `<DateRangePicker />`)
+2. Build a minimal demo (Vite + React, single-page `<DateRangePicker />`) → ✅ done (2026-06-25, `demo/`)
 3. Write API docs and migration notes from upstream
 4. Deploy to Vercel (free tier, auto-deploy from GitHub)
 5. **Then** announce in community channels
@@ -71,7 +71,7 @@
 ## Checklist
 
 - [x] Consumer smoke test passes (`tsc --noEmit` + `vite build` on clean project) — React 18 ✅ and React 19 ✅, resolved from `https://registry.npmjs.org/`
-- [ ] Minimal demo built (single-page Vite app importing `<DateRangePicker />`)
+- [x] Minimal demo built (single-page Vite app importing `<DateRangePicker />`) — `demo/`, resolves from `https://registry.npmjs.org/`, typecheck ✅, build ✅
 - [ ] API docs written (props table, examples, migration notes)
 - [ ] Vercel connected to GitHub repo
 - [ ] Landing page deployed with alpha badge
@@ -79,4 +79,5 @@
 
 ## Next step
 
-Complete the demo app. See `docs/release-checklist.md` → "Demo page checklist".
+Complete the API docs and migration notes. See `docs/release-checklist.md` → "Demo page checklist".
+The demo app (`demo/`) is built and verified locally — still need API docs/migration notes before Vercel deploy.
