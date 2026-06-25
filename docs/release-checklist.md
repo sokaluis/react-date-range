@@ -56,14 +56,14 @@
 > See [`docs/release-flow.md`](release-flow.md) for the complete git/tag/GitHub/npm
 > pipeline, dist-tag management, and first-time setup.
 
-- [ ] Tag: `git tag v0.1.0-alpha.1 && git push --tags`
-- [ ] Publish with alpha tag:
+- [x] Tag: `git tag v0.1.0-alpha.1 && git push --tags`
+- [x] Publish with alpha tag:
   ```bash
   npm publish --tag alpha --access public
   ```
-- [ ] Verify on npm: `npm view @cyberlz/react-date-range@alpha version`
-- [ ] `latest` dist-tag checked: npm keeps `latest` pointing to the first published
-  version when there is no stable version yet. This is acceptable for `0.1.0-alpha.0`;
+- [x] Verify on npm: `npm view @cyberlz/react-date-range@alpha version` → `0.1.0-alpha.1`.
+- [x] `latest` dist-tag checked: npm keeps `latest` pointing to the first published
+  version when there is no stable version yet. Current state: `alpha` → `0.1.0-alpha.1`, `latest` → `0.1.0-alpha.0`;
   keep install examples on `@alpha` until a stable release exists.
 - [ ] Verify install from registry:
   ```bash
