@@ -83,6 +83,9 @@ without breaking the existing API.
 
 ## Phase 3 — Core Refactor
 
+> **Detailed slice-by-slice plan**: [`refactor-roadmap.md`](refactor-roadmap.md).
+> Start there when resuming refactor work.
+
 **Goal**: Modernize internals without changing the public API.
 
 - Migrate to functional components + hooks (if any class components remain)

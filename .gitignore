@@ -31,3 +31,9 @@ coverage/
 
 # Misc
 *.tgz
+
+# Agent Teams Lite
+.atl/
+
+# Serena
+.serena/

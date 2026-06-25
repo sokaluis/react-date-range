@@ -131,6 +131,7 @@ license before publishing**. See [`NOTICE.md`](NOTICE.md).
 - [`docs/research.md`](docs/research.md) — Consolidated investigation: upstream status, issues, PRs, fork landscape
 - [`docs/fork-roadmap.md`](docs/fork-roadmap.md) — Full phase plan (0–4)
 - [`docs/alpha-plan.md`](docs/alpha-plan.md) — Alpha 0/1 checklist and acceptance criteria
+- [`docs/refactor-roadmap.md`](docs/refactor-roadmap.md) — Incremental refactor slices post-Alpha (start here to resume)
 - [`docs/npm-publishing.md`](docs/npm-publishing.md) — npm publishing process, costs, visibility
 - [`docs/docs-site-plan.md`](docs/docs-site-plan.md) — Landing page & Vercel timing recommendation
 
