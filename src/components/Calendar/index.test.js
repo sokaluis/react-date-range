@@ -1,5 +1,5 @@
 import Calendar from '../Calendar';
-import DateInput from '../DateInput';
+import DateDisplay from '../DateDisplay';
 
 describe('Calendar', () => {
   test('Should resolve', () => {
@@ -239,12 +239,13 @@ describe('Calendar', () => {
     });
   });
 
-  describe('DateInput constraint forwarding', () => {
+  // ---- 5.1: Calendar delegates to DateDisplay with constraint props ----
+  describe('DateDisplay delegation', () => {
     const min = new Date(2025, 0, 1);
     const max = new Date(2025, 11, 31);
     const disabled = [new Date(2025, 6, 4)];
 
-    test('renderDateDisplay passes minDate, maxDate, disabledDates to both DateInputs', () => {
+    test('renderDateDisplay returns a DateDisplay element with constraints propagated', () => {
       const instance = new Calendar({
         ...Calendar.defaultProps,
         minDate: min,
@@ -252,26 +253,77 @@ describe('Calendar', () => {
         disabledDates: disabled,
         ranges: [{ startDate: null, endDate: null, key: 'selection' }],
       });
-      // Initialize styles directly (Calendar constructor uses generateStyles)
       instance.styles = {};
 
       const tree = instance.renderDateDisplay();
-      // tree: <div><div><DateInput />, <DateInput /></div></div>
-      const rangeDiv = tree.props.children[0];
-      const [startInput, endInput] = rangeDiv.props.children;
 
-      // Verify the rendered elements ARE DateInput components
-      expect(startInput.type).toBe(DateInput);
-      expect(endInput.type).toBe(DateInput);
+      // Verify the rendered element IS a DateDisplay component
+      expect(tree.type).toBe(DateDisplay);
 
-      // Verify constraint props are forwarded
-      expect(startInput.props.minDate).toBe(min);
-      expect(startInput.props.maxDate).toBe(max);
-      expect(startInput.props.disabledDates).toBe(disabled);
+      // Verify constraint props are forwarded to DateDisplay
+      expect(tree.props.minDate).toBe(min);
+      expect(tree.props.maxDate).toBe(max);
+      expect(tree.props.disabledDates).toBe(disabled);
 
-      expect(endInput.props.minDate).toBe(min);
-      expect(endInput.props.maxDate).toBe(max);
-      expect(endInput.props.disabledDates).toBe(disabled);
+      // Verify other key props are forwarded
+      expect(tree.props.ranges).toEqual([
+        { startDate: null, endDate: null, key: 'selection' },
+      ]);
+      expect(tree.props.onChange).toBe(instance.onDragSelectionEnd);
+      expect(tree.props.onRangeFocusChange).toBe(instance.handleRangeFocusChange);
+      expect(tree.props.styles).toBe(instance.styles);
+      expect(tree.props.dateOptions).toBe(instance.dateOptions);
+    });
+
+    // ---- 5.2: renderDateDisplay always returns DateDisplay (guard is in render()) ----
+    test('renderDateDisplay returns DateDisplay regardless of showDateDisplay prop', () => {
+      const instance = new Calendar({
+        ...Calendar.defaultProps,
+        showDateDisplay: false,
+        ranges: [{ startDate: null, endDate: null, key: 'selection' }],
+      });
+      instance.styles = {};
+
+      const tree = instance.renderDateDisplay();
+      // The showDateDisplay guard is in Calendar.render(), not renderDateDisplay
+      expect(tree.type).toBe(DateDisplay);
+    });
+
+    // ---- Verify fix: spec scenario "Calendar-level display disabled" ----
+    describe('render-level showDateDisplay guard', () => {
+      test('when showDateDisplay is false, no DateDisplay appears in render tree', () => {
+        const instance = new Calendar({
+          ...Calendar.defaultProps,
+          showDateDisplay: false,
+          ranges: [{ startDate: null, endDate: null, key: 'selection' }],
+        });
+        instance.styles = {};
+        instance.dateOptions = {};
+
+        const tree = instance.render();
+
+        const hasDateDisplay = tree.props.children.some(
+          child => child && child.type === DateDisplay
+        );
+        expect(hasDateDisplay).toBe(false);
+      });
+
+      test('when showDateDisplay is true, DateDisplay appears in render tree', () => {
+        const instance = new Calendar({
+          ...Calendar.defaultProps,
+          showDateDisplay: true,
+          ranges: [{ startDate: null, endDate: null, key: 'selection' }],
+        });
+        instance.styles = {};
+        instance.dateOptions = {};
+
+        const tree = instance.render();
+
+        const hasDateDisplay = tree.props.children.some(
+          child => child && child.type === DateDisplay
+        );
+        expect(hasDateDisplay).toBe(true);
+      });
     });
   });
 });

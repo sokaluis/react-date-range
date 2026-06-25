@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { rangeShape } from '../DayCell';
 import Month from '../Month';
-import DateInput from '../DateInput';
+import DateDisplay from '../DateDisplay';
 import { calcFocusDate, generateStyles, getMonthDisplayRange } from '../../utils';
 import classnames from 'classnames';
 import ReactList from 'react-list';
@@ -309,65 +309,25 @@ class Calendar extends PureComponent {
       disabledDates,
     } = this.props;
 
-    const defaultColor = rangeColors[focusedRange[0]] || color;
-    const styles = this.styles;
-
     return (
-      <div className={styles.dateDisplayWrapper}>
-        {ranges.map((range, i) => {
-          if (range.showDateDisplay === false || (range.disabled && !range.showDateDisplay))
-            return null;
-          return (
-            <div
-              className={styles.dateDisplay}
-              key={i}
-              style={{ color: range.color || defaultColor }}>
-              <DateInput
-                className={classnames(styles.dateDisplayItem, {
-                  [styles.dateDisplayItemActive]: focusedRange[0] === i && focusedRange[1] === 0,
-                })}
-                readOnly={!editableDateInputs}
-                disabled={range.disabled}
-                value={range.startDate}
-                placeholder={startDatePlaceholder}
-                dateOptions={this.dateOptions}
-                dateDisplayFormat={dateDisplayFormat}
-                ariaLabel={
-                  ariaLabels.dateInput &&
-                  ariaLabels.dateInput[range.key] &&
-                  ariaLabels.dateInput[range.key].startDate
-                }
-                onChange={this.onDragSelectionEnd}
-                onFocus={() => this.handleRangeFocusChange(i, 0)}
-                minDate={minDate}
-                maxDate={maxDate}
-                disabledDates={disabledDates}
-              />
-              <DateInput
-                className={classnames(styles.dateDisplayItem, {
-                  [styles.dateDisplayItemActive]: focusedRange[0] === i && focusedRange[1] === 1,
-                })}
-                readOnly={!editableDateInputs}
-                disabled={range.disabled}
-                value={range.endDate}
-                placeholder={endDatePlaceholder}
-                dateOptions={this.dateOptions}
-                dateDisplayFormat={dateDisplayFormat}
-                ariaLabel={
-                  ariaLabels.dateInput &&
-                  ariaLabels.dateInput[range.key] &&
-                  ariaLabels.dateInput[range.key].endDate
-                }
-                onChange={this.onDragSelectionEnd}
-                onFocus={() => this.handleRangeFocusChange(i, 1)}
-                minDate={minDate}
-                maxDate={maxDate}
-                disabledDates={disabledDates}
-              />
-            </div>
-          );
-        })}
-      </div>
+      <DateDisplay
+        focusedRange={focusedRange}
+        color={color}
+        ranges={ranges}
+        rangeColors={rangeColors}
+        dateDisplayFormat={dateDisplayFormat}
+        editableDateInputs={editableDateInputs}
+        startDatePlaceholder={startDatePlaceholder}
+        endDatePlaceholder={endDatePlaceholder}
+        ariaLabels={ariaLabels}
+        minDate={minDate}
+        maxDate={maxDate}
+        disabledDates={disabledDates}
+        styles={this.styles}
+        dateOptions={this.dateOptions}
+        onChange={this.onDragSelectionEnd}
+        onRangeFocusChange={this.handleRangeFocusChange}
+      />
     );
   };
   onDragSelectionStart = date => {
