@@ -10,6 +10,7 @@
 | Item | Estado |
 |------|--------|
 | Alpha publicada en npm | `@cyberlz/react-date-range@0.1.0-alpha.0` (`alpha` dist-tag) |
+| Próximo checkpoint | `0.1.0-alpha.1` preparado para tag/publish |
 | GitHub Release | ✅ Etiquetado en `sokaluis/react-date-range` |
 | CI verde | Build, 21 tests, 6 spike typechecks |
 | Demo mínima npm-backed | `demo/` — Vite + React 19 + TS, en CI |

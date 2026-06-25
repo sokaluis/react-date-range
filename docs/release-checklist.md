@@ -1,6 +1,6 @@
-# Release Checklist — `0.1.0-alpha.0`
+# Release Checklist — `0.1.0-alpha.1`
 
-> Canonical pre-publish checklist for the first public alpha release.
+> Canonical pre-publish checklist for the second public alpha release.
 > No other file duplicates this — refer here for every publish.
 
 ---
@@ -14,7 +14,7 @@
 - [x] **Author**: `package.json` `author` field filled (`Luis Azocar <lazocar.dev@gmail.com>`).
 - [x] **License notice**: `LICENSE` includes original upstream copyright **plus**
   a new copyright line for fork modifications. See `NOTICE.md`.
-- [x] **CHANGELOG.md**: Entry for `0.1.0-alpha.0` is complete and accurate.
+- [x] **CHANGELOG.md**: Entry for `0.1.0-alpha.1` is complete and accurate.
 - [x] **`package.json` fields verified**:
   - `name`, `version`, `description`, `license`, `keywords`
   - `main`, `module`, `types`, `style`, `exports`
@@ -27,9 +27,9 @@
 
 ## Before publishing
 
-- [x] CI is green on the commit being tagged.
-- [x] `npm run test:ci` passes locally (Calendar + DateRange tests, 21 tests).
-- [x] Spike typechecks pass:
+- [ ] CI is green on the commit being tagged.
+- [x] `npm run test:ci` passes locally (Calendar + DateRange tests, 25 tests).
+- [ ] Spike typechecks pass:
   ```bash
   # Run each from repo root after `npm ci && npm run build` at root
   cd spikes/react-18-ts    && npm ci && npm run typecheck
@@ -39,7 +39,7 @@
   cd spikes/ssr-import     && npm ci && npm test
   cd spikes/consumer-js    && npm ci && npm run build
   ```
-- [x] Smoke-install in a clean project — React 18 ✅ and React 19 ✅:
+- [ ] Smoke-install in a clean project — React 18 and React 19:
   ```bash
   # React 18 + Vite + TS (tsc --noEmit + vite build)
   npm install @cyberlz/react-date-range@alpha react@18 react-dom@18 date-fns@^3.6.0
@@ -56,26 +56,26 @@
 > See [`docs/release-flow.md`](release-flow.md) for the complete git/tag/GitHub/npm
 > pipeline, dist-tag management, and first-time setup.
 
-- [x] Tag: `git tag v0.1.0-alpha.0 && git push --tags`
-- [x] Publish with alpha tag:
+- [ ] Tag: `git tag v0.1.0-alpha.1 && git push --tags`
+- [ ] Publish with alpha tag:
   ```bash
   npm publish --tag alpha --access public
   ```
-- [x] Verify on npm: `npm view @cyberlz/react-date-range@alpha version`
-- [x] `latest` dist-tag checked: npm keeps `latest` pointing to the first published
+- [ ] Verify on npm: `npm view @cyberlz/react-date-range@alpha version`
+- [ ] `latest` dist-tag checked: npm keeps `latest` pointing to the first published
   version when there is no stable version yet. This is acceptable for `0.1.0-alpha.0`;
   keep install examples on `@alpha` until a stable release exists.
-- [x] Verify install from registry:
+- [ ] Verify install from registry:
   ```bash
   mkdir /tmp/registry-test && cd /tmp/registry-test
   npm init -y
   npm install @cyberlz/react-date-range@alpha
   ```
-  ✅ Resolved from `https://registry.npmjs.org/@cyberlz/react-date-range/-/react-date-range-0.1.0-alpha.0.tgz` — clean typecheck + build for both React 18 and React 19 projects.
+  Expected: resolves from `https://registry.npmjs.org/@cyberlz/react-date-range/-/react-date-range-0.1.0-alpha.1.tgz` with clean typecheck + build for both React 18 and React 19 projects.
 
 ## Post-publish
 
-- [x] Add npm package link to README.
+- [ ] Add/update npm package link in README if the release notes require it.
 - [ ] Add CI badge to README:
   ```markdown
   ![CI](https://github.com/sokaluis/react-date-range/actions/workflows/ci.yml/badge.svg)

@@ -10,6 +10,26 @@ For upstream release history (up to `2.0.1`), see [`CHANGELOG.upstream.md`](CHAN
 
 ---
 
+## [0.1.0-alpha.1] — 2026-06-25
+
+Second alpha release: DateInput validation and DateDisplay extraction.
+
+### Added
+
+- `DateInput` validation for `minDate`, `maxDate`, and `disabledDates`. The editable
+  date input (when `editableDateInputs={true}`) now respects the same constraints as
+  the visual grid, rejecting out-of-range dates before passing them to `onChange`.
+- `DateDisplay` component extracted from `Calendar.renderDateDisplay()`. Reduces
+  `Calendar` complexity and enables independent testing of the date-display/editing
+  logic.
+
+### Changed
+
+- `Calendar.renderDateDisplay()` now passes `minDate`, `maxDate`, and `disabledDates`
+  to `DateInput` so the input respects the same constraints as the grid.
+
+---
+
 ## [0.1.0-alpha.0] — 2026-06-25
 
 First public alpha release. Drop-in replacement for `react-date-range@2.0.1` with

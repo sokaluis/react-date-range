@@ -42,7 +42,7 @@ docs: add release flow documentation
 
 | Release type | Tag format | Example |
 |-------------|------------|---------|
-| Alpha | `v{version}-alpha.{n}` | `v0.1.0-alpha.0` |
+| Alpha | `v{version}-alpha.{n}` | `v0.1.0-alpha.1` |
 | Beta | `v{version}-beta.{n}` | `v0.1.0-beta.0` |
 | RC | `v{version}-rc.{n}` | `v0.1.0-rc.0` |
 | Stable | `v{version}` | `v1.0.0` |
@@ -51,6 +51,9 @@ The `package.json` `version` field **must match** the tag version exactly.
 
 **First alpha tag:** `v0.1.0-alpha.0`
 - `package.json` version: `0.1.0-alpha.0` (update before tagging)
+
+**Second alpha tag:** `v0.1.0-alpha.1`
+- `package.json` version: `0.1.0-alpha.1` (update before tagging)
 - npm dist-tag: `alpha`
 
 ---
@@ -71,15 +74,15 @@ commit → CI green → tag → GitHub Release → npm publish → verify dist-t
 
 ```bash
 # Dry-run only — do NOT execute without explicit approval
-git tag v0.1.0-alpha.0
-git push origin v0.1.0-alpha.0
+git tag v0.1.0-alpha.1
+git push origin v0.1.0-alpha.1
 ```
 
 ### Step 3 — GitHub Release
 
 Create a release on GitHub:
-- Tag: `v0.1.0-alpha.0`
-- Title: `v0.1.0-alpha.0 — First Public Alpha`
+- Tag: `v0.1.0-alpha.1`
+- Title: `v0.1.0-alpha.1 — Second Public Alpha`
 - Body: relevant section from `CHANGELOG.md`
 - Mark as pre-release (for alpha/beta/rc)
 
@@ -130,10 +133,10 @@ npm dist-tag add @cyberlz/react-date-range@1.0.0 latest
 
 | Source | Example | Must match |
 |--------|---------|------------|
-| `package.json` → `version` | `0.1.0-alpha.0` | Git tag |
-| Git tag | `v0.1.0-alpha.0` | `package.json` version (minus `v` prefix) |
-| GitHub Release tag | `v0.1.0-alpha.0` | Git tag |
-| npm version (registry) | `0.1.0-alpha.0` | `package.json` version |
+| `package.json` → `version` | `0.1.0-alpha.1` | Git tag |
+| Git tag | `v0.1.0-alpha.1` | `package.json` version (minus `v` prefix) |
+| GitHub Release tag | `v0.1.0-alpha.1` | Git tag |
+| npm version (registry) | `0.1.0-alpha.1` | `package.json` version |
 
 **Order matters:** update `package.json` version → commit → tag → push → publish.
 
