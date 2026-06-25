@@ -95,10 +95,10 @@ npm publish --tag alpha --access public
 - Users must opt in: `npm install @cyberlz/react-date-range@alpha`
 - `latest` stays on the last stable release; `alpha` is for testers
 
-> First-time scoped publishes can still leave `latest` pointing at the first version.
-> Always verify with `npm view @cyberlz/react-date-range dist-tags` and remove
-> accidental `latest` with `npm dist-tag rm @cyberlz/react-date-range latest`
-> while the package is alpha-only.
+> First-time scoped publishes can leave `latest` pointing at the first version
+> even when publishing with `--tag alpha`, because npm needs a default tag while
+> there is no stable version. Keep all docs/examples on `@alpha` until a stable
+> release exists, then move `latest` intentionally.
 
 **Why `--access public`:**
 - Scoped packages (`@cyberlz/*`) are private by default on npm

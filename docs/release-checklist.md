@@ -60,10 +60,9 @@
   npm publish --tag alpha --access public
   ```
 - [x] Verify on npm: `npm view @cyberlz/react-date-range@alpha version`
-- [ ] Remove accidental `latest` dist-tag if present:
-  ```bash
-  npm dist-tag rm @cyberlz/react-date-range latest
-  ```
+- [x] `latest` dist-tag checked: npm keeps `latest` pointing to the first published
+  version when there is no stable version yet. This is acceptable for `0.1.0-alpha.0`;
+  keep install examples on `@alpha` until a stable release exists.
 - [ ] Verify install from registry:
   ```bash
   mkdir /tmp/registry-test && cd /tmp/registry-test
