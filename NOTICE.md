@@ -19,9 +19,11 @@ Copyright (c) 2020-     Hypeserver
 1. **Verify** the upstream license is still MIT at publish time.
 2. **Add** your own copyright line for modifications made in this fork:
    ```
-   Copyright (c) 2026 <your-name> — modifications in @cyberlz/react-date-range
+   Copyright (c) 2026 Luis Azocar — modifications in @cyberlz/react-date-range
    ```
+   ✅ Done — added to `LICENSE` and this file.
 3. **Update** `package.json` author and repository fields.
+   ✅ Done — `author: "Luis Azocar <lazocar.dev@gmail.com>"`, repo set to `sokaluis/react-date-range`.
 4. **Note on naming**: The npm package is scoped `@cyberlz` but the GitHub
    repository is `sokaluis/react-date-range`. npm scope and GitHub username
    are independent — there is no requirement for them to match.

@@ -10,12 +10,12 @@
 - [x] **Name decision**: `@cyberlz/react-date-range` (npm scoped). See
   `docs/npm-publishing.md` for scope rationale and `docs/release-flow.md`
   for the full git/npm release pipeline.
-- [ ] **Repository**: `package.json` `repository.url` set to the actual GitHub repo URL.
-- [ ] **Author**: `package.json` `author` field filled.
-- [ ] **License notice**: `LICENSE` includes original upstream copyright **plus**
+- [x] **Repository**: `package.json` `repository.url` set to the actual GitHub repo URL.
+- [x] **Author**: `package.json` `author` field filled (`Luis Azocar <lazocar.dev@gmail.com>`).
+- [x] **License notice**: `LICENSE` includes original upstream copyright **plus**
   a new copyright line for fork modifications. See `NOTICE.md`.
-- [ ] **CHANGELOG.md**: Entry for `0.1.0-alpha.0` is complete and accurate.
-- [ ] **`package.json` fields verified**:
+- [x] **CHANGELOG.md**: Entry for `0.1.0-alpha.0` is complete and accurate.
+- [x] **`package.json` fields verified**:
   - `name`, `version`, `description`, `license`, `keywords`
   - `main`, `module`, `types`, `style`, `exports`
   - `files` — only `dist/` and `src/index.d.ts` (no source, tests, config)

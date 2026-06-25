@@ -1,10 +1,9 @@
 {
   "name": "@cyberlz/react-date-range",
-  "private": true,
-  "version": "0.0.1-alpha.1",
+  "version": "0.1.0-alpha.0",
   "description": "Modern maintained fork/rescue of react-date-range — Phase 0/Alpha: upstream source imported, React 19 spike in progress.",
   "license": "MIT",
-  "author": "",
+  "author": "Luis Azocar <lazocar.dev@gmail.com>",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sokaluis/react-date-range.git"

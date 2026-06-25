@@ -225,7 +225,7 @@ Use it as a study reference only.
   known limitations documented
 - [x] Release checklist created — `docs/release-checklist.md` (canonical, covers
   pre-tag, pre-publish, publish, post-publish, demo, and local CI simulation)
-- [x] Author/repo fields in `package.json` filled (**blocker** — depends on name/repo)
+- [x] Author/repo fields in `package.json` filled (`Luis Azocar <lazocar.dev@gmail.com>`, `sokaluis/react-date-range`)
 - [ ] Publish `0.1.0-alpha.0` to npm with `--tag alpha`
 - [ ] Test install in a clean project: `npm install @cyberlz/react-date-range@alpha`
 - [ ] Announce in relevant community channels (upstream issues, Reddit, etc.)

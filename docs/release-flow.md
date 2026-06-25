@@ -11,9 +11,11 @@
 
 - [ ] GitHub repository created at `https://github.com/sokaluis/react-date-range`
 - [ ] Git initialized locally in this directory (`git init && git checkout -b main`)
-- [ ] `package.json` `private: true` **removed** before first publish
+- [x] `package.json` `private: true` **removed** before first publish
   - `private: true` prevents accidental `npm publish` — safety guard during development
-- [ ] `package.json` `author` field filled
+  - ⚠️ **Publishing is NOT happening now.** `private` is removed so the metadata
+    is release-ready, but no tag, npm publish, or GitHub Release has been executed.
+- [x] `package.json` `author` field filled
 - [ ] npm logged in: `npm login` (verify with `npm whoami`)
 
 ---
@@ -147,9 +149,9 @@ npm dist-tag add @cyberlz/react-date-range@1.0.0 latest
   ```
 - [ ] Enable GitHub Actions (on by default for public repos)
 - [ ] Verify CI passes on `main`
-- [ ] Remove `private: true` from `package.json`
-- [ ] Fill `author` in `package.json`
-- [ ] Add copyright line to `LICENSE` (see `NOTICE.md`)
+- [x] Remove `private: true` from `package.json`
+- [x] Fill `author` in `package.json`
+- [x] Add copyright line to `LICENSE` (see `NOTICE.md`)
 - [ ] Run full release checklist: [`release-checklist.md`](release-checklist.md)
 - [ ] Tag and publish (step 2–4 above)
 
