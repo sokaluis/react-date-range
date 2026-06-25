@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { format, parse, isValid, isEqual } from 'date-fns';
+import { format, parse, isValid, isEqual, startOfDay, endOfDay, isAfter, isBefore, isSameDay } from 'date-fns';
 
 class DateInput extends PureComponent {
   constructor(props, context) {
@@ -29,6 +29,21 @@ class DateInput extends PureComponent {
     return '';
   }
 
+  isWithinConstraints(parsed) {
+    const { minDate, maxDate, disabledDates = [] } = this.props;
+
+    if (minDate && isBefore(startOfDay(parsed), startOfDay(minDate))) {
+      return false;
+    }
+    if (maxDate && isAfter(endOfDay(parsed), endOfDay(maxDate))) {
+      return false;
+    }
+    if (disabledDates.some(d => isSameDay(d, parsed))) {
+      return false;
+    }
+    return true;
+  }
+
   update(value) {
     const { invalid, changed } = this.state;
 
@@ -40,7 +55,11 @@ class DateInput extends PureComponent {
     const parsed = parse(value, dateDisplayFormat, new Date(), dateOptions);
 
     if (isValid(parsed)) {
-      this.setState({ changed: false }, () => onChange(parsed));
+      if (this.isWithinConstraints(parsed)) {
+        this.setState({ changed: false }, () => onChange(parsed));
+      } else {
+        this.setState({ invalid: true });
+      }
     } else {
       this.setState({ invalid: true });
     }
@@ -97,12 +116,16 @@ DateInput.propTypes = {
   className: PropTypes.string,
   onFocus: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
+  minDate: PropTypes.object,
+  maxDate: PropTypes.object,
+  disabledDates: PropTypes.array,
 };
 
 DateInput.defaultProps = {
   readOnly: true,
   disabled: false,
   dateDisplayFormat: 'MMM D, YYYY',
+  disabledDates: [],
 };
 
 export default DateInput;

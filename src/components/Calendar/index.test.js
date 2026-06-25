@@ -1,4 +1,5 @@
 import Calendar from '../Calendar';
+import DateInput from '../DateInput';
 
 describe('Calendar', () => {
   test('Should resolve', () => {
@@ -235,6 +236,42 @@ describe('Calendar', () => {
 
       // Should not throw — uses props.months as fallback
       expect(() => instance.updateShownDate()).not.toThrow();
+    });
+  });
+
+  describe('DateInput constraint forwarding', () => {
+    const min = new Date(2025, 0, 1);
+    const max = new Date(2025, 11, 31);
+    const disabled = [new Date(2025, 6, 4)];
+
+    test('renderDateDisplay passes minDate, maxDate, disabledDates to both DateInputs', () => {
+      const instance = new Calendar({
+        ...Calendar.defaultProps,
+        minDate: min,
+        maxDate: max,
+        disabledDates: disabled,
+        ranges: [{ startDate: null, endDate: null, key: 'selection' }],
+      });
+      // Initialize styles directly (Calendar constructor uses generateStyles)
+      instance.styles = {};
+
+      const tree = instance.renderDateDisplay();
+      // tree: <div><div><DateInput />, <DateInput /></div></div>
+      const rangeDiv = tree.props.children[0];
+      const [startInput, endInput] = rangeDiv.props.children;
+
+      // Verify the rendered elements ARE DateInput components
+      expect(startInput.type).toBe(DateInput);
+      expect(endInput.type).toBe(DateInput);
+
+      // Verify constraint props are forwarded
+      expect(startInput.props.minDate).toBe(min);
+      expect(startInput.props.maxDate).toBe(max);
+      expect(startInput.props.disabledDates).toBe(disabled);
+
+      expect(endInput.props.minDate).toBe(min);
+      expect(endInput.props.maxDate).toBe(max);
+      expect(endInput.props.disabledDates).toBe(disabled);
     });
   });
 });

@@ -304,6 +304,9 @@ class Calendar extends PureComponent {
       startDatePlaceholder,
       endDatePlaceholder,
       ariaLabels,
+      minDate,
+      maxDate,
+      disabledDates,
     } = this.props;
 
     const defaultColor = rangeColors[focusedRange[0]] || color;
@@ -336,6 +339,9 @@ class Calendar extends PureComponent {
                 }
                 onChange={this.onDragSelectionEnd}
                 onFocus={() => this.handleRangeFocusChange(i, 0)}
+                minDate={minDate}
+                maxDate={maxDate}
+                disabledDates={disabledDates}
               />
               <DateInput
                 className={classnames(styles.dateDisplayItem, {
@@ -354,6 +360,9 @@ class Calendar extends PureComponent {
                 }
                 onChange={this.onDragSelectionEnd}
                 onFocus={() => this.handleRangeFocusChange(i, 1)}
+                minDate={minDate}
+                maxDate={maxDate}
+                disabledDates={disabledDates}
               />
             </div>
           );
