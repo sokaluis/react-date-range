@@ -58,7 +58,7 @@ The `package.json` `version` field **must match** the tag version exactly.
 ## Release order
 
 ```
-commit → CI green → tag → GitHub Release → npm publish
+commit → CI green → tag → GitHub Release → npm publish → verify dist-tags
 ```
 
 ### Step 1 — Prepare commit
@@ -94,6 +94,11 @@ npm publish --tag alpha --access public
 - Does NOT touch the `latest` dist-tag
 - Users must opt in: `npm install @cyberlz/react-date-range@alpha`
 - `latest` stays on the last stable release; `alpha` is for testers
+
+> First-time scoped publishes can still leave `latest` pointing at the first version.
+> Always verify with `npm view @cyberlz/react-date-range dist-tags` and remove
+> accidental `latest` with `npm dist-tag rm @cyberlz/react-date-range latest`
+> while the package is alpha-only.
 
 **Why `--access public`:**
 - Scoped packages (`@cyberlz/*`) are private by default on npm

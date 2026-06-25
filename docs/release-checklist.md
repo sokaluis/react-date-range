@@ -21,15 +21,15 @@
   - `files` — only `dist/` and `src/index.d.ts` (no source, tests, config)
   - `sideEffects` — `["*.css"]`
   - `peerDependencies` — `react`, `react-dom`, `date-fns` ranges are correct
-- [ ] **`npm pack --dry-run`** shows the expected files and no surprises.
-- [ ] **`dist/` is build-fresh**: `rm -rf dist && npm run build` produces output
+- [x] **`npm pack --dry-run`** shows the expected files and no surprises.
+- [x] **`dist/` is build-fresh**: `rm -rf dist && npm run build` produces output
   identical to what CI would build.
 
 ## Before publishing
 
-- [ ] CI is green on the commit being tagged.
-- [ ] `npm run test:ci` passes locally (Calendar + DateRange tests, 21 tests).
-- [ ] Spike typechecks pass:
+- [x] CI is green on the commit being tagged.
+- [x] `npm run test:ci` passes locally (Calendar + DateRange tests, 21 tests).
+- [x] Spike typechecks pass:
   ```bash
   # Run each from repo root after `npm ci && npm run build` at root
   cd spikes/react-18-ts    && npm ci && npm run typecheck
@@ -54,12 +54,16 @@
 > See [`docs/release-flow.md`](release-flow.md) for the complete git/tag/GitHub/npm
 > pipeline, dist-tag management, and first-time setup.
 
-- [ ] Tag: `git tag v0.1.0-alpha.0 && git push --tags`
-- [ ] Publish with alpha tag (does NOT touch `latest`):
+- [x] Tag: `git tag v0.1.0-alpha.0 && git push --tags`
+- [x] Publish with alpha tag:
   ```bash
   npm publish --tag alpha --access public
   ```
-- [ ] Verify on npm: `npm view @cyberlz/react-date-range@alpha version`
+- [x] Verify on npm: `npm view @cyberlz/react-date-range@alpha version`
+- [ ] Remove accidental `latest` dist-tag if present:
+  ```bash
+  npm dist-tag rm @cyberlz/react-date-range latest
+  ```
 - [ ] Verify install from registry:
   ```bash
   mkdir /tmp/registry-test && cd /tmp/registry-test
@@ -69,6 +73,7 @@
 
 ## Post-publish
 
+- [x] Add npm package link to README.
 - [ ] Add CI badge to README:
   ```markdown
   ![CI](https://github.com/sokaluis/react-date-range/actions/workflows/ci.yml/badge.svg)

@@ -1,7 +1,7 @@
 # @cyberlz/react-date-range
 
 > Maintained fork/rescue of [`react-date-range`](https://github.com/hypeserver/react-date-range).
-> **Phase 0 / Alpha — planning workspace.**
+> **First public alpha is available on npm:** [`@cyberlz/react-date-range`](https://www.npmjs.com/package/@cyberlz/react-date-range).
 
 ---
 
@@ -28,6 +28,20 @@ but the upstream repository is read-only and no longer maintained. Open issues i
 There are community forks, but **none clearly active in 2026** with a published React 19 fix.
 This project aims to fill that gap.
 
+## Install
+
+```bash
+npm install @cyberlz/react-date-range@alpha
+```
+
+```js
+import { DateRangePicker } from '@cyberlz/react-date-range';
+import '@cyberlz/react-date-range/styles.css';
+import '@cyberlz/react-date-range/theme/default.css';
+```
+
+> Alpha means API compatibility is the priority, but polish/refactors are still in progress.
+
 ## Goal
 
 A **modern, maintained, production-ready** date range picker for React that:
@@ -44,13 +58,13 @@ A **modern, maintained, production-ready** date range picker for React that:
 
 | Phase | Status |
 |-------|--------|
-| **Phase 0** — Audit & planning | In progress |
-| **Phase 1** — Compatible rescue | Not started |
+| **Phase 0** — Audit & planning | Complete |
+| **Phase 1** — Compatible rescue | Alpha published |
 | **Phase 2** — Stylability | Not started |
 | **Phase 3** — Core refactor | Not started |
 | **Phase 4** — Dual skins | Not started |
 
-**There is no stable release yet.** This is a planning/exploration workspace.
+**There is no stable release yet.** Use the `alpha` dist-tag while this fork is being validated.
 See [`docs/fork-roadmap.md`](docs/fork-roadmap.md) for the full plan.
 
 ## Alpha 0/1 priorities
@@ -118,3 +132,8 @@ license before publishing**. See [`NOTICE.md`](NOTICE.md).
 - [`docs/fork-roadmap.md`](docs/fork-roadmap.md) — Full phase plan (0–4)
 - [`docs/alpha-plan.md`](docs/alpha-plan.md) — Alpha 0/1 checklist and acceptance criteria
 - [`docs/npm-publishing.md`](docs/npm-publishing.md) — npm publishing process, costs, visibility
+
+## Links
+
+- npm: <https://www.npmjs.com/package/@cyberlz/react-date-range>
+- GitHub Releases: <https://github.com/sokaluis/react-date-range/releases>
