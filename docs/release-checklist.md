@@ -39,13 +39,15 @@
   cd spikes/ssr-import     && npm ci && npm test
   cd spikes/consumer-js    && npm ci && npm run build
   ```
-- [ ] Smoke-install in a clean project:
+- [x] Smoke-install in a clean project — React 18 ✅ and React 19 ✅:
   ```bash
-  mkdir /tmp/smoke-test && cd /tmp/smoke-test
-  npm init -y
-  npm install ../path/to/react-date-range
-  node -e "const m = require('@cyberlz/react-date-range'); console.log(Object.keys(m))"
+  # React 18 + Vite + TS (tsc --noEmit + vite build)
+  npm install @cyberlz/react-date-range@alpha react@18 react-dom@18 date-fns@^3.6.0
+
+  # React 19 + Vite + TS (tsc --noEmit + vite build)
+  npm install @cyberlz/react-date-range@alpha react@^19.2.7 react-dom@^19.2.7 date-fns@^3.6.0
   ```
+  Both resolved from `https://registry.npmjs.org/` (not `file:`).
 - [ ] Demo page reviewed (local `npm run dev` in a spike fixture or dedicated
   demo app). See "Demo page" section below.
 
@@ -63,12 +65,13 @@
 - [x] `latest` dist-tag checked: npm keeps `latest` pointing to the first published
   version when there is no stable version yet. This is acceptable for `0.1.0-alpha.0`;
   keep install examples on `@alpha` until a stable release exists.
-- [ ] Verify install from registry:
+- [x] Verify install from registry:
   ```bash
   mkdir /tmp/registry-test && cd /tmp/registry-test
   npm init -y
   npm install @cyberlz/react-date-range@alpha
   ```
+  ✅ Resolved from `https://registry.npmjs.org/@cyberlz/react-date-range/-/react-date-range-0.1.0-alpha.0.tgz` — clean typecheck + build for both React 18 and React 19 projects.
 
 ## Post-publish
 
@@ -88,6 +91,9 @@
 
 A live demo is **not required** for alpha publish, but having one ready before
 the first stable release builds trust.
+
+> **Landing/Vercel timing:** See [`docs-site-plan.md`](docs-site-plan.md) for the
+> full decision on when to deploy a Vercel landing page and what it should include.
 
 | Item | Status | Notes |
 |------|--------|-------|
