@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      # ── Root package ──────────────────────────────────
+      - name: Install root dependencies
+        run: npm ci
+
+      - name: Build package (tsup + sass + types)
+        run: npm run build
+
+      - name: Run tests (Calendar + DateRange only)
+        run: npm run test:ci
+
+      # ── Consumer JS (smoke: build) ────────────────────
+      - name: 'Spike: consumer-js build'
+        working-directory: spikes/consumer-js
+        run: npm ci && npm run build
+
+      # ── Consumer TSX (typecheck validates compiled types) ─
+      - name: 'Spike: consumer-tsx typecheck'
+        working-directory: spikes/consumer-tsx
+        run: npm ci && npm run typecheck
+
+      # ── React 18 + TypeScript typecheck ───────────────
+      - name: 'Spike: react-18-ts typecheck'
+        working-directory: spikes/react-18-ts
+        run: npm ci && npm run typecheck
+
+      # ── React 19 + TypeScript typecheck ───────────────
+      - name: 'Spike: react-19-ts typecheck'
+        working-directory: spikes/react-19-ts
+        run: npm ci && npm run typecheck
+
+      # ── StrictMode scroll fix typecheck ───────────────
+      - name: 'Spike: scroll-strictmode typecheck'
+        working-directory: spikes/scroll-strictmode
+        run: npm ci && npm run typecheck
+
+      # ── SSR import safety (CJS + ESM) ─────────────────
+      - name: 'Spike: ssr-import tests'
+        working-directory: spikes/ssr-import
+        run: npm ci && npm test
