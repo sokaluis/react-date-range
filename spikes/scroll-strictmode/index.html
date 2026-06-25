@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scroll + StrictMode Spike — react-date-range-modern</title>
+    <style>
+      body { font-family: system-ui, sans-serif; margin: 0; padding: 1rem; background: #f5f5f5; }
+      .layout { display: flex; gap: 2rem; flex-wrap: wrap; }
+      .panel { flex: 1; min-width: 360px; background: white; border-radius: 8px; padding: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+      .panel h2 { margin-top: 0; font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 0.5rem; }
+      .panel .badge { font-size: 0.75rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
+      .badge-strict { background: #ff6b6b; color: white; }
+      .badge-nostrict { background: #51cf66; color: white; }
+      .panel .status { font-size: 0.8rem; color: #666; margin: 0.25rem 0 0.5rem; }
+      hr { margin: 2rem 0; border: none; border-top: 2px solid #eee; }
+    </style>
+  </head>
+  <body>
+    <h1>Scroll + StrictMode Spike — react-date-range-modern</h1>
+    <p>
+      Reproduce/verify upstream issues <strong>#577</strong> (DateRangePicker scroll blank on React 18 StrictMode)
+      and <strong>#653</strong> (Strict mode does not render correctly) in a modern React 19 environment
+      with <code>scroll={ enabled: true }</code>.
+    </p>
+
+    <div id="root-strict"></div>
+    <hr />
+    <div id="root-nostrict"></div>
+
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
