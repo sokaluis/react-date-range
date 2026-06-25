@@ -10,7 +10,7 @@ For upstream release history (up to `2.0.1`), see [`CHANGELOG.upstream.md`](CHAN
 
 ---
 
-## [0.1.0-alpha.0] — Unreleased
+## [0.1.0-alpha.0] — 2026-06-25
 
 First public alpha release. Drop-in replacement for `react-date-range@2.0.1` with
 React 18/19 compatibility, TypeScript types, modern build pipeline, and critical
