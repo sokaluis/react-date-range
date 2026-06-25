@@ -1,0 +1,26 @@
+{
+  "name": "spike-react-19",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "classnames": "^2.2.6",
+    "date-fns": "^3.0.6",
+    "prop-types": "^15.7.2",
+    "react": "^19.0.0",
+    "react-date-range-modern": "file:../..",
+    "react-dom": "^19.0.0",
+    "react-list": "^0.8.13",
+    "shallow-equal": "^1.2.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.0",
+    "sass": "^1.77.0",
+    "vite": "^6.0.0"
+  }
+}
