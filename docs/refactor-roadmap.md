@@ -9,11 +9,10 @@
 
 | Item | Estado |
 |------|--------|
-| Alpha publicada en npm | `@cyberlz/react-date-range@0.1.0-alpha.1` (`alpha` dist-tag) |
-| Último checkpoint | `v0.1.0-alpha.1` publicado en npm y GitHub Releases |
-| Alpha en preparación | `0.1.0-alpha.2` — metadata actualizada, no etiquetada ni publicada |
+| Alpha publicada en npm | `@cyberlz/react-date-range@0.1.0-alpha.2` (`alpha` dist-tag) |
+| Último checkpoint | `v0.1.0-alpha.2` publicado en npm y GitHub Releases |
 | GitHub Release | ✅ Etiquetado en `sokaluis/react-date-range` |
-| Verificación local | Jest 54/54, `test:ci` 25/25, build y `npm pack --dry-run` |
+| Verificación local | Jest 57/57, `test:ci` 28/28, build, demo typecheck y `npm pack --dry-run` |
 | Demo mínima npm-backed | `demo/` — Vite + React 19 + TS, en CI |
 | Consumer smoke tests | React 18 ✅, React 19 ✅ (instalado desde registry) |
 | Vercel / landing | **Diferido** — se prioriza refactor real sobre docs públicas |

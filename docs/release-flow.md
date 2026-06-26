@@ -56,7 +56,7 @@ The `package.json` `version` field **must match** the tag version exactly.
 - `package.json` version: `0.1.0-alpha.1` (update before tagging)
 - npm dist-tag: `alpha`
 
-**Third alpha tag (preparing):** `v0.1.0-alpha.2`
+**Third alpha tag:** `v0.1.0-alpha.2`
 - `package.json` version: `0.1.0-alpha.2` (update before tagging)
 - npm dist-tag: `alpha`
 
@@ -82,7 +82,7 @@ git tag v0.1.0-alpha.1
 git push origin v0.1.0-alpha.1
 ```
 
-**Third alpha tag (preparing, NOT yet tagged):** `v0.1.0-alpha.2`
+**Third alpha tag (published):** `v0.1.0-alpha.2`
 - `package.json` version: `0.1.0-alpha.2` (update before tagging)
 - npm dist-tag: `alpha`
 

@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@cyberlz/react-date-range": "^0.1.0-alpha.0",
+    "@cyberlz/react-date-range": "0.1.0-alpha.2",
     "date-fns": "^3.6.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
