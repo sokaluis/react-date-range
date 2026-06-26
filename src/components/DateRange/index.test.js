@@ -1,8 +1,12 @@
+import React from 'react';
+import TestRenderer, { act } from 'react-test-renderer';
 import { subDays, addDays, isSameDay } from 'date-fns';
 import DateRange from '../DateRange';
+import Calendar from '../Calendar';
 
-let instance = null;
-const endDate = new Date();
+globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+
+const endDate = new Date(2025, 5, 15);
 const startDate = subDays(endDate, 7);
 
 const commonProps = {
@@ -11,6 +15,17 @@ const commonProps = {
   onChange: () => {},
   moveRangeOnFirstSelection: false,
 };
+
+const renderDateRange = props => {
+  const ref = React.createRef();
+  let renderer;
+  act(() => {
+    renderer = TestRenderer.create(<DateRange {...commonProps} {...props} ref={ref} />);
+  });
+  return { ref, renderer };
+};
+
+const calcSelection = props => renderDateRange(props).ref.current.calcNewSelection;
 
 const compareRanges = (newRange, assertionRange) => {
   ['startDate', 'endDate'].forEach(key => {
@@ -21,23 +36,13 @@ const compareRanges = (newRange, assertionRange) => {
   });
 };
 
-// Direct instantiation — react-test-renderer.getInstance() returns null in React 19.
-beforeEach(() => {
-  instance = new DateRange(commonProps);
-  // Simulate state initialization that would happen in the constructor.
-  instance.state = {
-    focusedRange: [0, 0],
-    preview: null,
-  };
-});
-
 describe('DateRange', () => {
   test('Should resolve', () => {
     expect(DateRange).toEqual(expect.anything());
   });
 
   test('calculate new selection by resetting end date', () => {
-    const methodResult = instance.calcNewSelection(subDays(endDate, 10), true);
+    const methodResult = calcSelection()(subDays(endDate, 10), true);
     compareRanges(methodResult.range, {
       startDate: subDays(endDate, 10),
       endDate: subDays(endDate, 10),
@@ -45,7 +50,7 @@ describe('DateRange', () => {
   });
 
   test('calculate new selection by resetting end date if start date is not before', () => {
-    const methodResult = instance.calcNewSelection(addDays(endDate, 2), true);
+    const methodResult = calcSelection()(addDays(endDate, 2), true);
     compareRanges(methodResult.range, {
       startDate: addDays(endDate, 2),
       endDate: addDays(endDate, 2),
@@ -53,9 +58,7 @@ describe('DateRange', () => {
   });
 
   test('calculate new selection based on moveRangeOnFirstSelection prop', () => {
-    instance = new DateRange({ ...commonProps, moveRangeOnFirstSelection: true });
-    instance.state = { focusedRange: [0, 0], preview: null };
-    const methodResult = instance.calcNewSelection(subDays(endDate, 10), true);
+    const methodResult = calcSelection({ moveRangeOnFirstSelection: true })(subDays(endDate, 10), true);
     compareRanges(methodResult.range, {
       startDate: subDays(endDate, 10),
       endDate: subDays(endDate, 3),
@@ -63,9 +66,7 @@ describe('DateRange', () => {
   });
 
   test('calculate new selection by retaining end date, based on retainEndDateOnFirstSelection prop', () => {
-    instance = new DateRange({ ...commonProps, retainEndDateOnFirstSelection: true });
-    instance.state = { focusedRange: [0, 0], preview: null };
-    const methodResult = instance.calcNewSelection(subDays(endDate, 10), true);
+    const methodResult = calcSelection({ retainEndDateOnFirstSelection: true })(subDays(endDate, 10), true);
     compareRanges(methodResult.range, {
       startDate: subDays(endDate, 10),
       endDate,
@@ -76,10 +77,8 @@ describe('DateRange', () => {
     // PR #508: focusedRange={[0,1]} end-date handling.
     // When consumer controls focusedRange to the end-date slot,
     // clicking a day should set endDate while keeping startDate.
-    instance = new DateRange({ ...commonProps, focusedRange: [0, 1] });
-    instance.state = { focusedRange: [0, 1], preview: null };
     const newEnd = addDays(endDate, 2);
-    const methodResult = instance.calcNewSelection(newEnd, true);
+    const methodResult = calcSelection({ focusedRange: [0, 1] })(newEnd, true);
     // End date should be set to the clicked value; start date unchanged.
     compareRanges(methodResult.range, {
       startDate,
@@ -90,16 +89,60 @@ describe('DateRange', () => {
   });
 
   test('calculate new selection by retaining the unset end date, based on retainEndDateOnFirstSelection prop', () => {
-    instance = new DateRange({
-      ...commonProps,
+    const methodResult = calcSelection({
       ranges: [{ ...commonProps.ranges[0], endDate: null }],
       retainEndDateOnFirstSelection: true,
-    });
-    instance.state = { focusedRange: [0, 0], preview: null };
-    const methodResult = instance.calcNewSelection(subDays(endDate, 10), true);
+    })(subDays(endDate, 10), true);
     compareRanges(methodResult.range, {
       startDate: subDays(endDate, 10),
       endDate: null,
     });
+  });
+
+  test('calculate new selection around disabled dates', () => {
+    const disabledDate = subDays(endDate, 5);
+    const fromStart = calcSelection({
+      disabledDates: [disabledDate],
+      retainEndDateOnFirstSelection: true,
+    })(subDays(endDate, 10), true);
+    const fromEnd = calcSelection({ focusedRange: [0, 1], disabledDates: [disabledDate] })(addDays(endDate, 2), true);
+
+    expect(fromStart.wasValid).toBe(false);
+    compareRanges(fromStart.range, { startDate: addDays(disabledDate, 1), endDate });
+    expect(fromEnd.wasValid).toBe(false);
+    compareRanges(fromEnd.range, { startDate, endDate: subDays(disabledDate, 1) });
+  });
+
+  test('preserves static metadata and exposes DateRange plus Calendar imperative methods', () => {
+    const { ref } = renderDateRange();
+
+    expect(DateRange.$$typeof).toBe(Symbol.for('react.forward_ref'));
+    expect(DateRange.defaultProps.rangeColors).toEqual(['#3d91ff', '#3ecf8e', '#fed14c']);
+    expect(DateRange.propTypes.onChange).toEqual(expect.any(Function));
+    ['calcNewSelection', 'updatePreview', 'focusToDate', 'changeShownDate', 'updateShownDate', 'handleScroll'].forEach(
+      methodName => expect(ref.current[methodName]).toEqual(expect.any(Function))
+    );
+    expect(ref.current.setState).toBeUndefined();
+  });
+
+  test('updates preview and keeps Calendar passthrough props intact', () => {
+    const { ref, renderer } = renderDateRange({
+      ranges: [{ ...commonProps.ranges[0], color: '#ff0000' }],
+      className: 'customRange',
+    });
+
+    act(() => {
+      ref.current.updatePreview({ range: { startDate, endDate } });
+    });
+
+    expect(renderer.root.findByType(Calendar).props.preview).toEqual({ startDate, endDate, color: '#ff0000' });
+    expect(renderer.root.findByType(Calendar).props.displayMode).toBe('dateRange');
+    expect(renderer.root.findByType(Calendar).props.className).toContain('customRange');
+
+    act(() => {
+      ref.current.updatePreview(null);
+    });
+
+    expect(renderer.root.findByType(Calendar).props.preview).toBe(null);
   });
 });

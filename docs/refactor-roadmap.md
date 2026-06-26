@@ -16,7 +16,7 @@
 | Demo mínima npm-backed | `demo/` — Vite + React 19 + TS, en CI |
 | Consumer smoke tests | React 18 ✅, React 19 ✅ (instalado desde registry) |
 | Vercel / landing | **Diferido** — se prioriza refactor real sobre docs públicas |
-| Prioridad actual | **Refactor de la librería**, próximo slice: `Month` / `DayCell` hooks |
+| Prioridad actual | **Refactor de la librería**, próximo slice: `DateRange` / `DateRangePicker` / `DefinedRange` hooks |
 
 ---
 
@@ -118,20 +118,37 @@ asegura que entendemos bien el componente antes de migrarlo.
 
 ---
 
-### Slice 4 — `Month` / `DayCell`: migrar a función + hooks
+### Slice 4 — `Month` / `DayCell`: migrar a función + hooks ✅
+
+**Estado**: Completado y pusheado a `main` en `3323607`.
+
+**Verificación**: Calendar focused 22/22, Jest completo 57/57. Build no corrido
+porque solo se ejecuta con autorización explícita.
 
 **Objetivo**: Migrar componentes hoja a funciones. Bajo riesgo, alto valor
 educativo para establecer el patrón de migración.
 
-**Próximo paso**: planificar este slice con SDD antes de aplicar código. Mantener
-compatibilidad pública, preservar la grilla visual y apoyarse en los tests de
-Calendar agregados durante la safety net.
+**Resultado**: `Month` quedó como función; `DayCell` quedó como función con
+`useState` para `hover`/`active`; se agregó un seam test mínimo para disabled days
+sin cambiar contratos públicos ni comportamiento observable.
 
 ---
 
 ### Slice 5 — `DateRange` / `DateRangePicker` / `DefinedRange`: migrar a función + hooks
 
+**Estado**: Planificación SDD creada en Engram. Requiere cadena de PRs antes de
+aplicar porque el cambio total estimado supera el presupuesto de review de 400
+líneas.
+
 **Objetivo**: Completar migración de todos los componentes a funciones.
+
+**Próximo paso**: elegir estrategia de cadena antes de aplicar código. Estos
+componentes ya no son hojas: preservan contratos de selección/rango, props públicas
+y composición con `Calendar`, por lo que requieren más cuidado que Slice 4.
+
+**Split recomendado**: 5a `DateRange` → 5b `DefinedRange` → 5c
+`DateRangePicker`. Estrategia de cadena pendiente: `stacked-to-main` o
+`feature-branch-chain`.
 
 ---
 
@@ -170,10 +187,10 @@ cat docs/refactor-roadmap.md
 # 2. Verificar estado actual sin build salvo autorización explícita
 npm test
 
-# 3. Planificar Slice 4 — Month / DayCell hooks con SDD
-#    - Explorar props, estado local, handlers y acoplamientos con Calendar
-#    - Escribir proposal/spec/design/tasks antes de aplicar código
-#    - Mantener el slice chico y verificable
+# 3. Elegir estrategia de cadena para Slice 5 antes de aplicar código
+#    - Split recomendado: 5a DateRange → 5b DefinedRange → 5c DateRangePicker
+#    - Decidir stacked-to-main o feature-branch-chain
+#    - Aplicar solo después de autorización explícita
 #    - Verificar con npm test; build solo si se autoriza para release/checkpoint
 ```
 
