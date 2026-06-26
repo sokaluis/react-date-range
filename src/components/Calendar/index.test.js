@@ -85,6 +85,24 @@ describe('Calendar', () => {
     expect(Calendar).toEqual(expect.anything());
   });
 
+  describe('forwardRef scaffold and metadata', () => {
+    test('exports a forwardRef component while preserving defaultProps metadata', () => {
+      expect(Calendar.$$typeof).toBe(Symbol.for('react.forward_ref'));
+      expect(Calendar.defaultProps.scroll).toEqual({ enabled: false });
+      expect(Calendar.defaultProps.locale).toBe(enUS);
+      expect(Calendar.defaultProps.ariaLabels).toEqual({});
+    });
+
+    test('forwards refs to the compatibility instance seam', () => {
+      const calendarRef = React.createRef();
+
+      renderCalendar({ ref: calendarRef });
+
+      expect(calendarRef.current.focusToDate).toEqual(expect.any(Function));
+      expect(calendarRef.current.updateShownDate).toEqual(expect.any(Function));
+    });
+  });
+
   describe('rendered navigation and shown-date behavior', () => {
     test('previous and next arrows update visible month and report clamped shown dates', () => {
       const onShownDateChange = jest.fn();
@@ -270,7 +288,7 @@ describe('Calendar', () => {
     };
 
     beforeEach(() => {
-      instance = new Calendar(commonProps);
+      instance = new Calendar.Inner(commonProps);
       instance.state = {
         ...instance.state,
         focusedDate: new Date(2025, 5, 15),
@@ -528,7 +546,7 @@ describe('Calendar', () => {
     const disabled = [new Date(2025, 6, 4)];
 
     test('renderDateDisplay returns a DateDisplay element with constraints propagated', () => {
-      const instance = new Calendar({
+      const instance = new Calendar.Inner({
         ...Calendar.defaultProps,
         minDate: min,
         maxDate: max,
@@ -559,7 +577,7 @@ describe('Calendar', () => {
 
     // ---- 5.2: renderDateDisplay always returns DateDisplay (guard is in render()) ----
     test('renderDateDisplay returns DateDisplay regardless of showDateDisplay prop', () => {
-      const instance = new Calendar({
+      const instance = new Calendar.Inner({
         ...Calendar.defaultProps,
         showDateDisplay: false,
         ranges: [{ startDate: null, endDate: null, key: 'selection' }],
@@ -574,7 +592,7 @@ describe('Calendar', () => {
     // ---- Verify fix: spec scenario "Calendar-level display disabled" ----
     describe('render-level showDateDisplay guard', () => {
       test('when showDateDisplay is false, no DateDisplay appears in render tree', () => {
-        const instance = new Calendar({
+        const instance = new Calendar.Inner({
           ...Calendar.defaultProps,
           showDateDisplay: false,
           ranges: [{ startDate: null, endDate: null, key: 'selection' }],
@@ -591,7 +609,7 @@ describe('Calendar', () => {
       });
 
       test('when showDateDisplay is true, DateDisplay appears in render tree', () => {
-        const instance = new Calendar({
+        const instance = new Calendar.Inner({
           ...Calendar.defaultProps,
           showDateDisplay: true,
           ranges: [{ startDate: null, endDate: null, key: 'selection' }],

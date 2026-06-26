@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { rangeShape } from '../DayCell';
 import Month from '../Month';
@@ -31,50 +31,104 @@ import { enUS as defaultLocale } from 'date-fns/locale/en-US';
 import coreStyles from '../../styles';
 import { ariaLabelsShape } from '../../accessibility';
 
-class Calendar extends PureComponent {
+const calendarDefaultProps = {
+  showMonthArrow: true,
+  showMonthAndYearPickers: true,
+  disabledDates: [],
+  disabledDay: () => { },
+  classNames: {},
+  locale: defaultLocale,
+  ranges: [],
+  focusedRange: [0, 0],
+  dateDisplayFormat: 'MMM d, yyyy',
+  monthDisplayFormat: 'MMM yyyy',
+  weekdayDisplayFormat: 'E',
+  dayDisplayFormat: 'd',
+  showDateDisplay: true,
+  showPreview: true,
+  displayMode: 'date',
+  months: 1,
+  color: '#3d91ff',
+  scroll: {
+    enabled: false,
+  },
+  direction: 'vertical',
+  maxDate: addYears(new Date(), 20),
+  minDate: addYears(new Date(), -100),
+  rangeColors: ['#3d91ff', '#3ecf8e', '#fed14c'],
+  startDatePlaceholder: 'Early',
+  endDatePlaceholder: 'Continuous',
+  editableDateInputs: false,
+  dragSelectionEnabled: true,
+  fixedHeight: false,
+  calendarFocus: 'forwards',
+  preventSnapRefocus: false,
+  ariaLabels: {},
+};
+
+const mergeDefaultProps = props =>
+  Object.keys(calendarDefaultProps).reduce(
+    (mergedProps, propName) => ({
+      ...mergedProps,
+      [propName]: props[propName] === undefined ? calendarDefaultProps[propName] : props[propName],
+    }),
+    { ...props }
+  );
+
+const getDateOptions = ({ locale, weekStartsOn }) => {
+  const dateOptions = { locale };
+  if (weekStartsOn !== undefined) dateOptions.weekStartsOn = weekStartsOn;
+  return dateOptions;
+};
+
+const getMonthNames = locale => [...Array(12).keys()].map(i => locale.localize.month(i));
+
+const calcScrollArea = ({ direction, months, scroll }) => {
+  if (!scroll.enabled) return { enabled: false };
+
+  const longMonthHeight = scroll.longMonthHeight || scroll.monthHeight;
+  if (direction === 'vertical') {
+    return {
+      enabled: true,
+      monthHeight: scroll.monthHeight || 220,
+      longMonthHeight: longMonthHeight || 260,
+      calendarWidth: 'auto',
+      calendarHeight: (scroll.calendarHeight || longMonthHeight || 240) * months,
+    };
+  }
+  return {
+    enabled: true,
+    monthWidth: scroll.monthWidth || 332,
+    calendarWidth: (scroll.calendarWidth || scroll.monthWidth || 332) * months,
+    monthHeight: longMonthHeight || 300,
+    calendarHeight: longMonthHeight || 300,
+  };
+};
+
+class CalendarInner extends PureComponent {
   constructor(props, context) {
     super(props, context);
-    this.dateOptions = { locale: props.locale };
-    if (props.weekStartsOn !== undefined) this.dateOptions.weekStartsOn = props.weekStartsOn;
-    this.styles = generateStyles([coreStyles, props.classNames]);
+    this.dateOptions = props._calendarDateOptions || getDateOptions(props);
+    this.styles = props._calendarStyles || generateStyles([coreStyles, props.classNames]);
     this.listSizeCache = {};
     this.isFirstRender = true;
     this.state = {
-      monthNames: this.getMonthNames(),
+      monthNames: props._calendarMonthNames || this.getMonthNames(),
       focusedDate: calcFocusDate(null, props),
       drag: {
         status: false,
         range: { startDate: null, endDate: null },
         disablePreview: false,
       },
-      scrollArea: this.calcScrollArea(props),
+      scrollArea: props._calendarScrollArea || this.calcScrollArea(props),
     };
   }
   getMonthNames() {
-    return [...Array(12).keys()].map(i => this.props.locale.localize.month(i));
+    return getMonthNames(this.props.locale);
   }
 
   calcScrollArea(props) {
-    const { direction, months, scroll } = props;
-    if (!scroll.enabled) return { enabled: false };
-
-    const longMonthHeight = scroll.longMonthHeight || scroll.monthHeight;
-    if (direction === 'vertical') {
-      return {
-        enabled: true,
-        monthHeight: scroll.monthHeight || 220,
-        longMonthHeight: longMonthHeight || 260,
-        calendarWidth: 'auto',
-        calendarHeight: (scroll.calendarHeight || longMonthHeight || 240) * months,
-      };
-    }
-    return {
-      enabled: true,
-      monthWidth: scroll.monthWidth || 332,
-      calendarWidth: (scroll.calendarWidth || scroll.monthWidth || 332) * months,
-      monthHeight: longMonthHeight || 300,
-      calendarHeight: longMonthHeight || 300,
-    };
+    return calcScrollArea(props);
   }
   focusToDate = (date, props = this.props, preventUnnecessary = true) => {
     if (!props.scroll.enabled) {
@@ -156,16 +210,20 @@ class Calendar extends PureComponent {
       prevProps.locale !== this.props.locale ||
       prevProps.weekStartsOn !== this.props.weekStartsOn
     ) {
-      this.dateOptions = { locale: this.props.locale };
-      if (this.props.weekStartsOn !== undefined)
-        this.dateOptions.weekStartsOn = this.props.weekStartsOn;
+      this.dateOptions = this.props._calendarDateOptions || getDateOptions(this.props);
       this.setState({
-        monthNames: this.getMonthNames(),
+        monthNames: this.props._calendarMonthNames || this.getMonthNames(),
       });
     }
 
-    if (!shallowEqualObjects(prevProps.scroll, this.props.scroll)) {
-      this.setState({ scrollArea: this.calcScrollArea(this.props) });
+    if (
+      !shallowEqualObjects(prevProps.scroll, this.props.scroll) ||
+      prevProps.direction !== this.props.direction ||
+      prevProps.months !== this.props.months
+    ) {
+      this.setState({
+        scrollArea: this.props._calendarScrollArea || this.calcScrollArea(this.props),
+      });
     }
   }
 
@@ -235,7 +293,7 @@ class Calendar extends PureComponent {
                 value={focusedDate.getMonth()}
                 onChange={e => changeShownDate(e.target.value, 'setMonth')}
                 aria-label={ariaLabels.monthPicker}>
-                {this.state.monthNames.map((monthName, i) => (
+                {(props._calendarMonthNames || this.state.monthNames).map((monthName, i) => (
                   <option key={i} value={i}>
                     {monthName}
                   </option>
@@ -263,7 +321,8 @@ class Calendar extends PureComponent {
           </span>
         ) : (
           <span className={styles.monthAndYearPickers}>
-            {this.state.monthNames[focusedDate.getMonth()]} {focusedDate.getFullYear()}
+            {(props._calendarMonthNames || this.state.monthNames)[focusedDate.getMonth()]}{' '}
+            {focusedDate.getFullYear()}
           </span>
         )}
         {showMonthArrow ? (
@@ -393,6 +452,8 @@ class Calendar extends PureComponent {
     return isLongMonth ? scrollArea.longMonthHeight : scrollArea.monthHeight;
   };
   render() {
+    this.dateOptions = this.props._calendarDateOptions || this.dateOptions;
+    this.styles = this.props._calendarStyles || this.styles;
     const {
       showDateDisplay,
       onPreviewChange,
@@ -522,40 +583,38 @@ class Calendar extends PureComponent {
   }
 }
 
-Calendar.defaultProps = {
-  showMonthArrow: true,
-  showMonthAndYearPickers: true,
-  disabledDates: [],
-  disabledDay: () => { },
-  classNames: {},
-  locale: defaultLocale,
-  ranges: [],
-  focusedRange: [0, 0],
-  dateDisplayFormat: 'MMM d, yyyy',
-  monthDisplayFormat: 'MMM yyyy',
-  weekdayDisplayFormat: 'E',
-  dayDisplayFormat: 'd',
-  showDateDisplay: true,
-  showPreview: true,
-  displayMode: 'date',
-  months: 1,
-  color: '#3d91ff',
-  scroll: {
-    enabled: false,
-  },
-  direction: 'vertical',
-  maxDate: addYears(new Date(), 20),
-  minDate: addYears(new Date(), -100),
-  rangeColors: ['#3d91ff', '#3ecf8e', '#fed14c'],
-  startDatePlaceholder: 'Early',
-  endDatePlaceholder: 'Continuous',
-  editableDateInputs: false,
-  dragSelectionEnabled: true,
-  fixedHeight: false,
-  calendarFocus: 'forwards',
-  preventSnapRefocus: false,
-  ariaLabels: {},
-};
+const ForwardedCalendar = React.forwardRef(function Calendar(props, ref) {
+  const resolvedProps = mergeDefaultProps(props);
+  const dateOptions = useMemo(
+    () => getDateOptions(resolvedProps),
+    [resolvedProps.locale, resolvedProps.weekStartsOn]
+  );
+  const styles = useMemo(
+    () => generateStyles([coreStyles, resolvedProps.classNames]),
+    [resolvedProps.classNames]
+  );
+  const monthNames = useMemo(() => getMonthNames(resolvedProps.locale), [resolvedProps.locale]);
+  const scrollArea = useMemo(
+    () => calcScrollArea(resolvedProps),
+    [resolvedProps.direction, resolvedProps.months, resolvedProps.scroll]
+  );
+
+  return (
+    <CalendarInner
+      {...resolvedProps}
+      _calendarDateOptions={dateOptions}
+      _calendarStyles={styles}
+      _calendarMonthNames={monthNames}
+      _calendarScrollArea={scrollArea}
+      ref={ref}
+    />
+  );
+});
+
+const Calendar = ForwardedCalendar;
+Object.defineProperty(Calendar, 'Inner', { value: CalendarInner });
+
+Calendar.defaultProps = calendarDefaultProps;
 
 Calendar.propTypes = {
   showMonthArrow: PropTypes.bool,
