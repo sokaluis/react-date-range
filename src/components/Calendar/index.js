@@ -1,4 +1,12 @@
-import React, { PureComponent, useMemo } from 'react';
+import React, {
+  PureComponent,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import PropTypes from 'prop-types';
 import { rangeShape } from '../DayCell';
 import Month from '../Month';
@@ -65,6 +73,8 @@ const calendarDefaultProps = {
   preventSnapRefocus: false,
   ariaLabels: {},
 };
+
+const uninitializedTargetProp = Symbol('uninitializedTargetProp');
 
 const mergeDefaultProps = props =>
   Object.keys(calendarDefaultProps).reduce(
@@ -583,6 +593,339 @@ class CalendarInner extends PureComponent {
   }
 }
 
+const CalendarNonScroll = React.forwardRef(function CalendarNonScroll(props, ref) {
+  const dateOptions = props._calendarDateOptions;
+  const styles = props._calendarStyles;
+  const monthNames = props._calendarMonthNames;
+  const [focusedDate, setFocusedDate] = useState(() => calcFocusDate(null, props));
+  const [drag, setDrag] = useState({
+    status: false,
+    range: { startDate: null, endDate: null },
+    disablePreview: false,
+  });
+  const [previewState, setPreviewState] = useState(null);
+  const focusedDateRef = useRef(focusedDate);
+  const previousTargetPropRef = useRef(uninitializedTargetProp);
+
+  useEffect(() => {
+    focusedDateRef.current = focusedDate;
+  }, [focusedDate]);
+
+  const focusToDate = useCallback(
+    (date, nextProps = props, preventUnnecessary = true) => {
+      if (preventUnnecessary && nextProps.preventSnapRefocus) {
+        const focusedDateDiff = differenceInCalendarMonths(date, focusedDateRef.current);
+        const isAllowedForward = nextProps.calendarFocus === 'forwards' && focusedDateDiff >= 0;
+        const isAllowedBackward = nextProps.calendarFocus === 'backwards' && focusedDateDiff <= 0;
+        if ((isAllowedForward || isAllowedBackward) && Math.abs(focusedDateDiff) < nextProps.months) {
+          return;
+        }
+      }
+      setFocusedDate(date);
+    },
+    [props]
+  );
+
+  const updateShownDate = useCallback(
+    (nextProps = props) => {
+      const newFocus = calcFocusDate(focusedDateRef.current, nextProps);
+      focusToDate(newFocus, nextProps);
+    },
+    [focusToDate, props]
+  );
+
+  useEffect(() => {
+    const propMapper = {
+      dateRange: 'ranges',
+      date: 'date',
+    };
+    const targetProp = propMapper[props.displayMode];
+    const targetValue = props[targetProp];
+    if (previousTargetPropRef.current === uninitializedTargetProp) {
+      previousTargetPropRef.current = targetValue;
+      return;
+    }
+    if (previousTargetPropRef.current !== targetValue) {
+      previousTargetPropRef.current = targetValue;
+      updateShownDate(props);
+    }
+  }, [props.date, props.displayMode, props.ranges, updateShownDate, props]);
+
+  const changeShownDate = useCallback(
+    (value, mode = 'set') => {
+      const { onShownDateChange, minDate, maxDate } = props;
+      const modeMapper = {
+        monthOffset: () => addMonths(focusedDateRef.current, value),
+        setMonth: () => setMonth(focusedDateRef.current, value),
+        setYear: () => setYear(focusedDateRef.current, value),
+        set: () => value,
+      };
+
+      const newDate = min([max([modeMapper[mode](), minDate]), maxDate]);
+      focusToDate(newDate, props, false);
+      onShownDateChange && onShownDateChange(newDate);
+    },
+    [focusToDate, props]
+  );
+
+  const handleRangeFocusChange = useCallback(
+    (rangesIndex, rangeItemIndex) => {
+      props.onRangeFocusChange && props.onRangeFocusChange([rangesIndex, rangeItemIndex]);
+    },
+    [props]
+  );
+
+  const updatePreview = useCallback(
+    val => {
+      if (!val) {
+        setPreviewState(null);
+        return;
+      }
+      setPreviewState({
+        startDate: val,
+        endDate: val,
+        color: props.color,
+      });
+    },
+    [props.color]
+  );
+
+  const onDragSelectionStart = useCallback(
+    date => {
+      const { onChange, dragSelectionEnabled } = props;
+
+      if (dragSelectionEnabled) {
+        setDrag({
+          status: true,
+          range: { startDate: date, endDate: date },
+          disablePreview: true,
+        });
+      } else {
+        onChange && onChange(date);
+      }
+    },
+    [props]
+  );
+
+  const onDragSelectionEnd = useCallback(
+    date => {
+      const { updateRange, displayMode, onChange, dragSelectionEnabled } = props;
+
+      if (!dragSelectionEnabled) return;
+
+      if (displayMode === 'date' || !drag.status) {
+        onChange && onChange(date);
+        return;
+      }
+      const newRange = {
+        startDate: drag.range.startDate,
+        endDate: date,
+      };
+      if (displayMode !== 'dateRange' || isSameDay(newRange.startDate, date)) {
+        setDrag({ status: false, range: {} });
+        onChange && onChange(date);
+      } else {
+        setDrag({ status: false, range: {} });
+        updateRange && updateRange(newRange);
+      }
+    },
+    [drag, props]
+  );
+
+  const onDragSelectionMove = useCallback(
+    date => {
+      if (!drag.status || !props.dragSelectionEnabled) return;
+      setDrag({
+        status: drag.status,
+        range: { startDate: drag.range.startDate, endDate: date },
+        disablePreview: true,
+      });
+    },
+    [drag, props.dragSelectionEnabled]
+  );
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      focusToDate,
+      changeShownDate,
+      updateShownDate,
+    }),
+    [changeShownDate, focusToDate, updateShownDate]
+  );
+
+  const renderMonthAndYear = useCallback(
+    (date, changeDate, calendarProps) => {
+      const { showMonthArrow, minDate, maxDate, showMonthAndYearPickers, ariaLabels } = calendarProps;
+      const upperYearLimit = (maxDate || Calendar.defaultProps.maxDate).getFullYear();
+      const lowerYearLimit = (minDate || Calendar.defaultProps.minDate).getFullYear();
+      return (
+        <div onMouseUp={e => e.stopPropagation()} className={styles.monthAndYearWrapper}>
+          {showMonthArrow ? (
+            <button
+              type="button"
+              className={classnames(styles.nextPrevButton, styles.prevButton)}
+              onClick={() => changeDate(-1, 'monthOffset')}
+              aria-label={ariaLabels.prevButton}>
+              <i />
+            </button>
+          ) : null}
+          {showMonthAndYearPickers ? (
+            <span className={styles.monthAndYearPickers}>
+              <span className={styles.monthPicker}>
+                <select
+                  value={date.getMonth()}
+                  onChange={e => changeDate(e.target.value, 'setMonth')}
+                  aria-label={ariaLabels.monthPicker}>
+                  {monthNames.map((monthName, i) => (
+                    <option key={i} value={i}>
+                      {monthName}
+                    </option>
+                  ))}
+                </select>
+              </span>
+              <span className={styles.monthAndYearDivider} />
+              <span className={styles.yearPicker}>
+                <select
+                  value={date.getFullYear()}
+                  onChange={e => changeDate(e.target.value, 'setYear')}
+                  aria-label={ariaLabels.yearPicker}>
+                  {new Array(upperYearLimit - lowerYearLimit + 1)
+                    .fill(upperYearLimit)
+                    .map((val, i) => {
+                      const year = val - i;
+                      return (
+                        <option key={year} value={year}>
+                          {year}
+                        </option>
+                      );
+                    })}
+                </select>
+              </span>
+            </span>
+          ) : (
+            <span className={styles.monthAndYearPickers}>
+              {monthNames[date.getMonth()]} {date.getFullYear()}
+            </span>
+          )}
+          {showMonthArrow ? (
+            <button
+              type="button"
+              className={classnames(styles.nextPrevButton, styles.nextButton)}
+              onClick={() => changeDate(+1, 'monthOffset')}
+              aria-label={ariaLabels.nextButton}>
+              <i />
+            </button>
+          ) : null}
+        </div>
+      );
+    },
+    [monthNames, styles]
+  );
+
+  const renderDateDisplay = () => {
+    const {
+      focusedRange,
+      color,
+      ranges,
+      rangeColors,
+      dateDisplayFormat,
+      editableDateInputs,
+      startDatePlaceholder,
+      endDatePlaceholder,
+      ariaLabels,
+      minDate,
+      maxDate,
+      disabledDates,
+    } = props;
+
+    return (
+      <DateDisplay
+        focusedRange={focusedRange}
+        color={color}
+        ranges={ranges}
+        rangeColors={rangeColors}
+        dateDisplayFormat={dateDisplayFormat}
+        editableDateInputs={editableDateInputs}
+        startDatePlaceholder={startDatePlaceholder}
+        endDatePlaceholder={endDatePlaceholder}
+        ariaLabels={ariaLabels}
+        minDate={minDate}
+        maxDate={maxDate}
+        disabledDates={disabledDates}
+        styles={styles}
+        dateOptions={dateOptions}
+        onChange={onDragSelectionEnd}
+        onRangeFocusChange={handleRangeFocusChange}
+      />
+    );
+  };
+
+  const {
+    showDateDisplay,
+    onPreviewChange,
+    direction,
+    disabledDates,
+    disabledDay,
+    rangeColors,
+    color,
+    navigatorRenderer,
+    className,
+    preview,
+  } = props;
+  const isVertical = direction === 'vertical';
+  const monthAndYearRenderer = navigatorRenderer || renderMonthAndYear;
+  const ranges = props.ranges.map((range, i) => ({
+    ...range,
+    color: range.color || rangeColors[i] || color,
+  }));
+
+  return (
+    <div
+      className={classnames(styles.calendarWrapper, className)}
+      onMouseUp={() => setDrag({ status: false, range: {} })}
+      onMouseLeave={() => {
+        setDrag({ status: false, range: {} });
+      }}>
+      {showDateDisplay && renderDateDisplay()}
+      {monthAndYearRenderer(focusedDate, changeShownDate, props)}
+      <div
+        className={classnames(
+          styles.months,
+          isVertical ? styles.monthsVertical : styles.monthsHorizontal
+        )}>
+        {new Array(props.months).fill(null).map((_, i) => {
+          let monthStep = addMonths(focusedDate, i);
+          if (props.calendarFocus === 'backwards') {
+            monthStep = subMonths(focusedDate, props.months - 1 - i);
+          }
+          return (
+            <Month
+              {...props}
+              onPreviewChange={onPreviewChange || updatePreview}
+              preview={preview || previewState}
+              ranges={ranges}
+              key={i}
+              drag={drag}
+              dateOptions={dateOptions}
+              disabledDates={disabledDates}
+              disabledDay={disabledDay}
+              month={monthStep}
+              onDragSelectionStart={onDragSelectionStart}
+              onDragSelectionEnd={onDragSelectionEnd}
+              onDragSelectionMove={onDragSelectionMove}
+              onMouseLeave={() => onPreviewChange && onPreviewChange()}
+              styles={styles}
+              showWeekDays={!isVertical || i === 0}
+              showMonthName={!isVertical || i > 0}
+            />
+          );
+        })}
+      </div>
+    </div>
+  );
+});
+
 const ForwardedCalendar = React.forwardRef(function Calendar(props, ref) {
   const resolvedProps = mergeDefaultProps(props);
   const dateOptions = useMemo(
@@ -598,6 +941,19 @@ const ForwardedCalendar = React.forwardRef(function Calendar(props, ref) {
     () => calcScrollArea(resolvedProps),
     [resolvedProps.direction, resolvedProps.months, resolvedProps.scroll]
   );
+
+  if (!resolvedProps.scroll.enabled) {
+    return (
+      <CalendarNonScroll
+        {...resolvedProps}
+        _calendarDateOptions={dateOptions}
+        _calendarStyles={styles}
+        _calendarMonthNames={monthNames}
+        _calendarScrollArea={scrollArea}
+        ref={ref}
+      />
+    );
+  }
 
   return (
     <CalendarInner

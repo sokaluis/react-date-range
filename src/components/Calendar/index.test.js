@@ -101,6 +101,17 @@ describe('Calendar', () => {
       expect(calendarRef.current.focusToDate).toEqual(expect.any(Function));
       expect(calendarRef.current.updateShownDate).toEqual(expect.any(Function));
     });
+
+    test('non-scroll ref exposes calendar actions without leaking class instance state', () => {
+      const calendarRef = React.createRef();
+
+      renderCalendar({ ref: calendarRef, scroll: { enabled: false } });
+
+      expect(calendarRef.current.focusToDate).toEqual(expect.any(Function));
+      expect(calendarRef.current.changeShownDate).toEqual(expect.any(Function));
+      expect(calendarRef.current.updateShownDate).toEqual(expect.any(Function));
+      expect(calendarRef.current.setState).toBeUndefined();
+    });
   });
 
   describe('rendered navigation and shown-date behavior', () => {
@@ -167,6 +178,28 @@ describe('Calendar', () => {
       });
 
       expect(visibleMonthLabels(renderer.root)).toEqual(['Feb 2025', 'Mar 2025']);
+    });
+
+    test('non-scroll date mode syncs visible month when external date becomes defined', () => {
+      const renderer = renderCalendar({
+        displayMode: 'date',
+        date: undefined,
+        direction: 'horizontal',
+        shownDate: new Date(2025, 5, 15),
+        showMonthAndYearPickers: false,
+      });
+
+      expect(visibleMonthLabels(renderer.root)).toEqual(['Jun 2025']);
+
+      rerenderCalendar(renderer, {
+        displayMode: 'date',
+        date: new Date(2025, 8, 20),
+        direction: 'horizontal',
+        shownDate: new Date(2025, 5, 15),
+        showMonthAndYearPickers: false,
+      });
+
+      expect(visibleMonthLabels(renderer.root)).toEqual(['Sep 2025']);
     });
   });
 
@@ -539,91 +572,65 @@ describe('Calendar', () => {
     });
   });
 
-  // ---- 5.1: Calendar delegates to DateDisplay with constraint props ----
   describe('DateDisplay delegation', () => {
     const min = new Date(2025, 0, 1);
     const max = new Date(2025, 11, 31);
     const disabled = [new Date(2025, 6, 4)];
 
-    test('renderDateDisplay returns a DateDisplay element with constraints propagated', () => {
-      const instance = new Calendar.Inner({
-        ...Calendar.defaultProps,
+    test('renders DateDisplay with constraints propagated', () => {
+      const onRangeFocusChange = jest.fn();
+      const renderer = renderCalendar({
+        showDateDisplay: true,
         minDate: min,
         maxDate: max,
         disabledDates: disabled,
         ranges: [{ startDate: null, endDate: null, key: 'selection' }],
+        onRangeFocusChange,
       });
-      instance.styles = {};
 
-      const tree = instance.renderDateDisplay();
+      const dateDisplay = renderer.root.findByType(DateDisplay);
 
-      // Verify the rendered element IS a DateDisplay component
-      expect(tree.type).toBe(DateDisplay);
-
-      // Verify constraint props are forwarded to DateDisplay
-      expect(tree.props.minDate).toBe(min);
-      expect(tree.props.maxDate).toBe(max);
-      expect(tree.props.disabledDates).toBe(disabled);
-
-      // Verify other key props are forwarded
-      expect(tree.props.ranges).toEqual([
+      expect(dateDisplay.props.minDate).toBe(min);
+      expect(dateDisplay.props.maxDate).toBe(max);
+      expect(dateDisplay.props.disabledDates).toBe(disabled);
+      expect(dateDisplay.props.ranges).toEqual([
         { startDate: null, endDate: null, key: 'selection' },
       ]);
-      expect(tree.props.onChange).toBe(instance.onDragSelectionEnd);
-      expect(tree.props.onRangeFocusChange).toBe(instance.handleRangeFocusChange);
-      expect(tree.props.styles).toBe(instance.styles);
-      expect(tree.props.dateOptions).toBe(instance.dateOptions);
+      expect(dateDisplay.props.onRangeFocusChange).toEqual(expect.any(Function));
+      expect(dateDisplay.props.styles.calendarWrapper).toBe('rdrCalendarWrapper');
+      expect(dateDisplay.props.dateOptions.locale).toBe(enUS);
+
+      act(() => {
+        dateDisplay.props.onRangeFocusChange(0, 1);
+      });
+
+      expect(onRangeFocusChange).toHaveBeenCalledWith([0, 1]);
     });
 
-    // ---- 5.2: renderDateDisplay always returns DateDisplay (guard is in render()) ----
-    test('renderDateDisplay returns DateDisplay regardless of showDateDisplay prop', () => {
-      const instance = new Calendar.Inner({
-        ...Calendar.defaultProps,
+    test('DateDisplay onChange forwards selected date through Calendar selection handler', () => {
+      const onChange = jest.fn();
+      const renderer = renderCalendar({
+        displayMode: 'date',
         showDateDisplay: false,
+        onChange,
         ranges: [{ startDate: null, endDate: null, key: 'selection' }],
       });
-      instance.styles = {};
 
-      const tree = instance.renderDateDisplay();
-      // The showDateDisplay guard is in Calendar.render(), not renderDateDisplay
-      expect(tree.type).toBe(DateDisplay);
-    });
+      expect(renderer.root.findAllByType(DateDisplay)).toHaveLength(0);
 
-    // ---- Verify fix: spec scenario "Calendar-level display disabled" ----
-    describe('render-level showDateDisplay guard', () => {
-      test('when showDateDisplay is false, no DateDisplay appears in render tree', () => {
-        const instance = new Calendar.Inner({
-          ...Calendar.defaultProps,
-          showDateDisplay: false,
-          ranges: [{ startDate: null, endDate: null, key: 'selection' }],
-        });
-        instance.styles = {};
-        instance.dateOptions = {};
-
-        const tree = instance.render();
-
-        const hasDateDisplay = tree.props.children.some(
-          child => child && child.type === DateDisplay
-        );
-        expect(hasDateDisplay).toBe(false);
+      rerenderCalendar(renderer, {
+        showDateDisplay: true,
+        displayMode: 'date',
+        onChange,
+        ranges: [{ startDate: null, endDate: null, key: 'selection' }],
       });
 
-      test('when showDateDisplay is true, DateDisplay appears in render tree', () => {
-        const instance = new Calendar.Inner({
-          ...Calendar.defaultProps,
-          showDateDisplay: true,
-          ranges: [{ startDate: null, endDate: null, key: 'selection' }],
-        });
-        instance.styles = {};
-        instance.dateOptions = {};
-
-        const tree = instance.render();
-
-        const hasDateDisplay = tree.props.children.some(
-          child => child && child.type === DateDisplay
-        );
-        expect(hasDateDisplay).toBe(true);
+      const dateDisplay = renderer.root.findByType(DateDisplay);
+      act(() => {
+        dateDisplay.props.onChange(new Date(2025, 6, 4));
       });
+
+      expectSameDay(onChange.mock.calls[0][0], new Date(2025, 6, 4));
     });
   });
 });
