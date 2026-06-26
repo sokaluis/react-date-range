@@ -5,12 +5,13 @@
 
 ---
 
-## Estado actual (2026-06-25)
+## Estado actual (2026-06-26)
 
 | Item | Estado |
 |------|--------|
 | Alpha publicada en npm | `@cyberlz/react-date-range@0.1.0-alpha.1` (`alpha` dist-tag) |
 | Último checkpoint | `v0.1.0-alpha.1` publicado en npm y GitHub Releases |
+| Alpha en preparación | `0.1.0-alpha.2` — metadata actualizada, no etiquetada ni publicada |
 | GitHub Release | ✅ Etiquetado en `sokaluis/react-date-range` |
 | Verificación local | Jest 54/54, `test:ci` 25/25, build y `npm pack --dry-run` |
 | Demo mínima npm-backed | `demo/` — Vite + React 19 + TS, en CI |

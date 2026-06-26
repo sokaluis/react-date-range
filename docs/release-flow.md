@@ -56,6 +56,10 @@ The `package.json` `version` field **must match** the tag version exactly.
 - `package.json` version: `0.1.0-alpha.1` (update before tagging)
 - npm dist-tag: `alpha`
 
+**Third alpha tag (preparing):** `v0.1.0-alpha.2`
+- `package.json` version: `0.1.0-alpha.2` (update before tagging)
+- npm dist-tag: `alpha`
+
 ---
 
 ## Release order
@@ -77,6 +81,10 @@ commit → CI green → tag → GitHub Release → npm publish → verify dist-t
 git tag v0.1.0-alpha.1
 git push origin v0.1.0-alpha.1
 ```
+
+**Third alpha tag (preparing, NOT yet tagged):** `v0.1.0-alpha.2`
+- `package.json` version: `0.1.0-alpha.2` (update before tagging)
+- npm dist-tag: `alpha`
 
 ### Step 3 — GitHub Release
 
@@ -133,10 +141,10 @@ npm dist-tag add @cyberlz/react-date-range@1.0.0 latest
 
 | Source | Example | Must match |
 |--------|---------|------------|
-| `package.json` → `version` | `0.1.0-alpha.1` | Git tag |
-| Git tag | `v0.1.0-alpha.1` | `package.json` version (minus `v` prefix) |
-| GitHub Release tag | `v0.1.0-alpha.1` | Git tag |
-| npm version (registry) | `0.1.0-alpha.1` | `package.json` version |
+| `package.json` → `version` | `0.1.0-alpha.2` | Git tag |
+| Git tag | `v0.1.0-alpha.2` | `package.json` version (minus `v` prefix) |
+| GitHub Release tag | `v0.1.0-alpha.2` | Git tag |
+| npm version (registry) | `0.1.0-alpha.2` | `package.json` version |
 
 **Order matters:** update `package.json` version → commit → tag → push → publish.
 

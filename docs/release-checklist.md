@@ -1,6 +1,7 @@
-# Release Checklist — `0.1.0-alpha.1`
+# Release Checklist — `0.1.0-alpha.2` (preparing)
 
-> Canonical pre-publish checklist for the second public alpha release.
+> Canonical pre-publish checklist for the third public alpha release.
+> Last published: `0.1.0-alpha.1` — this checklist prepares `0.1.0-alpha.2`.
 > No other file duplicates this — refer here for every publish.
 
 ---
@@ -14,7 +15,7 @@
 - [x] **Author**: `package.json` `author` field filled (`Luis Azocar <lazocar.dev@gmail.com>`).
 - [x] **License notice**: `LICENSE` includes original upstream copyright **plus**
   a new copyright line for fork modifications. See `NOTICE.md`.
-- [x] **CHANGELOG.md**: Entry for `0.1.0-alpha.1` is complete and accurate.
+- [x] **CHANGELOG.md**: Entry for `0.1.0-alpha.2` is complete and accurate.
 - [x] **`package.json` fields verified**:
   - `name`, `version`, `description`, `license`, `keywords`
   - `main`, `module`, `types`, `style`, `exports`
@@ -56,12 +57,12 @@
 > See [`docs/release-flow.md`](release-flow.md) for the complete git/tag/GitHub/npm
 > pipeline, dist-tag management, and first-time setup.
 
-- [x] Tag: `git tag v0.1.0-alpha.1 && git push --tags`
-- [x] Publish with alpha tag:
+- [ ] Tag: `git tag v0.1.0-alpha.2 && git push --tags`
+- [ ] Publish with alpha tag:
   ```bash
   npm publish --tag alpha --access public
   ```
-- [x] Verify on npm: `npm view @cyberlz/react-date-range@alpha version` → `0.1.0-alpha.1`.
+- [ ] Verify on npm: `npm view @cyberlz/react-date-range@alpha version` → `0.1.0-alpha.2`.
 - [x] `latest` dist-tag checked: npm keeps `latest` pointing to the first published
   version when there is no stable version yet. Current state: `alpha` → `0.1.0-alpha.1`, `latest` → `0.1.0-alpha.0`;
   keep install examples on `@alpha` until a stable release exists.
@@ -71,7 +72,7 @@
   npm init -y
   npm install @cyberlz/react-date-range@alpha
   ```
-  Expected: resolves from `https://registry.npmjs.org/@cyberlz/react-date-range/-/react-date-range-0.1.0-alpha.1.tgz` with clean typecheck + build for both React 18 and React 19 projects.
+  Expected: resolves from `https://registry.npmjs.org/@cyberlz/react-date-range/-/react-date-range-0.1.0-alpha.2.tgz` with clean typecheck + build for both React 18 and React 19 projects.
 
 ## Post-publish
 

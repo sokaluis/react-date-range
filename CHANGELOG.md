@@ -10,6 +10,31 @@ For upstream release history (up to `2.0.1`), see [`CHANGELOG.upstream.md`](CHAN
 
 ---
 
+## [0.1.0-alpha.2] — 2026-06-26
+
+Third alpha release: Calendar hooks migration and ReactList ESM/CJS interop fix.
+
+### Added
+
+- Calendar behavior safety net and demo verification aids.
+- Demo now resolves local source (`file:`) for manual QA and has QA logs disabled by default.
+
+### Changed
+
+- Calendar migrated from class internals to hooks in chained slices, preserving behavior.
+
+### Fixed
+
+- ReactList ESM/CJS interop for Vite/browser path.
+
+### Warnings / Technical debt
+
+- `react-test-renderer` deprecation noise in test output (planned migration to `@testing-library/react`).
+- Sass `@import` deprecation warnings in build output (migration to `@use`/`@forward` planned for Phase 2).
+- Root lint/typecheck tooling debt: `npm run lint` and `npm run type-check` are not yet wired into CI.
+
+---
+
 ## [0.1.0-alpha.1] — 2026-06-25
 
 Second alpha release: DateInput validation and DateDisplay extraction.
