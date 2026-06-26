@@ -18,7 +18,7 @@ const today = new Date();
 const nextWeek = new Date(today);
 nextWeek.setDate(nextWeek.getDate() + 7);
 
-const ENABLE_MANUAL_QA_LOGS = true;
+const ENABLE_MANUAL_QA_LOGS = false;
 
 function createInitialRange(): Range {
   return {
