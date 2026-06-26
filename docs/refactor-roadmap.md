@@ -16,7 +16,7 @@
 | Demo mínima npm-backed | `demo/` — Vite + React 19 + TS, en CI |
 | Consumer smoke tests | React 18 ✅, React 19 ✅ (instalado desde registry) |
 | Vercel / landing | **Diferido** — se prioriza refactor real sobre docs públicas |
-| Prioridad actual | **Refactor de la librería**, próximo slice: `DateRange` / `DateRangePicker` / `DefinedRange` hooks |
+| Prioridad actual | **Refactor de la librería**, próximo slice: tree-shaking real (`bundle: false`) |
 
 ---
 
@@ -134,21 +134,24 @@ sin cambiar contratos públicos ni comportamiento observable.
 
 ---
 
-### Slice 5 — `DateRange` / `DateRangePicker` / `DefinedRange`: migrar a función + hooks
+### Slice 5 — `DateRange` / `DateRangePicker` / `DefinedRange`: migrar a función + hooks ✅
 
-**Estado**: Planificación SDD creada en Engram. Requiere cadena de PRs antes de
-aplicar porque el cambio total estimado supera el presupuesto de review de 400
-líneas.
+**Estado**: Completado y pusheado a `main` en cadena `stacked-to-main`:
+5a `c8ebd65`, 5b `a34f3f4`, 5c `1a5755f`.
+
+**Verificación**: DateRangePicker 3/3, DateRange + DefinedRange 14/14,
+Jest completo 68/68, `test:ci` 35/35. Build no corrido porque solo se ejecuta
+con autorización explícita.
 
 **Objetivo**: Completar migración de todos los componentes a funciones.
 
-**Próximo paso**: elegir estrategia de cadena antes de aplicar código. Estos
-componentes ya no son hojas: preservan contratos de selección/rango, props públicas
-y composición con `Calendar`, por lo que requieren más cuidado que Slice 4.
+**Resultado**: `DateRange`, `DefinedRange` y `DateRangePicker` quedaron como
+componentes con hooks/`forwardRef`, preservando contratos de selección/rango,
+props públicas y composición con `Calendar`.
 
-**Split recomendado**: 5a `DateRange` → 5b `DefinedRange` → 5c
-`DateRangePicker`. Estrategia de cadena pendiente: `stacked-to-main` o
-`feature-branch-chain`.
+**Split aplicado**: 5a `DateRange` → 5b `DefinedRange` → 5c
+`DateRangePicker`, con tests activos para el seam
+`DefinedRange` → `DateRangePicker` → `DateRange`.
 
 ---
 
@@ -187,9 +190,9 @@ cat docs/refactor-roadmap.md
 # 2. Verificar estado actual sin build salvo autorización explícita
 npm test
 
-# 3. Elegir estrategia de cadena para Slice 5 antes de aplicar código
-#    - Split recomendado: 5a DateRange → 5b DefinedRange → 5c DateRangePicker
-#    - Decidir stacked-to-main o feature-branch-chain
+# 3. Planificar Slice 6 con SDD: tree-shaking real (`bundle: false`)
+#    - Revisar docs/build-output.md y spikes/tree-shaking/README.md
+#    - Evaluar impacto de sideEffects/CSS y compatibilidad de consumidores
 #    - Aplicar solo después de autorización explícita
 #    - Verificar con npm test; build solo si se autoriza para release/checkpoint
 ```
