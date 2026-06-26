@@ -18,6 +18,8 @@ const today = new Date();
 const nextWeek = new Date(today);
 nextWeek.setDate(nextWeek.getDate() + 7);
 
+const ENABLE_MANUAL_QA_LOGS = true;
+
 function createInitialRange(): Range {
   return {
     startDate: today,
@@ -45,6 +47,14 @@ function toISODate(date: Date | undefined): string {
   return date.toISOString().split('T')[0];
 }
 
+function logManualQA(label: string, payload: Record<string, unknown>) {
+  if (!ENABLE_MANUAL_QA_LOGS) return;
+
+  console.groupCollapsed(`[react-date-range demo QA] ${label}`);
+  console.table(payload);
+  console.groupEnd();
+}
+
 // ---------------------------------------------------------------------------
 // App
 // ---------------------------------------------------------------------------
@@ -56,7 +66,27 @@ function App() {
   const currentRange = ranges[0];
   const handleChange = (rangesByKey: RangeKeyDict) => {
     const next = rangesByKey.selection;
-    if (next) setRanges([next]);
+    if (next) {
+      logManualQA('DateRangePicker onChange', {
+        startDate: toISODate(next.startDate),
+        endDate: toISODate(next.endDate),
+        key: next.key,
+      });
+      setRanges([next]);
+    }
+  };
+
+  const handleSingleDateChange = (source: string) => (date: Date) => {
+    logManualQA(`${source} onChange`, {
+      date: toISODate(date),
+    });
+    setSingleDate(date);
+  };
+
+  const handleShownDateChange = (source: string) => (date: Date) => {
+    logManualQA(`${source} onShownDateChange`, {
+      shownDate: toISODate(date),
+    });
   };
 
   // PR4: fixed constraint dates for manual verification
@@ -104,9 +134,8 @@ function App() {
         <h2>Calendar — Single Date Mode</h2>
         <p>Verifies <code>displayMode="date"</code> with hook-based state.</p>
         <Calendar
-          onChange={(date) => {
-            setSingleDate(date);
-          }}
+          onChange={handleSingleDateChange('Calendar single-date')}
+          onShownDateChange={handleShownDateChange('Calendar single-date')}
           date={singleDate}
           displayMode="date"
           showDateDisplay={true}
@@ -124,9 +153,8 @@ function App() {
           <code>updateFrameAndClearCache</code> ordering) under StrictMode.
         </p>
         <Calendar
-          onChange={(date) => {
-            setSingleDate(date);
-          }}
+          onChange={handleSingleDateChange('Calendar vertical-scroll')}
+          onShownDateChange={handleShownDateChange('Calendar vertical-scroll')}
           date={singleDate}
           displayMode="date"
           showDateDisplay={true}
@@ -145,9 +173,8 @@ function App() {
           DateDisplay/Month orchestration.
         </p>
         <Calendar
-          onChange={(date) => {
-            setSingleDate(date);
-          }}
+          onChange={handleSingleDateChange('Calendar DateDisplay constraints')}
+          onShownDateChange={handleShownDateChange('Calendar DateDisplay constraints')}
           date={singleDate}
           displayMode="date"
           showDateDisplay={true}

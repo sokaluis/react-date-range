@@ -12,7 +12,7 @@ import Month from '../Month';
 import DateDisplay from '../DateDisplay';
 import { calcFocusDate, generateStyles, getMonthDisplayRange } from '../../utils';
 import classnames from 'classnames';
-import ReactList from 'react-list';
+import ReactListModule from 'react-list';
 import {
   addMonths,
   subMonths,
@@ -73,6 +73,7 @@ const calendarDefaultProps = {
 };
 
 const uninitializedTargetProp = Symbol('uninitializedTargetProp');
+const ReactList = ReactListModule.default || ReactListModule;
 
 const mergeDefaultProps = props =>
   Object.keys(calendarDefaultProps).reduce(
