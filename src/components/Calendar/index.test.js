@@ -1,10 +1,34 @@
 import React from 'react';
 import Calendar from '../Calendar';
 import DateDisplay from '../DateDisplay';
+import ReactList from 'react-list';
 import TestRenderer, { act } from 'react-test-renderer';
 import { isSameDay } from 'date-fns';
 import { enUS } from 'date-fns/locale/en-US';
 import { es } from 'date-fns/locale/es';
+
+jest.mock('react-list', () => {
+  const React = require('react');
+
+  return class ReactListMock extends React.Component {
+    visibleRange = [0, 1];
+
+    getVisibleRange() {
+      return this.visibleRange;
+    }
+
+    scrollTo(index) {
+      this.visibleRange = [index, index + 1];
+    }
+
+    updateFrameAndClearCache() {}
+
+    render() {
+      const [firstVisible] = this.visibleRange;
+      return <div>{this.props.itemRenderer(firstVisible, firstVisible)}</div>;
+    }
+  };
+});
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -312,263 +336,151 @@ describe('Calendar', () => {
   });
 
   describe('StrictMode scroll safety (#577, #653)', () => {
-    // These direct-instance tests intentionally remain as narrow exceptions:
-    // ReactList refs, timers, and visible-range scroll seams are not stable through
-    // react-test-renderer, but they protect the StrictMode regressions in #577/#653.
-    let instance;
-    const commonProps = {
-      ...Calendar.defaultProps,
-    };
+    let scrollRenderers = [];
 
     beforeEach(() => {
-      instance = new Calendar.Inner(commonProps);
-      instance.state = {
-        ...instance.state,
-        focusedDate: new Date(2025, 5, 15),
-      };
+      scrollRenderers = [];
+      jest.useFakeTimers();
     });
 
-    test('componentDidMount stores focus timer when scroll enabled', () => {
-      instance.props = { ...commonProps, scroll: { enabled: true } };
-      jest.useFakeTimers();
-      instance.componentDidMount();
-      expect(instance._focusTimer).toBeDefined();
-      // With fake timers, setTimeout returns a Timeout object (not a number)
-      expect(instance._focusTimer).not.toBeNull();
+    afterEach(() => {
+      scrollRenderers.forEach(renderer => {
+        act(() => {
+          renderer.unmount();
+        });
+      });
+      jest.clearAllTimers();
       jest.useRealTimers();
     });
 
-    test('componentDidMount does NOT store timer when scroll disabled', () => {
-      instance.props = { ...commonProps, scroll: { enabled: false } };
-      instance.componentDidMount();
-      expect(instance._focusTimer).toBeUndefined();
-    });
-
-    test('componentWillUnmount clears the focus timer', () => {
-      jest.useFakeTimers();
-      instance.props = { ...commonProps, scroll: { enabled: true } };
-      instance.componentDidMount();
-      expect(instance._focusTimer).toBeDefined();
-      expect(instance._focusTimer).not.toBeNull();
-
-      instance.componentWillUnmount();
-      expect(instance._focusTimer).toBeNull();
-      jest.useRealTimers();
-    });
-
-    test('componentWillUnmount is safe when no timer exists', () => {
-      instance.props = { ...commonProps, scroll: { enabled: false } };
-      expect(() => instance.componentWillUnmount()).not.toThrow();
-    });
-
-    test('focusToDate returns early when this.list is null (StrictMode safety)', () => {
-      instance.props = {
-        ...commonProps,
-        scroll: { enabled: true },
+    const renderScrollCalendar = props => {
+      const calendarRef = React.createRef();
+      const renderer = renderCalendar({
+        ref: calendarRef,
+        scroll: { enabled: true, monthHeight: 240, longMonthHeight: 280, calendarHeight: 420 },
         minDate: new Date(2020, 0, 1),
-      };
-      instance.list = null;
-      instance.state.scrollArea = {
-        enabled: true,
-        monthHeight: 240,
-        longMonthHeight: 280,
-        calendarHeight: 420,
-        calendarWidth: 'auto',
-      };
+        maxDate: new Date(2025, 11, 31),
+        shownDate: new Date(2025, 5, 15),
+        ...props,
+      });
+      scrollRenderers.push(renderer);
+      return { calendarRef, renderer };
+    };
 
-      // Should not throw
-      expect(() => {
-        instance.focusToDate(new Date(2025, 5, 15));
-      }).not.toThrow();
+    const findScrollContainer = root =>
+      root.find(
+        node =>
+          node.type === 'div' &&
+          typeof node.props.className === 'string' &&
+          node.props.className.includes('rdrInfiniteMonths')
+      );
+
+    test('scroll ref exposes hook actions without Calendar.Inner class leakage', () => {
+      const { calendarRef } = renderScrollCalendar();
+
+      expect(Calendar.Inner).toBeUndefined();
+      expect(calendarRef.current.focusToDate).toEqual(expect.any(Function));
+      expect(calendarRef.current.changeShownDate).toEqual(expect.any(Function));
+      expect(calendarRef.current.updateShownDate).toEqual(expect.any(Function));
+      expect(calendarRef.current.setState).toBeUndefined();
     });
 
-    test('focusToDate works normally when this.list is available', () => {
-      instance.props = {
-        ...commonProps,
-        scroll: { enabled: true },
-        minDate: new Date(2020, 0, 1),
-      };
-      instance.state.scrollArea = {
-        enabled: true,
-        monthHeight: 240,
-        longMonthHeight: 280,
-        calendarHeight: 420,
-        calendarWidth: 'auto',
-      };
-      instance.list = {
-        getVisibleRange: jest.fn(() => [0, 10]),
-        scrollTo: jest.fn(),
-      };
-      // Suppress setState warning in direct instance test
-      jest.spyOn(instance, 'setState').mockImplementation(() => {});
+    test('scroll focus calls updateFrameAndClearCache after scrollTo (#577, #653)', () => {
+      const { calendarRef, renderer } = renderScrollCalendar();
+      const list = renderer.root.findByType(ReactList).instance;
+      const updateFrameAndClearCache = jest
+        .spyOn(list, 'updateFrameAndClearCache')
+        .mockImplementation(() => {});
+      const getVisibleRange = jest.spyOn(list, 'getVisibleRange').mockReturnValue([0, 10]);
+      const scrollTo = jest.spyOn(list, 'scrollTo').mockImplementation(() => {});
 
-      expect(() => {
-        instance.focusToDate(new Date(2025, 5, 15));
-      }).not.toThrow();
-
-      expect(instance.list.scrollTo).toHaveBeenCalled();
-      instance.setState.mockRestore();
-    });
-
-    test('focusToDate calls updateFrameAndClearCache after scrollTo (#577, #653)', () => {
-      instance.props = {
-        ...commonProps,
-        scroll: { enabled: true },
-        minDate: new Date(2020, 0, 1),
-      };
-      instance.state.scrollArea = {
-        enabled: true,
-        monthHeight: 240,
-        longMonthHeight: 280,
-        calendarHeight: 420,
-        calendarWidth: 'auto',
-      };
-      const mockUpdateFrameAndClearCache = jest.fn();
-      instance.list = {
-        getVisibleRange: jest.fn(() => [0, 10]),
-        scrollTo: jest.fn(),
-        updateFrameAndClearCache: mockUpdateFrameAndClearCache,
-      };
-      jest.spyOn(instance, 'setState').mockImplementation(() => {});
-
-      instance.focusToDate(new Date(2025, 5, 15));
-
-      expect(instance.list.scrollTo).toHaveBeenCalled();
-      expect(mockUpdateFrameAndClearCache).toHaveBeenCalledTimes(1);
-      instance.setState.mockRestore();
-    });
-
-    test('focusToDate is safe when updateFrameAndClearCache is missing', () => {
-      instance.props = {
-        ...commonProps,
-        scroll: { enabled: true },
-        minDate: new Date(2020, 0, 1),
-      };
-      instance.state.scrollArea = {
-        enabled: true,
-        monthHeight: 240,
-        longMonthHeight: 280,
-        calendarHeight: 420,
-        calendarWidth: 'auto',
-      };
-      instance.list = {
-        getVisibleRange: jest.fn(() => [0, 10]),
-        scrollTo: jest.fn(),
-        // updateFrameAndClearCache intentionally omitted
-      };
-      jest.spyOn(instance, 'setState').mockImplementation(() => {});
-
-      expect(() => {
-        instance.focusToDate(new Date(2025, 5, 15));
-      }).not.toThrow();
-
-      expect(instance.list.scrollTo).toHaveBeenCalled();
-      instance.setState.mockRestore();
-    });
-
-    test('handleScroll calls updateFrameAndClearCache before getVisibleRange (#577, #653)', () => {
-      instance.props = {
-        ...commonProps,
-        scroll: { enabled: true },
-        minDate: new Date(2020, 0, 1),
-        onShownDateChange: jest.fn(),
-      };
-      instance.state.focusedDate = new Date(2025, 5, 15);
-      const mockUpdateFrameAndClearCache = jest.fn();
-      const mockGetVisibleRange = jest.fn(() => [60, 65]);
-      instance.list = {
-        getVisibleRange: mockGetVisibleRange,
-        updateFrameAndClearCache: mockUpdateFrameAndClearCache,
-      };
-
-      instance.handleScroll();
-
-      // updateFrameAndClearCache must be called BEFORE getVisibleRange
-      expect(mockUpdateFrameAndClearCache).toHaveBeenCalledTimes(1);
-      const updateCallOrder = mockUpdateFrameAndClearCache.mock.invocationCallOrder[0];
-      const getRangeCallOrder = mockGetVisibleRange.mock.invocationCallOrder[0];
-      expect(updateCallOrder).toBeLessThan(getRangeCallOrder);
-    });
-
-    test('handleScroll reports the first visible month after initial scroll render', () => {
-      const onShownDateChange = jest.fn();
-      instance.props = {
-        ...commonProps,
-        scroll: { enabled: true },
-        minDate: new Date(2020, 0, 1),
-        onShownDateChange,
-      };
-      instance.state.focusedDate = new Date(2025, 5, 15);
-      instance.isFirstRender = false;
-      instance.list = {
-        getVisibleRange: jest.fn(() => [66, 67]),
-        updateFrameAndClearCache: jest.fn(),
-      };
-      jest.spyOn(instance, 'setState').mockImplementation(update => {
-        instance.state = { ...instance.state, ...update };
+      act(() => {
+        calendarRef.current.focusToDate(new Date(2025, 5, 15));
       });
 
-      instance.handleScroll();
-
-      expectSameDay(onShownDateChange.mock.calls[0][0], new Date(2025, 6, 1));
-      expectSameDay(instance.state.focusedDate, new Date(2025, 6, 1));
-      instance.setState.mockRestore();
+      expect(getVisibleRange).toHaveBeenCalled();
+      expect(scrollTo).toHaveBeenCalledWith(65);
+      expect(updateFrameAndClearCache).toHaveBeenCalledTimes(1);
+      expect(scrollTo.mock.invocationCallOrder[0]).toBeLessThan(
+        updateFrameAndClearCache.mock.invocationCallOrder[0]
+      );
     });
 
-    test('handleScroll is safe when updateFrameAndClearCache is missing', () => {
-      instance.props = {
-        ...commonProps,
-        scroll: { enabled: true },
-        minDate: new Date(2020, 0, 1),
-      };
-      instance.state.focusedDate = new Date(2025, 5, 15);
-      instance.list = {
-        getVisibleRange: jest.fn(() => [0, 10]),
-        // updateFrameAndClearCache intentionally omitted
-      };
+    test('scroll focus is safe when updateFrameAndClearCache is missing', () => {
+      const { calendarRef, renderer } = renderScrollCalendar();
+      const list = renderer.root.findByType(ReactList).instance;
+      jest.spyOn(list, 'getVisibleRange').mockReturnValue([0, 10]);
+      const scrollTo = jest.spyOn(list, 'scrollTo').mockImplementation(() => {});
+      const originalUpdateFrameAndClearCache = list.updateFrameAndClearCache;
+      list.updateFrameAndClearCache = undefined;
 
-      expect(() => instance.handleScroll()).not.toThrow();
-    });
-
-    test('focusToDate with scroll disabled still works (regression)', () => {
-      instance.props = {
-        ...commonProps,
-        scroll: { enabled: false },
-      };
-      // Suppress setState warning in direct instance test
-      jest.spyOn(instance, 'setState').mockImplementation(() => {});
-
-      // Should use setState path without touching this.list
       expect(() => {
-        instance.focusToDate(new Date(2025, 5, 15));
+        act(() => {
+          calendarRef.current.focusToDate(new Date(2025, 5, 15));
+        });
       }).not.toThrow();
-      instance.setState.mockRestore();
+
+      expect(scrollTo).toHaveBeenCalledWith(65);
+      list.updateFrameAndClearCache = originalUpdateFrameAndClearCache;
     });
 
-    test('handleScroll returns early when this.list is null', () => {
-      instance.props = { ...commonProps, minDate: new Date(2020, 0, 1) };
-      instance.list = null;
+    test('handleScroll updates frame before reading visible range and reports later scrolls', () => {
+      const onShownDateChange = jest.fn();
+      const { renderer } = renderScrollCalendar({ onShownDateChange });
+      const list = renderer.root.findByType(ReactList).instance;
+      const updateFrameAndClearCache = jest
+        .spyOn(list, 'updateFrameAndClearCache')
+        .mockImplementation(() => {});
+      const getVisibleRange = jest
+        .spyOn(list, 'getVisibleRange')
+        .mockReturnValueOnce([65, 66])
+        .mockReturnValueOnce([66, 67]);
+      const scrollContainer = findScrollContainer(renderer.root);
 
-      expect(() => instance.handleScroll()).not.toThrow();
+      act(() => {
+        scrollContainer.props.onScroll();
+      });
+      act(() => {
+        scrollContainer.props.onScroll();
+      });
+
+      expect(updateFrameAndClearCache).toHaveBeenCalledTimes(2);
+      expect(updateFrameAndClearCache.mock.invocationCallOrder[0]).toBeLessThan(
+        getVisibleRange.mock.invocationCallOrder[0]
+      );
+      expect(onShownDateChange).toHaveBeenCalledTimes(1);
+      expectSameDay(onShownDateChange.mock.calls[0][0], new Date(2025, 6, 1));
     });
 
-    test('updateShownDate falls back to props.months when this.list is null', () => {
-      instance.props = {
-        ...commonProps,
-        scroll: { enabled: true },
-        months: 2,
-      };
-      instance.list = null;
-      instance.state.scrollArea = {
-        enabled: true,
-        monthHeight: 240,
-        longMonthHeight: 280,
-        calendarHeight: 420,
-        calendarWidth: 'auto',
-      };
+    test('handleScroll is safe when visible range is empty or updateFrameAndClearCache is missing', () => {
+      const { renderer } = renderScrollCalendar();
+      const list = renderer.root.findByType(ReactList).instance;
+      jest.spyOn(list, 'getVisibleRange').mockReturnValue([]);
+      const originalUpdateFrameAndClearCache = list.updateFrameAndClearCache;
+      list.updateFrameAndClearCache = undefined;
+      const scrollContainer = findScrollContainer(renderer.root);
 
-      // Should not throw — uses props.months as fallback
-      expect(() => instance.updateShownDate()).not.toThrow();
+      expect(() => {
+        act(() => {
+          scrollContainer.props.onScroll();
+        });
+      }).not.toThrow();
+
+      list.updateFrameAndClearCache = originalUpdateFrameAndClearCache;
+    });
+
+    test('scroll focus timer is cleaned up on unmount', () => {
+      const { renderer } = renderScrollCalendar();
+
+      act(() => {
+        renderer.unmount();
+      });
+
+      expect(() => {
+        act(() => {
+          jest.runOnlyPendingTimers();
+        });
+      }).not.toThrow();
     });
   });
 
