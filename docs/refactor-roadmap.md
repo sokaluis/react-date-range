@@ -16,7 +16,7 @@
 | Demo mínima npm-backed | `demo/` — Vite + React 19 + TS, en CI |
 | Consumer smoke tests | React 18 ✅, React 19 ✅ (instalado desde registry) |
 | Vercel / landing | **Diferido** — se prioriza refactor real sobre docs públicas |
-| Prioridad actual | **Refactor de la librería**, no features, no Vercel, no skins |
+| Prioridad actual | **Refactor de la librería**, próximo slice: `Month` / `DayCell` hooks |
 
 ---
 
@@ -30,7 +30,9 @@ presencia pública/docs. Vercel y landing docs no son urgentes. Ver
 
 ## Roadmap por slices
 
-### Slice 1 — `DateInput` validation (minDate, maxDate, disabledDates)
+### Slice 1 — `DateInput` validation (minDate, maxDate, disabledDates) ✅
+
+**Estado**: Completado y publicado en `0.1.0-alpha.2`.
 
 **Problema**: La grilla visual (`Month` → `DayCell`) respeta `minDate`, `maxDate` y
 `disabledDates`. Pero el `DateInput` editable (cuando `editableDateInputs={true}`)
@@ -83,7 +85,9 @@ en `disabledDates`, igual que la grilla.
 
 ---
 
-### Slice 2 — `Calendar`: extraer `renderDateDisplay` a componente propio
+### Slice 2 — `Calendar`: extraer `renderDateDisplay` a componente propio ✅
+
+**Estado**: Completado y publicado en `0.1.0-alpha.2`.
 
 **Problema**: `Calendar` tiene ~650 líneas. `renderDateDisplay()` maneja lógica de
 edición, focus, placeholders y renderizado de `DateInput` que no pertenecen al
@@ -99,7 +103,9 @@ que `DateDisplay` ya recibe las props de validación correctamente.
 
 ---
 
-### Slice 3 — `Calendar`: migrar de `PureComponent` a función + hooks
+### Slice 3 — `Calendar`: migrar de `PureComponent` a función + hooks ✅
+
+**Estado**: Completado y publicado en `0.1.0-alpha.2`.
 
 **Problema**: Todos los componentes usan `class` components. Migrar a funciones
 con hooks moderniza el código, reduce boilerplate, y facilita未来 refactors.
@@ -116,6 +122,10 @@ asegura que entendemos bien el componente antes de migrarlo.
 
 **Objetivo**: Migrar componentes hoja a funciones. Bajo riesgo, alto valor
 educativo para establecer el patrón de migración.
+
+**Próximo paso**: planificar este slice con SDD antes de aplicar código. Mantener
+compatibilidad pública, preservar la grilla visual y apoyarse en los tests de
+Calendar agregados durante la safety net.
 
 ---
 
@@ -157,15 +167,14 @@ están correctamente marcados como side-effects.
 # 1. Leer este documento
 cat docs/refactor-roadmap.md
 
-# 2. Verificar estado actual
-npm test && npm run build
+# 2. Verificar estado actual sin build salvo autorización explícita
+npm test
 
-# 3. Implementar Slice 1 — DateInput validation
-#    - Empezar por el test (TDD): crear src/components/DateInput/index.test.js
-#    - Agregar props minDate/maxDate/disabledDates a DateInput
-#    - Validar en update()
-#    - Pasar props desde Calendar.renderDateDisplay()
-#    - Verificar con npm test && demo/
+# 3. Planificar Slice 4 — Month / DayCell hooks con SDD
+#    - Explorar props, estado local, handlers y acoplamientos con Calendar
+#    - Escribir proposal/spec/design/tasks antes de aplicar código
+#    - Mantener el slice chico y verificable
+#    - Verificar con npm test; build solo si se autoriza para release/checkpoint
 ```
 
 ---

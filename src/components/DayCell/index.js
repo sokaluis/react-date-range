@@ -1,29 +1,45 @@
 /* eslint-disable no-fallthrough */
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { startOfDay, format, isSameDay, isAfter, isBefore, endOfDay } from 'date-fns';
 
-class DayCell extends Component {
-  constructor(props, context) {
-    super(props, context);
+function DayCell(props) {
+  const [hover, setHover] = useState(false);
+  const [active, setActive] = useState(false);
 
-    this.state = {
-      hover: false,
-      active: false,
-    };
-  }
+  const {
+    day,
+    disabled,
+    isPassive,
+    isToday,
+    isWeekend,
+    isStartOfWeek,
+    isEndOfWeek,
+    isStartOfMonth,
+    isEndOfMonth,
+    styles,
+    color,
+    onMouseDown,
+    onMouseUp,
+    onMouseEnter,
+    onPreviewChange,
+    preview,
+    ranges,
+    displayMode,
+    date,
+    dayContentRenderer,
+    dayDisplayFormat,
+  } = props;
 
-  handleKeyEvent = event => {
-    const { day, onMouseDown, onMouseUp } = this.props;
+  const handleKeyEvent = event => {
     if ([13 /* space */, 32 /* enter */].includes(event.keyCode)) {
       if (event.type === 'keydown') onMouseDown(day);
       else onMouseUp(day);
     }
   };
-  handleMouseEvent = event => {
-    const { day, disabled, onPreviewChange, onMouseEnter, onMouseDown, onMouseUp } = this.props;
-    const stateChanges = {};
+
+  const handleMouseEvent = event => {
     if (disabled) {
       onPreviewChange();
       return;
@@ -33,42 +49,28 @@ class DayCell extends Component {
       case 'mouseenter':
         onMouseEnter(day);
         onPreviewChange(day);
-        stateChanges.hover = true;
+        setHover(true);
         break;
       case 'blur':
       case 'mouseleave':
-        stateChanges.hover = false;
+        setHover(false);
         break;
       case 'mousedown':
-        stateChanges.active = true;
+        setActive(true);
         onMouseDown(day);
         break;
       case 'mouseup':
         event.stopPropagation();
-        stateChanges.active = false;
+        setActive(false);
         onMouseUp(day);
         break;
       case 'focus':
         onPreviewChange(day);
         break;
     }
-    if (Object.keys(stateChanges).length) {
-      this.setState(stateChanges);
-    }
   };
-  getClassNames = () => {
-    const {
-      isPassive,
-      isToday,
-      isWeekend,
-      isStartOfWeek,
-      isEndOfWeek,
-      isStartOfMonth,
-      isEndOfMonth,
-      disabled,
-      styles,
-    } = this.props;
 
+  const getClassNames = () => {
     return classnames(styles.day, {
       [styles.dayPassive]: isPassive,
       [styles.dayDisabled]: disabled,
@@ -78,12 +80,12 @@ class DayCell extends Component {
       [styles.dayEndOfWeek]: isEndOfWeek,
       [styles.dayStartOfMonth]: isStartOfMonth,
       [styles.dayEndOfMonth]: isEndOfMonth,
-      [styles.dayHovered]: this.state.hover,
-      [styles.dayActive]: this.state.active,
+      [styles.dayHovered]: hover,
+      [styles.dayActive]: active,
     });
   };
-  renderPreviewPlaceholder = () => {
-    const { preview, day, styles } = this.props;
+
+  const renderPreviewPlaceholder = () => {
     if (!preview) return null;
     const startDate = preview.startDate ? endOfDay(preview.startDate) : null;
     const endDate = preview.endDate ? startOfDay(preview.endDate) : null;
@@ -102,12 +104,12 @@ class DayCell extends Component {
       />
     );
   };
-  renderSelectionPlaceholders = () => {
-    const { styles, ranges, day } = this.props;
-    if (this.props.displayMode === 'date') {
-      let isSelected = isSameDay(this.props.day, this.props.date);
+
+  const renderSelectionPlaceholders = () => {
+    if (displayMode === 'date') {
+      const isSelected = isSameDay(day, date);
       return isSelected ? (
-        <span className={styles.selected} style={{ color: this.props.color }} />
+        <span className={styles.selected} style={{ color }} />
       ) : null;
     }
 
@@ -145,39 +147,36 @@ class DayCell extends Component {
           [styles.endEdge]: range.isEndEdge,
           [styles.inRange]: range.isInRange,
         })}
-        style={{ color: range.color || this.props.color }}
+        style={{ color: range.color || color }}
       />
     ));
   };
 
-  render() {
-    const { dayContentRenderer } = this.props;
-    return (
-      <button
-        type="button"
-        onMouseEnter={this.handleMouseEvent}
-        onMouseLeave={this.handleMouseEvent}
-        onFocus={this.handleMouseEvent}
-        onMouseDown={this.handleMouseEvent}
-        onMouseUp={this.handleMouseEvent}
-        onBlur={this.handleMouseEvent}
-        onPauseCapture={this.handleMouseEvent}
-        onKeyDown={this.handleKeyEvent}
-        onKeyUp={this.handleKeyEvent}
-        className={this.getClassNames(this.props.styles)}
-        {...(this.props.disabled || this.props.isPassive ? { tabIndex: -1 } : {})}
-        style={{ color: this.props.color }}>
-        {this.renderSelectionPlaceholders()}
-        {this.renderPreviewPlaceholder()}
-        <span className={this.props.styles.dayNumber}>
-          {
-            dayContentRenderer?.(this.props.day) ||
-            <span>{format(this.props.day, this.props.dayDisplayFormat)}</span>
-          }
-        </span>
-      </button>
-    );
-  }
+  return (
+    <button
+      type="button"
+      onMouseEnter={handleMouseEvent}
+      onMouseLeave={handleMouseEvent}
+      onFocus={handleMouseEvent}
+      onMouseDown={handleMouseEvent}
+      onMouseUp={handleMouseEvent}
+      onBlur={handleMouseEvent}
+      onPauseCapture={handleMouseEvent}
+      onKeyDown={handleKeyEvent}
+      onKeyUp={handleKeyEvent}
+      className={getClassNames(props.styles)}
+      {...(disabled || isPassive ? { tabIndex: -1 } : {})}
+      style={{ color }}>
+      {renderSelectionPlaceholders()}
+      {renderPreviewPlaceholder()}
+      <span className={styles.dayNumber}>
+        {
+          dayContentRenderer?.(day) ||
+          <span>{format(day, dayDisplayFormat)}</span>
+        }
+      </span>
+    </button>
+  );
 }
 
 DayCell.defaultProps = {};

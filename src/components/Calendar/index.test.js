@@ -92,13 +92,18 @@ const weekdayLabels = root =>
     .findAll(node => node.type === 'span' && node.props.className === 'rdrWeekDay')
     .map(textOf);
 
-const dayButtons = root =>
+const calendarDayButtons = root =>
   root
     .findAllByType('button')
-    .filter(button => button.props.tabIndex !== -1 && /^\d+$/.test(textOf(button)));
+    .filter(button => /^\d+$/.test(textOf(button)));
+
+const dayButtons = root => calendarDayButtons(root).filter(button => button.props.tabIndex !== -1);
 
 const findDayButton = (root, dayNumber) =>
   dayButtons(root).find(button => textOf(button) === String(dayNumber));
+
+const findCalendarDayButton = (root, dayNumber) =>
+  calendarDayButtons(root).find(button => textOf(button) === String(dayNumber));
 
 const expectSameDay = (actual, expected) => {
   expect(isSameDay(actual, expected)).toBe(true);
@@ -302,6 +307,40 @@ describe('Calendar', () => {
       });
 
       expectSameDay(onChange.mock.calls[0][0], new Date(2025, 5, 20));
+    });
+
+    test('disabled days clear preview without forwarding selection callbacks', () => {
+      const onPreviewChange = jest.fn();
+      const onChange = jest.fn();
+      const updateRange = jest.fn();
+      const renderer = renderCalendar({
+        shownDate: new Date(2025, 5, 1),
+        minDate: new Date(2025, 5, 1),
+        maxDate: new Date(2025, 5, 30),
+        displayMode: 'dateRange',
+        disabledDates: [new Date(2025, 5, 18)],
+        ranges: [{ startDate: null, endDate: null, key: 'selection' }],
+        onPreviewChange,
+        onChange,
+        updateRange,
+      });
+      const disabledDay = findCalendarDayButton(renderer.root, 18);
+
+      act(() => {
+        disabledDay.props.onMouseEnter({ type: 'mouseenter' });
+      });
+      act(() => {
+        disabledDay.props.onMouseDown({ type: 'mousedown' });
+      });
+      act(() => {
+        disabledDay.props.onMouseUp({ type: 'mouseup', stopPropagation: jest.fn() });
+      });
+
+      expect(disabledDay.props.tabIndex).toBe(-1);
+      expect(onPreviewChange).toHaveBeenCalledTimes(3);
+      expect(onPreviewChange.mock.calls).toEqual([[], [], []]);
+      expect(onChange).not.toHaveBeenCalled();
+      expect(updateRange).not.toHaveBeenCalled();
     });
   });
 
