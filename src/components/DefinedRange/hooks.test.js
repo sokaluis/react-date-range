@@ -15,7 +15,6 @@ const nextRange = {
 };
 
 const baseProps = {
-  ...DefinedRange.defaultProps,
   ranges: [selectedRange],
   focusedRange: [0, 0],
 };
@@ -45,9 +44,6 @@ describe('DefinedRange hooks parity', () => {
     const { ref } = renderDefinedRange();
 
     expect(DefinedRange.$$typeof).toBe(Symbol.for('react.forward_ref'));
-    expect(DefinedRange.defaultProps.staticRanges).toEqual(expect.any(Array));
-    expect(DefinedRange.defaultProps.inputRanges).toEqual(expect.any(Array));
-    expect(DefinedRange.defaultProps.focusedRange).toEqual([0, 0]);
     expect(DefinedRange.propTypes.onChange).toEqual(expect.any(Function));
     expect(ref.current.setState).toBeUndefined();
   });

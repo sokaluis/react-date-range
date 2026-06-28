@@ -20,12 +20,12 @@ const DefinedRange = forwardRef((props, ref) => {
     headerContent,
     footerContent,
     onPreviewChange,
-    inputRanges,
-    staticRanges,
-    ranges,
-    focusedRange,
+    inputRanges = defaultInputRanges,
+    staticRanges = defaultStaticRanges,
+    ranges = [],
+    focusedRange = [0, 0],
     renderStaticRangeLabel,
-    rangeColors,
+    rangeColors = ['#3d91ff', '#3ecf8e', '#fed14c'],
     className,
     onChange,
   } = props;
@@ -130,13 +130,5 @@ DefinedRange.propTypes = {
 };
 
 DefinedRange.displayName = 'DefinedRange';
-
-DefinedRange.defaultProps = {
-  inputRanges: defaultInputRanges,
-  staticRanges: defaultStaticRanges,
-  ranges: [],
-  rangeColors: ['#3d91ff', '#3ecf8e', '#fed14c'],
-  focusedRange: [0, 0],
-};
 
 export default DefinedRange;
