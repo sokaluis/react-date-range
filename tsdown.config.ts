@@ -1,14 +1,12 @@
-import { defineConfig } from 'tsup';
+import { defineConfig } from 'tsdown';
 
 export default defineConfig({
-  entry: ['src/index.js'],
+  entry: ['src/**/*.{js,jsx}', '!src/**/*.test.js'],
   format: ['cjs', 'esm'],
   clean: true,
   dts: false,
-  bundle: true,
-  splitting: false,
-  sourcemap: false,
-  minify: false,
+  unbundle: true,
+  loader: { '.js': 'jsx' },
   external: [
     'react',
     'react-dom',
@@ -19,9 +17,4 @@ export default defineConfig({
     'date-fns',
     /^date-fns\//,
   ],
-  esbuildOptions(options) {
-    options.loader = {
-      '.js': 'jsx',
-    };
-  },
 });

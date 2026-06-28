@@ -49,7 +49,7 @@
     "test": "jest",
     "test:ci": "jest --testPathPatterns='Calendar|DateRange' --ci",
     "type-check": "tsc --noEmit",
-    "build:js": "tsup",
+    "build:js": "tsdown",
     "build:css": "sass src/styles.scss:dist/styles.css --no-source-map && sass src/theme/default.scss:dist/theme/default.css --no-source-map",
     "build:types": "cp src/index.d.ts dist/index.d.ts",
     "build": "npm run build:js && npm run build:css && npm run build:types"
@@ -76,7 +76,7 @@
     "react-dom": "^19.2.7",
     "react-test-renderer": "^19.2.7",
     "sass": "^1.101.0",
-    "tsup": "^8.5.1",
+    "tsdown": "^0.21.10",
     "typescript": "^6.0.3"
   }
 }
