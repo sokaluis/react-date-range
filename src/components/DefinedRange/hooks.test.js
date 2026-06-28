@@ -1,8 +1,6 @@
 import React from 'react';
-import TestRenderer, { act } from 'react-test-renderer';
-import DefinedRange from '../DefinedRange';
-
-globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+import { fireEvent, render, screen } from '@testing-library/react';
+import DefinedRange from '../DefinedRange/index.jsx';
 
 const selectedRange = {
   startDate: new Date(2025, 5, 10),
@@ -23,18 +21,9 @@ const baseProps = {
 };
 
 const renderDefinedRange = props => {
-  let renderer;
   const ref = React.createRef();
-  act(() => {
-    renderer = TestRenderer.create(<DefinedRange {...baseProps} {...props} ref={ref} />);
-  });
-  return { ref, renderer };
-};
-
-const textOf = node => {
-  if (typeof node === 'string' || typeof node === 'number') return String(node);
-  if (!node || !node.children) return '';
-  return node.children.map(textOf).join('');
+  const view = render(<DefinedRange {...baseProps} {...props} ref={ref} />);
+  return { ref, ...view };
 };
 
 const staticRange = overrides => ({
@@ -68,22 +57,21 @@ describe('DefinedRange hooks parity', () => {
     const renderStaticRangeLabel = jest.fn(range => `Rendered ${range.label}`);
     const defaultLabelRange = staticRange({ label: 'Plain range' });
     const customLabelRange = staticRange({ label: 'Dynamic range', hasCustomRendering: true });
-    const { renderer } = renderDefinedRange({
+    renderDefinedRange({
       onChange,
       renderStaticRangeLabel,
       staticRanges: [defaultLabelRange, customLabelRange],
       inputRanges: [],
     });
 
-    const buttons = renderer.root.findAllByType('button');
-
-    expect(buttons.map(textOf)).toEqual(['Plain range', 'Rendered Dynamic range']);
+    expect(screen.getAllByRole('button').map(button => button.textContent)).toEqual([
+      'Plain range',
+      'Rendered Dynamic range',
+    ]);
     expect(defaultLabelRange.isSelected).toHaveBeenCalledWith(selectedRange);
     expect(renderStaticRangeLabel).toHaveBeenCalledWith(customLabelRange);
 
-    act(() => {
-      buttons[0].props.onClick();
-    });
+    fireEvent.click(screen.getByRole('button', { name: 'Plain range' }));
 
     expect(defaultLabelRange.range).toHaveBeenCalledWith(expect.objectContaining({ ranges: [selectedRange] }));
     expect(onChange).toHaveBeenCalledWith({
@@ -94,18 +82,16 @@ describe('DefinedRange hooks parity', () => {
   test('reports preview changes for static range focus, hover, and leave', () => {
     const onPreviewChange = jest.fn();
     const previewRange = staticRange({ label: 'Preview range' });
-    const { renderer } = renderDefinedRange({
+    renderDefinedRange({
       onPreviewChange,
       staticRanges: [previewRange],
       inputRanges: [],
     });
-    const [button] = renderer.root.findAllByType('button');
+    const button = screen.getByRole('button', { name: 'Preview range' });
 
-    act(() => {
-      button.props.onFocus();
-      button.props.onMouseOver();
-      button.props.onMouseLeave();
-    });
+    fireEvent.focus(button);
+    fireEvent.mouseOver(button);
+    fireEvent.mouseLeave(button);
 
     expect(onPreviewChange.mock.calls).toEqual([[nextRange], [nextRange], []]);
   });
@@ -113,21 +99,19 @@ describe('DefinedRange hooks parity', () => {
   test('renders input ranges and sends parsed input changes through focused selection key', () => {
     const onChange = jest.fn();
     const rangeOption = inputRange();
-    const { renderer } = renderDefinedRange({
+    renderDefinedRange({
       onChange,
       inputRanges: [rangeOption],
       staticRanges: [],
     });
 
-    const [input] = renderer.root.findAllByType('input');
+    const input = screen.getByRole('textbox');
 
-    expect(input.props.value).toBe(5);
+    expect(input).toHaveValue('5');
 
-    act(() => {
-      input.props.onFocus();
-      input.props.onChange({ target: { value: '7' } });
-      input.props.onBlur();
-    });
+    fireEvent.focus(input);
+    fireEvent.change(input, { target: { value: '7' } });
+    fireEvent.blur(input);
 
     expect(rangeOption.getCurrentValue).toHaveBeenCalledWith(selectedRange);
     expect(rangeOption.range).toHaveBeenCalledWith(7, expect.objectContaining({ ranges: [selectedRange] }));

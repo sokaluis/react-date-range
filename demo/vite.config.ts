@@ -1,26 +1,10 @@
 import { fileURLToPath, URL } from 'node:url';
 
-import { defineConfig, transformWithEsbuild } from 'vite';
+import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-const librarySourcePattern = /\/react-date-range-modern\/src\/.*\.js$/;
-
 export default defineConfig({
-  plugins: [
-    {
-      name: 'react-date-range-local-jsx',
-      async transform(code, id) {
-        if (!librarySourcePattern.test(id)) {
-          return null;
-        }
-
-        return transformWithEsbuild(code, id, {
-          loader: 'jsx',
-        });
-      },
-    },
-    react(),
-  ],
+  plugins: [react()],
   resolve: {
     alias: [
       {

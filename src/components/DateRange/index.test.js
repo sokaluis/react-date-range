@@ -1,10 +1,28 @@
 import React from 'react';
-import TestRenderer, { act } from 'react-test-renderer';
+import { act, render, screen } from '@testing-library/react';
 import { subDays, addDays, isSameDay } from 'date-fns';
-import DateRange from '../DateRange';
-import Calendar from '../Calendar';
+import DateRange from '../DateRange/index.jsx';
+import Calendar from '../Calendar/index.jsx';
 
-globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+let latestCalendarProps;
+
+jest.mock('../Calendar/index.jsx', () => {
+  const React = require('react');
+  const CalendarMock = React.forwardRef((props, ref) => {
+    latestCalendarProps = props;
+    React.useImperativeHandle(ref, () => ({
+      focusToDate: jest.fn(),
+      changeShownDate: jest.fn(),
+      updateShownDate: jest.fn(),
+      handleScroll: jest.fn(),
+    }));
+    return <div data-testid="calendar" data-display-mode={props.displayMode} data-class-name={props.className || ''} />;
+  });
+  CalendarMock.displayName = 'CalendarMock';
+  CalendarMock.defaultProps = {};
+  CalendarMock.propTypes = {};
+  return { __esModule: true, default: CalendarMock };
+});
 
 const endDate = new Date(2025, 5, 15);
 const startDate = subDays(endDate, 7);
@@ -17,12 +35,10 @@ const commonProps = {
 };
 
 const renderDateRange = props => {
+  latestCalendarProps = undefined;
   const ref = React.createRef();
-  let renderer;
-  act(() => {
-    renderer = TestRenderer.create(<DateRange {...commonProps} {...props} ref={ref} />);
-  });
-  return { ref, renderer };
+  render(<DateRange {...commonProps} {...props} ref={ref} />);
+  return { ref };
 };
 
 const calcSelection = props => renderDateRange(props).ref.current.calcNewSelection;
@@ -126,7 +142,7 @@ describe('DateRange', () => {
   });
 
   test('updates preview and keeps Calendar passthrough props intact', () => {
-    const { ref, renderer } = renderDateRange({
+    const { ref } = renderDateRange({
       ranges: [{ ...commonProps.ranges[0], color: '#ff0000' }],
       className: 'customRange',
     });
@@ -135,14 +151,13 @@ describe('DateRange', () => {
       ref.current.updatePreview({ range: { startDate, endDate } });
     });
 
-    expect(renderer.root.findByType(Calendar).props.preview).toEqual({ startDate, endDate, color: '#ff0000' });
-    expect(renderer.root.findByType(Calendar).props.displayMode).toBe('dateRange');
-    expect(renderer.root.findByType(Calendar).props.className).toContain('customRange');
-
+    expect(latestCalendarProps.preview).toEqual({ startDate, endDate, color: '#ff0000' });
+    expect(screen.getByTestId('calendar')).toHaveAttribute('data-display-mode', 'dateRange');
+    expect(screen.getByTestId('calendar')).toHaveAttribute('data-class-name', expect.stringContaining('customRange'));
     act(() => {
       ref.current.updatePreview(null);
     });
 
-    expect(renderer.root.findByType(Calendar).props.preview).toBe(null);
+    expect(latestCalendarProps.preview).toBe(null);
   });
 });

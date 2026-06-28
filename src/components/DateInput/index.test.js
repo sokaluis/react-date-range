@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 import { enUS } from 'date-fns/locale/en-US';
-import DateInput from '../DateInput';
+import DateInput from '../DateInput/index.jsx';
 
 const FORMAT = 'MMM d, yyyy';
 const dateOptions = { locale: enUS };

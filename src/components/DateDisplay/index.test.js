@@ -1,5 +1,5 @@
-import DateDisplay from './index';
-import DateInput from '../DateInput';
+import DateDisplay from './index.jsx';
+import DateInput from '../DateInput/index.jsx';
 
 // Helper: create a DateDisplay instance with defaultProps spread (matching Calendar test pattern)
 function makeInstance(overrides = {}) {

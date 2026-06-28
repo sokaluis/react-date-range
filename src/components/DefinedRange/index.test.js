@@ -1,51 +1,32 @@
 import React from 'react';
-import { mount, shallow } from 'enzyme';
+import { render, screen } from '@testing-library/react';
 
-import DefinedRange from '../DefinedRange';
+import DefinedRange from '../DefinedRange/index.jsx';
 import { isSameDay } from 'date-fns';
+
+const selectableRange = overrides => ({
+  label: 'Static Label',
+  range: () => ({}),
+  isSelected(range) {
+    const definedRange = this.range();
+    return (
+      isSameDay(range.startDate, definedRange.startDate) &&
+      isSameDay(range.endDate, definedRange.endDate)
+    );
+  },
+  ...overrides,
+});
 
 describe('DefinedRange tests', () => {
   test('Should call "renderStaticRangeLabel" callback correct amount of times according to the "hasCustomRendering" option', () => {
     const renderStaticRangeLabel = jest.fn();
 
-    mount(
+    render(
       <DefinedRange
         staticRanges={[
-          {
-            label: 'Dynamic Label',
-            range: {},
-            isSelected(range) {
-              const definedRange = this.range();
-              return (
-                isSameDay(range.startDate, definedRange.startDate) &&
-                isSameDay(range.endDate, definedRange.endDate)
-              );
-            },
-            hasCustomRendering: true,
-          },
-          {
-            label: 'Static Label',
-            range: {},
-            isSelected(range) {
-              const definedRange = this.range();
-              return (
-                isSameDay(range.startDate, definedRange.startDate) &&
-                isSameDay(range.endDate, definedRange.endDate)
-              );
-            },
-          },
-          {
-            label: 'Hede',
-            range: {},
-            isSelected(range) {
-              const definedRange = this.range();
-              return (
-                isSameDay(range.startDate, definedRange.startDate) &&
-                isSameDay(range.endDate, definedRange.endDate)
-              );
-            },
-            hasCustomRendering: true,
-          },
+          selectableRange({ label: 'Dynamic Label', hasCustomRendering: true }),
+          selectableRange({ label: 'Static Label' }),
+          selectableRange({ label: 'Hede', hasCustomRendering: true }),
         ]}
         renderStaticRangeLabel={renderStaticRangeLabel}
       />
@@ -75,61 +56,21 @@ describe('DefinedRange tests', () => {
       return result;
     };
 
-    const wrapper = shallow(
+    const { container } = render(
       <DefinedRange
         staticRanges={[
-          {
-            id: 'italic',
-            range: {},
-            isSelected(range) {
-              const definedRange = this.range();
-              return (
-                isSameDay(range.startDate, definedRange.startDate) &&
-                isSameDay(range.endDate, definedRange.endDate)
-              );
-            },
-            hasCustomRendering: true,
-          },
-          {
-            label: 'Static Label',
-            range: {},
-            isSelected(range) {
-              const definedRange = this.range();
-              return (
-                isSameDay(range.startDate, definedRange.startDate) &&
-                isSameDay(range.endDate, definedRange.endDate)
-              );
-            },
-          },
-          {
-            id: 'whatever',
-            range: {},
-            isSelected(range) {
-              const definedRange = this.range();
-              return (
-                isSameDay(range.startDate, definedRange.startDate) &&
-                isSameDay(range.endDate, definedRange.endDate)
-              );
-            },
-            hasCustomRendering: true,
-          },
-          {
-            id: 'bold',
-            range: {},
-            isSelected(range) {
-              const definedRange = this.range();
-              return (
-                isSameDay(range.startDate, definedRange.startDate) &&
-                isSameDay(range.endDate, definedRange.endDate)
-              );
-            },
-            hasCustomRendering: true,
-          },
+          selectableRange({ id: 'italic', hasCustomRendering: true }),
+          selectableRange({ label: 'Static Label' }),
+          selectableRange({ id: 'whatever', hasCustomRendering: true }),
+          selectableRange({ id: 'bold', hasCustomRendering: true }),
         ]}
         renderStaticRangeLabel={renderStaticRangeLabel}
       />
     );
 
-    expect(wrapper).toMatchSnapshot();
+    expect(screen.getByText('Italic Content').tagName).toBe('I');
+    expect(screen.getByText('Static Label')).toBeInTheDocument();
+    expect(container.querySelector('img.random-image')).toBeInTheDocument();
+    expect(screen.getByText('Bold Content').tagName).toBe('B');
   });
 });
