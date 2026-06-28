@@ -22,6 +22,11 @@ const setup = props =>
   );
 
 describe('InputRangeField tests', () => {
+  test('Should resolve as a function component without runtime defaultProps', () => {
+    expect(InputRangeField).toEqual(expect.anything());
+    expect(InputRangeField.defaultProps).toBeUndefined();
+  });
+
   test('Should parse input value to number', () => {
     const onChange = jest.fn();
 
@@ -149,5 +154,28 @@ describe('InputRangeField tests', () => {
     expect(input).toHaveValue('32');
     expect(input).toHaveAttribute('placeholder', '-');
     expect(screen.getByText('Label')).toBeInTheDocument();
+  });
+
+  test('Should not rerender when only handler props change', () => {
+    const Label = jest.fn(() => <span>Stable label</span>);
+    const label = <Label />;
+    const { rerender } = setup({ value: 12, placeholder: 'Placeholder', label });
+
+    expect(Label).toHaveBeenCalledTimes(1);
+
+    rerender(
+      <InputRangeField
+        value={12}
+        placeholder="Placeholder"
+        label={label}
+        styles={styles}
+        onChange={jest.fn()}
+        onFocus={jest.fn()}
+        onBlur={jest.fn()}
+      />
+    );
+
+    expect(Label).toHaveBeenCalledTimes(1);
+    expect(screen.getByText('Stable label')).toBeInTheDocument();
   });
 });
