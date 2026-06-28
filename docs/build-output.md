@@ -1,29 +1,34 @@
 # Build Output
 
-## What `tsup` does in this project
+## What `tsdown` does in this project
 
-[tsup](https://tsup.egoist.dev) is a zero-config TypeScript/JavaScript bundler powered by [esbuild](https://esbuild.github.io/). In this project, it is the core build tool.
+[`tsdown`](https://tsdown.dev) is the current JavaScript build tool. It replaced
+`tsup` in Slice 6 because `tsdown` can emit an unbundled multi-entry library while
+preserving `export { default as X } from` syntax that modern bundlers need for real
+tree-shaking.
 
 ### Role
 
-| Concern | Without tsup | With tsup |
-|---------|-------------|-----------|
-| JSX in `.js` files | Consumers need custom Vite/esbuild loaders | JSX compiled to `createElement()`/`jsx()` calls — plain JS output |
-| Format support | Source only (no usable ESM/CJS) | Produces both `dist/index.mjs` (ESM) and `dist/index.js` (CJS) |
-| Bundling | N/A | Single-file bundles, no internal import resolution for consumers |
-| External deps | N/A | `react`, `react-dom`, `date-fns`, etc. kept external (correct peer dep handling) |
+| Concern | Current behavior |
+|---------|------------------|
+| JSX source | `.js` and `.jsx` source is compiled to plain JS output. |
+| Format support | Emits ESM (`.mjs`) and CJS (`.cjs`). |
+| Tree-shaking | `unbundle: true` + multi-entry glob preserves per-component modules. |
+| External deps | React, date-fns, prop-types, etc. are never bundled. |
+| Types | `src/index.d.ts` is copied to `dist/index.d.ts`. |
 
-### Configuration (tsup.config.ts)
+### Configuration (`tsdown.config.ts`)
 
 ```ts
 export default defineConfig({
-  entry: ['src/index.js'],
-  format: ['cjs', 'esm'],       // dual output
-  bundle: true,                  // single file per format
-  splitting: false,              // no code splitting for library
-  external: ['react', 'react-dom', 'prop-types', 'classnames', 'react-list', 'shallow-equal', 'date-fns', /^date-fns\//],
-  esbuildOptions(options) {
-    options.loader = { '.js': 'jsx' };  // treat .js as JSX (upstream convention)
+  entry: ['src/**/*.{js,jsx}', '!src/**/*.test.js'],
+  format: ['cjs', 'esm'],
+  clean: true,
+  dts: false,
+  unbundle: true,
+  loader: { '.js': 'jsx' },
+  deps: {
+    neverBundle: ['react', 'react-dom', 'prop-types', 'classnames', 'react-list', 'shallow-equal', 'date-fns', /^date-fns\//],
   },
 });
 ```
@@ -32,53 +37,34 @@ export default defineConfig({
 
 | File | Format | Use |
 |------|--------|-----|
-| `dist/index.mjs` | ESM | Bundlers: Vite, Next.js, Webpack (via `"module"` or `"exports.import"`) |
-| `dist/index.js` | CJS | Node.js `require()`, legacy bundlers (via `"main"` or `"exports.require"`) |
-| `dist/index.d.ts` | TypeScript declarations | `tsc` type-checking for consumers (copied from `src/index.d.ts`) |
-| `dist/styles.css` | CSS | Compiled from Sass; imported by consumers via `import "@cyberlz/react-date-range/styles.css"` |
-| `dist/theme/default.css` | CSS | Default theme CSS; imported separately |
+| `dist/index.mjs` | ESM barrel | Bundlers via `exports.import` / `module` |
+| `dist/index.cjs` | CJS barrel | Node/CommonJS via `exports.require` / `main` |
+| `dist/components/<Component>/index.{mjs,cjs}` | ESM/CJS modules | Preserved component modules for tree-shaking |
+| `dist/index.d.ts` | Type declarations | Copied from `src/index.d.ts` |
+| `dist/styles.css` | CSS | Main compiled styles |
+| `dist/theme/default.css` | CSS | Default theme |
 
-### How local package imports work
+### Package resolution
 
-Local consumers in `spikes/` import the package exactly like a published npm
-package:
+Consumers import the package as they would from npm:
 
 ```ts
 import { DateRangePicker } from '@cyberlz/react-date-range';
 import '@cyberlz/react-date-range/styles.css';
 ```
 
-The difference is only where npm gets the package from. Instead of downloading it
-from the npm registry, each local spike uses a `file:` dependency:
+The relevant package fields are:
 
 ```json
 {
-  "dependencies": {
-    "@cyberlz/react-date-range": "file:../.."
-  }
-}
-```
-
-After running `npm install`, npm creates a local package entry under the consumer's
-`node_modules/`:
-
-```txt
-spikes/consumer-tsx/node_modules/@cyberlz/react-date-range
-```
-
-Then the consumer's bundler reads this package's `package.json` and follows the
-same fields a real npm install would use:
-
-```json
-{
-  "main": "dist/index.js",
+  "main": "dist/index.cjs",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "require": "./dist/index.cjs"
     },
     "./styles.css": "./dist/styles.css",
     "./theme/default.css": "./dist/theme/default.css"
@@ -86,67 +72,31 @@ same fields a real npm install would use:
 }
 ```
 
-Resolution by consumer type:
-
-| Consumer | Runtime file | Type file |
-|----------|--------------|-----------|
-| ESM / Vite / TSX | `dist/index.mjs` | `dist/index.d.ts` |
-| CJS / `require()` | `dist/index.js` | `dist/index.d.ts` |
-| CSS import | `dist/styles.css` | N/A |
-
-This is why `npm run build` must run before validating local consumers: the local
-install resolves to `dist/`, not to raw `src/`.
-
-The goal is for `file:../..` local installs and future npm installs to behave the
-same way. If a local consumer needs custom Vite loaders, the package is not ready
-to publish.
-
 ### Build pipeline
 
 ```bash
 npm run build
-# → tsup (JS bundle: .mjs + .js)
-# → sass (CSS: styles.css + theme/default.css)  
+# → tsdown (JS: .mjs + .cjs, unbundled multi-entry)
+# → sass (CSS: styles.css + theme/default.css)
 # → cp src/index.d.ts dist/index.d.ts (types)
 ```
 
-> **Note**: `tsup` does NOT generate `.d.ts` files (configured with `dts: false`).
-> Types are maintained manually in `src/index.d.ts` and copied to `dist/` during build.
-> This avoids the complexity of `tsup`'s experimental `dts` plugin (which uses Rollup
-> under the hood and often breaks on mixed JS/TS codebases).
+`tsdown` does not generate declarations here (`dts: false`). Types are maintained
+manually in `src/index.d.ts` and copied during build.
 
-### Why tsup and not Rollup directly?
+### Tree-shaking status
 
-- **JSX-in-.js**: The upstream source uses `.js` with JSX. tsup's `esbuildOptions.loader` override (`{ '.js': 'jsx' }`) handles this trivially.
-- **Simplicity**: tsup wraps esbuild with sensible defaults for library bundles.
-- **Speed**: esbuild is fast (build takes ~13ms).
-- **Dual format**: `format: ['cjs', 'esm']` produces both in one pass.
+Tree-shaking is real as of Slice 6. Verified with
+`spikes/tree-shaking/analyze.mjs`:
 
-### Why not tsup's `dts` plugin?
+| Consumer import | Output size |
+|-----------------|-------------|
+| `import { Calendar }` | ~41 KB |
+| `import { DateRangePicker }` | ~58 KB |
+| **Delta** | **~17 KB** |
 
-tsup's experimental `dts: true` uses Rollup under the hood and often breaks on:
-- Mixed JS/TS codebases
-- Module augmentation patterns
-- Complex type re-exports
+`package.json#sideEffects` remains `["*.css"]` so CSS imports are preserved while
+JS modules stay tree-shakeable.
 
-Manual `.d.ts` management is simpler and more reliable for this project's current scope.
-
-### Tree-shaking limitation
-
-**Current state**: `bundle: true` produces a single-file output (`dist/index.mjs`, 1613 lines, ~57 KB). All 7 named exports are always included regardless of which ones the consumer imports. Bundlers cannot tree-shake within the single file due to top-level class declarations that reference `React.Component`.
-
-| What you import | What you actually get | Bundle size |
-|-----------------|----------------------|-------------|
-| `{ Calendar }` | All 7 exports | 56,074 bytes |
-| `{ DateRangePicker }` | All 7 exports | 56,128 bytes |
-| `{ DateRange }` | All 7 exports | ~56 KB |
-
-**Why**: `var DayCell = class extends React.Component { ... }` has module-scope side effects; esbuild/Rollup conservatively keep all declarations within the file.
-
-**Impact**: ~57 KB fixed overhead (gzipped ~15 KB). Acceptable for Alpha 0/1.
-
-**`sideEffects` field**: Package declares `"sideEffects": ["*.css"]` — CSS files have observable side effects (style injection). The JS bundle cannot claim `false` while it remains a single file with class declarations.
-
-**Planned fix (Beta 1.0)**: Switch to `bundle: false` in tsup to produce per-module output, then set `"sideEffects": false` to allow module-level tree-shaking.
-
-See [`spikes/tree-shaking/README.md`](../spikes/tree-shaking/README.md) for full analysis.
+See [`spikes/tree-shaking/README.md`](../spikes/tree-shaking/README.md) for the
+full empirical analysis.

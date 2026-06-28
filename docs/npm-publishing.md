@@ -14,7 +14,7 @@ Yes. Publishing to npm is straightforward:
 
 ```bash
 npm login                # one-time
-npm publish --tag alpha  # publish with alpha tag
+npm publish --tag beta   # publish current beta with beta tag
 ```
 
 The harder parts are **pre-publish setup** (build, tests, CI, docs) and **post-publish
@@ -62,9 +62,9 @@ Scoped packages require `--access public` (or `publishConfig.access: "public"` i
 
 ### At launch
 
-1. **Publish with `alpha` tag** so `latest` is not affected. Users opt in:
+1. **Publish prereleases with an explicit dist-tag** so `latest` is not affected. Users opt in:
    ```bash
-    npm install @cyberlz/react-date-range@alpha
+   npm install @cyberlz/react-date-range@beta
    ```
 2. **Write a "Migrating from react-date-range" guide** — minimal friction for
    existing users.
@@ -85,7 +85,8 @@ Scoped packages require `--access public` (or `publishConfig.access: "public"` i
 | Stage | Version | npm tag | Meaning |
 |-------|---------|---------|---------|
 | **Alpha** | `0.1.0-alpha.0` | `alpha` | Unstable, may break. Internal/test usage. |
-| **Beta** | `0.1.0-beta.0` | `beta` | Feature-complete, testing. External testers. |
+| **Alpha checkpoint** | `0.1.0-alpha.3` | `alpha` | Refactor in progress; tree-shaking delivered. |
+| **Beta** | `0.1.0-beta.0` | `beta` | Internal refactor complete, public API stable for `0.1.x`; Phase 2 stylability deferred to `0.2.0`. |
 | **RC** | `0.1.0-rc.0` | `rc` | Release candidate. Final testing before stable. |
 | **Stable** | `1.0.0` | `latest` | Production-ready. Follows semver strictly. |
 

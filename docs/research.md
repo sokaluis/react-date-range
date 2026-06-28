@@ -1,5 +1,6 @@
 # Research — react-date-range Ecosystem
 
+> **Date:** Pre-implementation research, June 2026.
 > Consolidated evidence from external investigation (June 2026).
 > All links point to [`hypeserver/react-date-range`](https://github.com/hypeserver/react-date-range)
 > unless noted otherwise.

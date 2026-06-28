@@ -2,7 +2,7 @@
 
 > Tracking upstream `hypeserver/react-date-range` issues and PRs against this fork.
 > Each entry records the upstream topic, fork status, resolution evidence, and target release.
-> Updated as work progresses through Alpha → Beta phases.
+> Updated as work progresses through prerelease phases.
 
 ---
 
@@ -23,6 +23,7 @@ Issues/PRs that required code changes and have been implemented + verified in th
 | [#508](https://github.com/hypeserver/react-date-range/pull/508) | `focusedRange` end-date handling | ✅ Resolved | Existing logic verified — path already works correctly. Regression test added in `DateRange/index.test.js` to prevent future breakage. | Alpha 0.1 | No code change needed; test-only addition. |
 | [#577](https://github.com/hypeserver/react-date-range/issues/577) | Scroll issues in React 18 StrictMode | ✅ Resolved | Two root causes fixed: (1) stale `setTimeout` in `Calendar.componentDidMount` → crash on unmounted `this.list` ref; fixed with timer cleanup in `componentWillUnmount` + null guards. (2) ReactList stale `cachedScrollPosition` after StrictMode double-mount; fixed with `this.list.updateFrameAndClearCache()` (typeof guard). 15 Jest tests pass. User manually verified via browser smoke test in spike fixture. | Alpha 0.1 | See `spikes/scroll-strictmode/README.md`. |
 | [#653](https://github.com/hypeserver/react-date-range/issues/653) | Infinite scroll in StrictMode | ✅ Resolved | Same fix as #577 — both issues share the same root cause (StrictMode double-mount + ReactList cache staleness). Verified together. | Alpha 0.1 | See `spikes/scroll-strictmode/README.md`. |
+| [#539](https://github.com/hypeserver/react-date-range/pull/539) | `DateInput` min/max typed validation | ✅ Resolved | Editable `DateInput` now rejects values outside `minDate`/`maxDate` and dates in `disabledDates`, matching calendar grid constraints. | Alpha 0.1 | Covered by Slice 1. |
 
 ---
 
@@ -36,16 +37,15 @@ Issues where investigation confirmed existing behavior is correct, or the issue 
 
 ---
 
-## Pending — Alpha/Beta
+## Pending — Future phases
 
 Issues acknowledged for the fork roadmap but not yet implemented. Scheduled for upcoming phases.
 
 | # | Upstream Topic | Planned Phase | Reason / Approach |
 |---|----------------|---------------|-------------------|
-| [#373](https://github.com/hypeserver/react-date-range/issues/373) | Accessibility / keyboard navigation | Phase 3 (Core Refactor) | Requires ARIA audit and keyboard navigation fixes. Out of scope for Alpha (compatibility-only phase). |
-| [#415](https://github.com/hypeserver/react-date-range/issues/415) | Accessibility improvements | Phase 3 (Core Refactor) | Same as #373 — batched with accessibility audit. |
-| [#416](https://github.com/hypeserver/react-date-range/issues/416) | ARIA roles and labels | Phase 3 (Core Refactor) | Same as #373 — batched with accessibility audit. |
-| [#539](https://github.com/hypeserver/react-date-range/pull/539) | `DateInput` min/max typed validation | Phase 2 or 3 | Requires typed validation logic in `DateInput` component. Not critical for Alpha compatibility. |
+| [#373](https://github.com/hypeserver/react-date-range/issues/373) | Accessibility / keyboard navigation | Future accessibility pass | Requires ARIA audit and keyboard navigation fixes beyond the internal refactor. |
+| [#415](https://github.com/hypeserver/react-date-range/issues/415) | Accessibility improvements | Future accessibility pass | Same as #373 — batch with accessibility audit. |
+| [#416](https://github.com/hypeserver/react-date-range/issues/416) | ARIA roles and labels | Future accessibility pass | Same as #373 — batch with accessibility audit. |
 | [#669](https://github.com/hypeserver/react-date-range/pull/669) | RTL styles | Phase 4 (Dual Skins) | RTL support is a visual/styling concern — better addressed during skin architecture work. |
 | [#495](https://github.com/hypeserver/react-date-range/pull/495) | Cross-month range selection UX | Post-Beta | Edge-case UX improvement. Low priority compared to core compatibility and stylability. |
 
@@ -67,8 +67,8 @@ Issues that are explicitly not planned for this fork, either because they expand
 
 | Category | Count |
 |----------|-------|
-| Resolved in fork | 11 |
+| Resolved in fork | 12 |
 | Verified (no code change) | 1 |
-| Pending Alpha/Beta | 6 |
+| Pending future phases | 5 |
 | Deferred / Out of scope | 3 |
 | **Total tracked** | **21** |

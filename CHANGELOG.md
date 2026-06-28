@@ -10,6 +10,57 @@ For upstream release history (up to `2.0.1`), see [`CHANGELOG.upstream.md`](CHAN
 
 ---
 
+## [0.1.0-beta.0] — 2026-06-28
+
+First beta release. Internal refactor complete (Slices 1–11): all components migrated to function + hooks, real tree-shaking verified (41KB Calendar-only / 58KB DateRangePicker), build migrated to `tsdown`, Sass `@use` ready for Dart Sass 3.0, ESLint and TypeScript check wired, tests migrated to `@testing-library/react`. Public API unchanged.
+
+> **Beta scope (redefined)**: This beta is "internal refactor done, public API frozen". Phase 2 (stylability — CSS variables, `className` pass-through, styling API) is intentionally deferred to `0.2.0` and will be additive. This redefinition is documented in `docs/fork-roadmap.md` and reflects the project's actual progress.
+
+### Added
+
+- All class components migrated to function components with hooks.
+- Real tree-shaking via `tsdown` with multi-entry glob + `unbundle: true` (verified empirically with `spikes/tree-shaking/analyze.mjs`).
+- ESLint flat config with `eslint-plugin-react` and `eslint-plugin-react-hooks`.
+- Root `tsconfig.json` so `npm run type-check` is meaningful.
+- `jest.setup.js` for `@testing-library/jest-dom` matchers.
+- Slice 1 (`DateInput` validation), Slice 2 (`DateDisplay` extraction), Slice 3 (Calendar hooks), Slice 4 (Month/DayCell hooks), Slice 5 (DateRange/DefinedRange/DateRangePicker hooks via `stacked-to-main` chain), Slice 6 (tree-shaking real), Slice 7 (Sass `@use`), Slice 8 (root tsconfig), Slice 9 (ESLint), Slice 10/10b (testing-library + `.jsx` rename + Vite plugin cleanup), Slice 11 (DateDisplay/InputRangeField hooks).
+
+### Changed
+
+- Build tool: `tsup` → `tsdown` (same author, drop-in replacement; preserves `export { default as X } from` syntax needed for tree-shaking).
+- Build pipeline now emits `dist/index.cjs` + `dist/index.mjs` (was `dist/index.js` + `dist/index.mjs`); `package.json#main` and `exports["."].require` updated.
+- `package.json#sideEffects`: `["*.css"]` (unchanged but verified against the new build output).
+- `defaultProps` on `forwardRef` removed in favor of destructuring defaults (React 18+ deprecation).
+
+### Fixed
+
+- `DefinedRange` runtime crash with `Cannot read properties of undefined (reading 'map')` when consumers pass `staticRanges` undefined.
+- `package.json#main` mismatch with `tsdown` output (ssr-import CJS spike).
+- Vite's `build-import-analysis` failure on `.js` files containing JSX (root-cause fix: rename to `.jsx`).
+- Calendar `react-hooks/exhaustive-deps` warnings on `useMemo` deps (2 pre-existing warnings deferred; non-blocking).
+
+### Commits included
+
+- `f0b8561` refactor: migrate DateDisplay and InputRangeField to function components
+- `3936cb6` fix(build): point package.json main/exports to dist/index.cjs
+- `9bf6bf1` fix(DefinedRange): use destructuring defaults instead of defaultProps
+- `34b07e0` test+build: migrate to testing-library + rename JSX files to .jsx
+- `b5b2c5f` build: add eslint flat config + react/react-hooks plugins; fix display warnings
+- `3ad605e` build: add root tsconfig.json so npm run type-check works
+- `5af9826` docs: update README to reflect 0.1.0-alpha.3 state (tsdown + tree-shaking)
+- `14429ce` docs(tree-shaking): update spike to reflect real tree-shaking post-slice 6
+- `6c77d5d` chore: prepare 0.1.0-alpha.3 release metadata
+- `8791e13` style: migrate sass @import to @use for dart-sass 3.0
+- `e2eb84d` docs: mark tree-shaking slice complete, propose tooling debt
+- `e141852` build: migrate from tsup to tsdown for real tree-shaking
+- `9f991ea` docs: mark daterange hooks slice complete
+- `1a5755f` refactor: migrate daterangepicker to hooks
+- `a34f3f4` refactor: migrate definedrange to hooks
+- `c8ebd65` refactor: migrate daterange to hooks
+- `3323607` refactor: migrate month and daycell to hooks
+
+---
+
 ## [0.1.0-alpha.3] — 2026-06-28
 
 Fourth alpha release: full class-to-function migration, real tree-shaking, and Sass `@use` modernization.

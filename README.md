@@ -1,7 +1,7 @@
 # @cyberlz/react-date-range
 
 > Maintained fork/rescue of [`react-date-range`](https://github.com/hypeserver/react-date-range).
-> **Latest published alpha**: `0.1.0-alpha.3` (install via `@alpha`; see [Dist-tag policy](#dist-tag-policy) below).
+> **Latest published beta**: `0.1.0-beta.0` (install via `@beta` or `@alpha`; see [Dist-tag policy](#dist-tag-policy) below).
 
 ---
 
@@ -31,6 +31,8 @@ This project aims to fill that gap.
 ## Install
 
 ```bash
+npm install @cyberlz/react-date-range@beta
+# or, for existing prerelease testers after dist-tag update
 npm install @cyberlz/react-date-range@alpha
 ```
 
@@ -40,7 +42,8 @@ import '@cyberlz/react-date-range/styles.css';
 import '@cyberlz/react-date-range/theme/default.css';
 ```
 
-> Alpha means API compatibility is the priority, but polish/refactors are still in progress.
+> Beta means the internal refactor is complete and the public API is stable for the
+> `0.1.x` line. Phase 2 stylability is intentionally deferred to `0.2.0`.
 
 ## Goal
 
@@ -59,33 +62,37 @@ A **modern, maintained, production-ready** date range picker for React that:
 | Phase | Status |
 |-------|--------|
 | **Phase 0** — Audit & planning | Complete |
-| **Phase 1** — Compatible rescue | Alpha published |
-| **Phase 2** — Stylability | Not started |
-| **Phase 3** — Core refactor | In progress (Slices 1–7 done, Slices 8+ planned) |
+| **Phase 1** — Compatible rescue | Complete |
+| **Phase 2** — Stylability | Deferred to `0.2.0` |
+| **Phase 3** — Core refactor | Complete (Slices 1–11 done) |
 | **Phase 4** — Dual skins | Not started |
 
-**There is no stable release yet.** Use the `alpha` dist-tag while this fork is being validated.
+**There is no stable release yet.** Use the `beta` dist-tag for the first beta; `alpha`
+may also point to the same prerelease checkpoint for existing testers.
 See [`docs/fork-roadmap.md`](docs/fork-roadmap.md) for the full plan and
 [`docs/refactor-roadmap.md`](docs/refactor-roadmap.md) for incremental refactor slices.
 
 ## Dist-tag policy
 
-npm has two relevant dist-tags for this package:
+npm has three relevant dist-tags for this package:
 
-- **`alpha`** — points to the latest published alpha. Currently `0.1.0-alpha.3`. **This is what you should install** (`npm install @cyberlz/react-date-range@alpha`).
-- **`latest`** — points to the first published version (`0.1.0-alpha.0`). Intentionally not updated to track each prerelease; `latest` should be reserved for the first stable release. Until then, the npm page sidebar (which reads from `latest`) shows older documentation. For up-to-date info, see this README, the [`CHANGELOG.md`](CHANGELOG.md), and [`docs/refactor-roadmap.md`](docs/refactor-roadmap.md).
+- **`beta`** — points to `0.1.0-beta.0`. **This is the explicit first-beta install** (`npm install @cyberlz/react-date-range@beta`).
+- **`alpha`** — prerelease convenience tag for existing testers; after beta publish it points to `0.1.0-beta.0`.
+- **`latest`** — still points to the first published version (`0.1.0-alpha.0`) until a stable release exists. Do not rely on the npm sidebar for current prerelease docs; use this README, [`CHANGELOG.md`](CHANGELOG.md), and [`docs/refactor-roadmap.md`](docs/refactor-roadmap.md).
 
-See [`docs/release-flow.md`](docs/release-flow.md#dist-tag-strategy) for the full policy.
+See [`docs/release-flow.md`](docs/release-flow.md#npm-dist-tags) for the full policy.
 
-## Alpha 0/1 priorities
+## Beta scope
 
-1. **React 19 compatibility** — resolve peer dependency warnings, fix JSX/type issues
-2. **TypeScript** — add or improve type definitions from `@types/react-date-range`
-3. **Build modernization** — proper ESM/CJS dual output, real tree-shaking (delivered in `0.1.0-alpha.3`)
-4. **SSR / import safety** — no `window` references at module scope
-5. **Backward compatibility** — keep the existing component API
+`0.1.0-beta.0` means:
 
-## Alpha build pipeline (current)
+1. **Internal refactor complete** — Slices 1–11 are done; all components use functions/hooks.
+2. **Public API stable** — no breaking changes planned for the `0.1.x` line.
+3. **Build modernization complete** — `tsdown`, ESM/CJS output, and real tree-shaking.
+4. **Tooling wired** — ESLint, TypeScript check, and `@testing-library/react` tests.
+5. **Stylability deferred** — CSS variables, `className` pass-through, and styling API are planned for additive `0.2.0` work.
+
+## Beta build pipeline (current)
 
 Package build produces consumable `dist/` output:
 
@@ -124,7 +131,7 @@ No custom Vite/esbuild loaders required — the compiled output is plain JS/CSS.
 
 ### Tree-shaking
 
-Tree-shaking works since `0.1.0-alpha.3`. The build uses `tsdown` with `unbundle: true` and a
+Tree-shaking works since `0.1.0-alpha.3` and remains part of `0.1.0-beta.0`. The build uses `tsdown` with `unbundle: true` and a
 multi-entry glob, so each component is emitted as its own file and bundlers can drop unused
 exports. Verified empirically with `spikes/tree-shaking/analyze.mjs`:
 
@@ -137,11 +144,11 @@ exports. Verified empirically with `spikes/tree-shaking/analyze.mjs`:
 CJS consumers do not benefit equally (CJS is not tree-shakeable by design); ESM + modern
 bundlers (Vite, Webpack 5, esbuild, Rollup) get the full benefit.
 
-### Not in scope for Alpha 0/1
+### Not in scope for `0.1.x`
 
-- New visual skins or Tailwind theming
-- Deep architectural refactors
 - Breaking API changes
+- Phase 2 stylability work (planned for `0.2.0`)
+- New visual skins or Tailwind theming
 - New features
 
 ## License
@@ -154,8 +161,7 @@ license before publishing**. See [`NOTICE.md`](NOTICE.md).
 
 - [`docs/research.md`](docs/research.md) — Consolidated investigation: upstream status, issues, PRs, fork landscape
 - [`docs/fork-roadmap.md`](docs/fork-roadmap.md) — Full phase plan (0–4)
-- [`docs/alpha-plan.md`](docs/alpha-plan.md) — Alpha 0/1 checklist and acceptance criteria
-- [`docs/refactor-roadmap.md`](docs/refactor-roadmap.md) — Incremental refactor slices post-Alpha (start here to resume)
+- [`docs/refactor-roadmap.md`](docs/refactor-roadmap.md) — Completed internal refactor slices
 - [`docs/build-output.md`](docs/build-output.md) — Build pipeline and tree-shaking details
 - [`docs/release-checklist.md`](docs/release-checklist.md) — Canonical release checklist
 - [`docs/release-flow.md`](docs/release-flow.md) — Tag/npm/GitHub pipeline and dist-tag policy
