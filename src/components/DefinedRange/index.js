@@ -129,6 +129,8 @@ DefinedRange.propTypes = {
   renderStaticRangeLabel: PropTypes.func,
 };
 
+DefinedRange.displayName = 'DefinedRange';
+
 DefinedRange.defaultProps = {
   inputRanges: defaultInputRanges,
   staticRanges: defaultStaticRanges,
