@@ -7,14 +7,16 @@ export default defineConfig({
   dts: false,
   unbundle: true,
   loader: { '.js': 'jsx' },
-  external: [
-    'react',
-    'react-dom',
-    'prop-types',
-    'classnames',
-    'react-list',
-    'shallow-equal',
-    'date-fns',
-    /^date-fns\//,
-  ],
+  deps: {
+    neverBundle: [
+      'react',
+      'react-dom',
+      'prop-types',
+      'classnames',
+      'react-list',
+      'shallow-equal',
+      'date-fns',
+      /^date-fns\//,
+    ],
+  },
 });

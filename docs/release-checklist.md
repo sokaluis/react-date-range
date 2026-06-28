@@ -1,6 +1,6 @@
-# Release Checklist — `0.1.0-alpha.2` (published)
+# Release Checklist — `0.1.0-alpha.3` (in progress)
 
-> Canonical release checklist for the third public alpha release.
+> Canonical release checklist for the fourth public alpha release.
 > Last published: `0.1.0-alpha.2`.
 > No other file duplicates this — refer here for every publish.
 
@@ -15,7 +15,7 @@
 - [x] **Author**: `package.json` `author` field filled (`Luis Azocar <lazocar.dev@gmail.com>`).
 - [x] **License notice**: `LICENSE` includes original upstream copyright **plus**
   a new copyright line for fork modifications. See `NOTICE.md`.
-- [x] **CHANGELOG.md**: Entry for `0.1.0-alpha.2` is complete and accurate.
+- [x] **CHANGELOG.md**: Entry for `0.1.0-alpha.3` is complete and accurate (Slices 4–7 documented).
 - [x] **`package.json` fields verified**:
   - `name`, `version`, `description`, `license`, `keywords`
   - `main`, `module`, `types`, `style`, `exports`
@@ -29,7 +29,11 @@
 ## Before publishing
 
 - [ ] CI is green on the commit being tagged.
-- [x] `npm run test:ci` passes locally (Calendar + DateRange tests, 28 tests).
+- [x] `npm run test:ci` passes locally (Calendar + DateRange tests).
+- [x] `npm test` passes locally (68/68).
+- [x] `npm run build` produces clean output (no Sass `@import` deprecation warnings, no
+  `tsdown` `external` deprecation warnings). `MIXED_EXPORTS` warning on `DayCell` is
+  pre-existing (named+default) and benign for the public API.
 - [ ] Spike typechecks pass:
   ```bash
   # Run each from repo root after `npm ci && npm run build` at root
@@ -57,22 +61,24 @@
 > See [`docs/release-flow.md`](release-flow.md) for the complete git/tag/GitHub/npm
 > pipeline, dist-tag management, and first-time setup.
 
-- [x] Tag: `git tag v0.1.0-alpha.2 && git push --tags`
-- [x] Publish with alpha tag:
+- [ ] Tag: `git tag v0.1.0-alpha.3 && git push --tags`
+- [ ] Publish with alpha tag:
   ```bash
   npm publish --tag alpha --access public
   ```
-- [x] Verify on npm: `npm view @cyberlz/react-date-range@alpha version` → `0.1.0-alpha.2`.
-- [x] `latest` dist-tag checked: npm keeps `latest` pointing to the first published
-  version when there is no stable version yet. Current state: `alpha` → `0.1.0-alpha.2`, `latest` → `0.1.0-alpha.0`;
-  keep install examples on `@alpha` until a stable release exists.
+- [ ] Verify on npm: `npm view @cyberlz/react-date-range@alpha version` → `0.1.0-alpha.3`.
+- [ ] `latest` dist-tag checked: npm keeps `latest` pointing to the first published
+  version when there is no stable version yet. Current state: `alpha` → `0.1.0-alpha.2`,
+  `latest` → `0.1.0-alpha.0`; keep install examples on `@alpha` until a stable release
+  exists. After publishing alpha.3, `alpha` will resolve to `0.1.0-alpha.3`; `latest`
+  stays at `0.1.0-alpha.0` deliberately.
 - [ ] Verify install from registry:
   ```bash
   mkdir /tmp/registry-test && cd /tmp/registry-test
   npm init -y
   npm install @cyberlz/react-date-range@alpha
   ```
-  Expected: resolves from `https://registry.npmjs.org/@cyberlz/react-date-range/-/react-date-range-0.1.0-alpha.2.tgz` with clean typecheck + build for both React 18 and React 19 projects.
+  Expected: resolves from `https://registry.npmjs.org/@cyberlz/react-date-range/-/react-date-range-0.1.0-alpha.3.tgz` with clean typecheck + build for both React 18 and React 19 projects.
 
 ## Post-publish
 

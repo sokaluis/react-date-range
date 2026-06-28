@@ -10,6 +10,45 @@ For upstream release history (up to `2.0.1`), see [`CHANGELOG.upstream.md`](CHAN
 
 ---
 
+## [0.1.0-alpha.3] — 2026-06-28
+
+Fourth alpha release: full class-to-function migration, real tree-shaking, and Sass `@use` modernization.
+
+### Added
+
+- Real tree-shaking: migrated build from `tsup` to `tsdown` with `unbundle: true` and multi-entry glob. Each component is now emitted as its own file (`dist/components/<Component>/index.{cjs,mjs}`).
+- Tree-shaking analyzer in `spikes/tree-shaking/analyze.mjs` with structural symbol assertions and 5KB minimum-delta check.
+
+### Changed
+
+- `Month`, `DayCell`, `DateRange`, `DefinedRange`, and `DateRangePicker` migrated from class components to function components with hooks. `DayCell` uses `useState` for `hover`/`active`; the daterange components use `forwardRef` + `useImperativeHandle` to preserve the `DateRange` → `DateRangePicker` imperative coupling.
+- `tsup` removed from devDependencies; `tsdown` added.
+- Build config now uses `tsdown` with `unbundle: true`, multi-entry glob (`src/**/*.{js,jsx}` excluding tests), and `deps.neverBundle` for React/prop-types/date-fns.
+- Sass `src/styles.scss` migrated from `@import` to `@use` with `as *` (Dart Sass 3.0 readiness). Output CSS is byte-identical.
+
+### Fixed
+
+- `dist/index.{cjs,mjs}` now preserves the `export { default as X } from` re-export syntax, allowing bundlers to tree-shake unused components. Confirmed empirically: `import { Calendar } from '@cyberlz/react-date-range'` resolves to ~41KB vs ~58KB for `import { DateRangePicker }` (17KB tree-shakeable delta).
+- Sass `@import` deprecation warnings removed from build output (Dart Sass 3.0 will remove `@import`).
+
+### Warnings / Technical debt (still pending)
+
+- `react-test-renderer` deprecation noise in test output (planned migration to `@testing-library/react`).
+- Root `tsconfig.json` not present; `npm run type-check` exits 1 with TypeScript help.
+- ESLint config not wired (`npm run lint` not runnable).
+- `DateDisplay` and `InputRangeField` still class components (out of scope for this slice).
+
+### Commits included since `0.1.0-alpha.2`
+
+- `3323607` Slice 4: `Month`/`DayCell` to hooks
+- `c8ebd65` Slice 5a: `DateRange` to hooks
+- `a34f3f4` Slice 5b: `DefinedRange` to hooks
+- `1a5755f` Slice 5c: `DateRangePicker` to hooks
+- `e141852` Slice 6: `tsup` → `tsdown` migration
+- `8791e13` Slice 7: Sass `@import` → `@use`
+
+---
+
 ## [0.1.0-alpha.2] — 2026-06-26
 
 Third alpha release: Calendar hooks migration and ReactList ESM/CJS interop fix.
