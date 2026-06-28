@@ -12,11 +12,11 @@
 | Alpha publicada en npm | `@cyberlz/react-date-range@0.1.0-alpha.2` (`alpha` dist-tag) |
 | Último checkpoint | `v0.1.0-alpha.2` publicado en npm y GitHub Releases |
 | GitHub Release | ✅ Etiquetado en `sokaluis/react-date-range` |
-| Verificación local | Jest 57/57, `test:ci` 28/28, build, demo typecheck y `npm pack --dry-run` |
+| Verificación local | Jest 68/68, `test:ci` 35/35, build con tree-shaking real (41KB Calendar-only, 58KB DateRangePicker) |
 | Demo mínima npm-backed | `demo/` — Vite + React 19 + TS, en CI |
 | Consumer smoke tests | React 18 ✅, React 19 ✅ (instalado desde registry) |
 | Vercel / landing | **Diferido** — se prioriza refactor real sobre docs públicas |
-| Prioridad actual | **Refactor de la librería**, próximo slice: tree-shaking real (`bundle: false`) |
+| Prioridad actual | **Tooling debt**: Sass `@import` migration, ESLint, root tsconfig, test harness |
 
 ---
 
@@ -155,17 +155,34 @@ props públicas y composición con `Calendar`.
 
 ---
 
-### Slice 6 — Tree-shaking real (`bundle: false`)
+### Slice 6 — Tree-shaking real ✅
 
-**Problema**: `bundle: true` produce un solo archivo; todos los exports se incluyen
-siempre (~57 KB fijos). Ver [`docs/build-output.md`](build-output.md) y
-[`spikes/tree-shaking/README.md`](../spikes/tree-shaking/README.md).
+**Estado**: Completado y pusheado a `main` en `e141852`.
 
-**Objetivo**: Cambiar a `bundle: false` + `sideEffects: false` para que bundlers
-puedan tree-shakear exports no usados.
+**Verificación empírica con build autorizado**:
+- Calendar-only: 41.2 KB
+- DateRangePicker: 58.3 KB
+- Delta: 17.2 KB (tree-shaking real confirmado por analyzer)
+- Tests: 68/68 PASS
+- CJS smoke: 7 exports resuelven
+- API pública: sin cambios
 
-**Riesgo**: Cambio de build puede romper consumidores si los imports de CSS no
-están correctamente marcados como side-effects.
+**Problema original**: `tsup` con `bundle: true` produce un solo archivo (~57 KB)
+y normaliza `export { default as X } from` en barrel, destruyendo la información
+PURE que bundlers necesitan para tree-shakear.
+
+**Decisión técnica**: Migrar de `tsup` a `tsdown` (drop-in del mismo autor).
+`tsdown` con `unbundle: true` + multi-entry glob preserva la sintaxis original
+y emite cada componente en su propio archivo. Ver [`docs/build-output.md`](build-output.md)
+y [`spikes/tree-shaking/README.md`](../spikes/tree-shaking/README.md).
+
+**Cambios aplicados**:
+- `tsup.config.ts` → `tsdown.config.ts` con `unbundle: true` + multi-entry glob
+- `package.json`: `build:js` usa `tsdown`; devDeps: `tsup` removido, `tsdown` agregado
+- API pública sin cambios
+
+**Riesgos cerrados**: confirmado que el cambio de bundler no rompe CJS ni ESM,
+los tests siguen pasando, y el analyzer de tree-shaking ve una mejora real.
 
 ---
 
@@ -190,9 +207,12 @@ cat docs/refactor-roadmap.md
 # 2. Verificar estado actual sin build salvo autorización explícita
 npm test
 
-# 3. Planificar Slice 6 con SDD: tree-shaking real (`bundle: false`)
-#    - Revisar docs/build-output.md y spikes/tree-shaking/README.md
-#    - Evaluar impacto de sideEffects/CSS y compatibilidad de consumidores
+# 3. Planificar Slice 7 con SDD: tooling debt (candidatos)
+#    - Sass `@import` → `@use` migration (Dart Sass 3.0 deadline)
+#    - Root `tsconfig.json` para que `npm run type-check` funcione
+#    - ESLint config (actualmente `lint` script no corre)
+#    - Test harness: `react-test-renderer` → `@testing-library/react` (React 19 deprecation)
+#    - `DateDisplay` y `InputRangeField` a hooks (últimos class components)
 #    - Aplicar solo después de autorización explícita
 #    - Verificar con npm test; build solo si se autoriza para release/checkpoint
 ```
