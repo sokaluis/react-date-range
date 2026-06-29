@@ -78,3 +78,4 @@ Completed in Slices 1–21:
 
 Only promote exploratory ideas to roadmap phases after they have a concrete spec,
 reviewable scope, and real user demand that justifies the maintenance surface.
+See [`post-1.0-roadmap.md`](post-1.0-roadmap.md) for the candidate direction.

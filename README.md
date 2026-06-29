@@ -147,6 +147,7 @@ license before publishing**. See [`NOTICE.md`](NOTICE.md).
 - [`docs/research.md`](docs/research.md) — Consolidated investigation: upstream status, issues, PRs, fork landscape
 - [`docs/fork-roadmap.md`](docs/fork-roadmap.md) — Full phase plan (0–4)
 - [`docs/refactor-roadmap.md`](docs/refactor-roadmap.md) — Completed internal refactor slices
+- [`docs/post-1.0-roadmap.md`](docs/post-1.0-roadmap.md) — Future direction for 1.x and 2.x/Labs (exploratory, not committed)
 - [`docs/build-output.md`](docs/build-output.md) — Build pipeline and tree-shaking details
 - [`docs/release-checklist.md`](docs/release-checklist.md) — Canonical release checklist
 - [`docs/release-flow.md`](docs/release-flow.md) — Tag/npm/GitHub pipeline and dist-tag policy
