@@ -21,7 +21,7 @@ class DateInput extends PureComponent {
     }
   }
 
-  formatDate({ value, dateDisplayFormat, dateOptions }) {
+  formatDate({ value, dateDisplayFormat = 'MMM D, YYYY', dateOptions }) {
     if (value && isValid(value)) {
       return format(value, dateDisplayFormat, dateOptions);
     }
@@ -50,7 +50,7 @@ class DateInput extends PureComponent {
       return;
     }
 
-    const { onChange, dateDisplayFormat, dateOptions } = this.props;
+    const { onChange, dateDisplayFormat = 'MMM D, YYYY', dateOptions } = this.props;
     const parsed = parse(value, dateDisplayFormat, new Date(), dateOptions);
 
     if (isValid(parsed)) {
@@ -82,7 +82,7 @@ class DateInput extends PureComponent {
   };
 
   render() {
-    const { className, readOnly, placeholder, ariaLabel, disabled, onFocus } = this.props;
+    const { className, readOnly = true, placeholder, ariaLabel, disabled = false, onFocus } = this.props;
     const { value, invalid } = this.state;
 
     return (
@@ -103,12 +103,5 @@ class DateInput extends PureComponent {
     );
   }
 }
-
-DateInput.defaultProps = {
-  readOnly: true,
-  disabled: false,
-  dateDisplayFormat: 'MMM D, YYYY',
-  disabledDates: [],
-};
 
 export default DateInput;

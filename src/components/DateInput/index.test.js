@@ -62,6 +62,7 @@ describe('DateInput', () => {
   // ---- Basic existence ----
   test('Should resolve', () => {
     expect(DateInput).toEqual(expect.anything());
+    expect(DateInput.defaultProps).toBeUndefined();
   });
 
   // ---- 4.5: Backward compatibility (no constraint props) ----
@@ -158,6 +159,24 @@ describe('DateInput', () => {
       expect(emitted.getMonth()).toBe(maxDate.getMonth());
       expect(emitted.getDate()).toBe(maxDate.getDate());
       expect(instance.state.invalid).toBe(false);
+    });
+  });
+
+  // ---- Destructuring defaults (post-defaultProps migration) ----
+  describe('destructuring defaults inside PureComponent methods', () => {
+    test('readOnly defaults to true when prop is not provided', () => {
+      const instance = createInstance({ value: new Date(2025, 5, 15) });
+      const element = instance.render();
+      // children is [inputElement, false] when invalid is false
+      const input = element.props.children[0];
+      expect(input.props.readOnly).toBe(true);
+    });
+
+    test('readOnly is overridable when prop is explicitly passed', () => {
+      const instance = createInstance({ value: new Date(2025, 5, 15), readOnly: false });
+      const element = instance.render();
+      const input = element.props.children[0];
+      expect(input.props.readOnly).toBe(false);
     });
   });
 });
