@@ -1,7 +1,7 @@
 # Refactor Roadmap — @cyberlz/react-date-range
 
-> Historical checklist for the internal refactor that led to `0.1.0-beta.0`.
-> All Slices 1–11 are complete. See [`fork-roadmap.md`](fork-roadmap.md) for the
+> Historical checklist for the internal refactor that led to `1.0.0-rc.0`.
+> All Slices 1–22 are complete. See [`fork-roadmap.md`](fork-roadmap.md) for the
 > current phase plan.
 
 ---
@@ -10,8 +10,8 @@
 
 | Item | Status |
 |------|--------|
-| Current checkpoint | `1.0.0` stable |
-| Public API | Stable for the `1.x` line; no breaking changes planned |
+| Current checkpoint | `1.0.0-rc.0` (`rc` dist-tag); `v1.0.0` stable pending Slice 25 |
+| Public API | Stable for the `1.x` line pending `1.0.0` stable; no breaking changes planned |
 | Internal refactor | ✅ Complete — Slices 1–21 done; Slice 22 docs sweep complete |
 | Tree-shaking | ✅ Verified: ~41 KB Calendar-only / ~58 KB DateRangePicker (~17 KB delta) |
 | Build | ✅ `tsdown` with multi-entry glob + `unbundle: true` |

@@ -47,9 +47,11 @@ docs: add release flow documentation
 | RC | `v{version}-rc.{n}` | `v0.1.0-rc.0` |
 | Stable | `v{version}` | `v1.0.0` |
 
-**Stable tag (current target):** `v1.0.0`
+**Stable tag (pending):** `v1.0.0`
 - `package.json` version: `1.0.0` (update before tagging)
-- npm dist-tag: `latest`
+- npm dist-tag: `latest` — promoted after Slice 25 stable release
+
+> **Current state**: `v1.0.0-rc.0` is published under `rc` dist-tag. Stable `1.0.0` promotion is pending Slice 25.
 
 The `package.json` `version` field **must match** the tag version exactly.
 
@@ -95,9 +97,13 @@ git push origin v0.1.0-alpha.1
 - `package.json` version: `0.1.0-alpha.2` (update before tagging)
 - npm dist-tag: `alpha`
 
-**First beta tag (current target):** `v0.1.0-beta.0`
+**First beta tag (published):** `v0.1.0-beta.0`
 - `package.json` version: `0.1.0-beta.0`
 - npm dist-tag: `beta`
+
+**Current RC tag (published):** `v1.0.0-rc.0`
+- `package.json` version: `1.0.0-rc.0`
+- npm dist-tag: `rc`
 
 ### Step 3 — GitHub Release
 
@@ -139,10 +145,10 @@ version after publishing so `@alpha` continues to mean "newest prerelease" while
 
 | Dist-tag | Points to | Audience |
 |----------|-----------|----------|
-| `latest` | First stable release when it exists; currently left on the first published prerelease | Default npm installs; not used for active prerelease testing |
+| `latest` | Currently `0.1.0-alpha.0`; to be promoted to `1.0.0` stable after Slice 25 | Default npm installs; not used for active prerelease testing |
 | `alpha` | Current prerelease channel; may point to `0.1.0-beta.0` after beta publish | Existing testers: `npm install @cyberlz/react-date-range@alpha` |
 | `beta` | `0.1.0-beta.0` and future betas | Early adopters: `npm install @cyberlz/react-date-range@beta` |
-| `rc` | Most recent RC | Pre-release validation |
+| `rc` | `1.0.0-rc.0` (current RC) | Pre-release validation: `npm install @cyberlz/react-date-range@rc` |
 
 **Managing dist-tags:**
 ```bash

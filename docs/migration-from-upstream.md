@@ -1,10 +1,10 @@
 # Migrating from `react-date-range` upstream
 
-> `@cyberlz/react-date-range@1.0.0` is a drop-in byte-compatible replacement for `react-date-range@2.0.1`.
+> `@cyberlz/react-date-range@1.0.0-rc.0` (`@rc`) is a drop-in byte-compatible replacement for `react-date-range@2.0.1`. `v1.0.0` stable will follow after Slice 25.
 
 ## TL;DR
 
-`@cyberlz/react-date-range` is a community-maintained fork of `hypeserver/react-date-range` targeting React 18/19 compatibility, first-party TypeScript types, and modern build tooling. Install `@cyberlz/react-date-range@1.0.0` in place of `react-date-range@2.0.1` — the public API is byte-identical. If you were using `prop-types` or `react-list` as runtime dependencies, or deep-importing `react-date-range/dist/locale`, see [What you need to do](#what-you-need-to-do).
+`@cyberlz/react-date-range` is a community-maintained fork of `hypeserver/react-date-range` targeting React 18/19 compatibility, first-party TypeScript types, and modern build tooling. Install `@cyberlz/react-date-range@rc` (or `@1.0.0-rc.0`) in place of `react-date-range@2.0.1` — the public API is byte-identical. If you were using `prop-types` or `react-list` as runtime dependencies, or deep-importing `react-date-range/dist/locale`, see [What you need to do](#what-you-need-to-do).
 
 ---
 
@@ -54,11 +54,11 @@ The following are type-only additions — they do not appear in the runtime barr
 
 ## What you need to do
 
-In most cases, **no code changes are required**. `@cyberlz/react-date-range@1.0.0` is a drop-in byte-compatible replacement.
+In most cases, **no code changes are required**. `@cyberlz/react-date-range@1.0.0-rc.0` is a drop-in byte-compatible replacement.
 
 If you encounter issues, check the following:
 
-1. **Replace the package**: `npm install @cyberlz/react-date-range@1.0.0` (or `npm install @cyberlz/react-date-range@latest`).
+1. **Replace the package**: `npm install @cyberlz/react-date-range@rc` (or `npm install @cyberlz/react-date-range@1.0.0-rc.0`). After `v1.0.0` stable publishes, plain `npm install @cyberlz/react-date-range` will work.
 2. **Drop `prop-types` if unused**: If `prop-types` was in your `dependencies` solely because `react-date-range` required it, remove it. First-party TypeScript types are included.
 3. **Replace `src/locale` deep-imports**: If your code imports `react-date-range/dist/locale/index.cjs` or similar deep paths, replace with `date-fns/locale` directly:
    ```ts

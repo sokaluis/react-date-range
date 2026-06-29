@@ -7,7 +7,7 @@
 
 ## Current release meaning
 
-`1.0.0` is the first stable release under the updated checkpoint definition:
+`1.0.0-rc.0` is published (`rc` dist-tag). `1.0.0` stable is the target for Slice 25 under the updated checkpoint definition:
 
 > **Stable = internal refactor complete, public API frozen, no breaking changes planned.**
 
@@ -25,7 +25,7 @@ existing `1.x` consumers.
 | Phase 0 — Audit & planning | Understand upstream, risks, publishing, and source provenance | ✅ Complete | Done before first alpha |
 | Phase 1 — Compatible rescue | Drop-in React 18/19 + TypeScript-compatible package | ✅ Complete | `0.1.0-alpha.0`–`0.1.0-alpha.2` |
 | **Phase 3 — Core refactor (completed)** | Function components, tooling, tests, tree-shaking | ✅ Complete | `0.1.0-beta.0` |
-| **1.0.0 — Stable release** | Bug fixes, strict TypeScript, upstream parity, docs sweep | ✅ Complete | `1.0.0` |
+| **1.0.0 — Stable release** | Bug fixes, strict TypeScript, upstream parity, docs sweep | ⏳ Pending (Slice 25) | `1.0.0` |
 | Phase 2 — Stylability | CSS variables, `className` pass-through, documented styling API | ⏳ Deferred | `0.2.0` |
 | Phase 4 — Dual skins | Classic + simple visual experiences on one core | ⏳ Future | TBD |
 

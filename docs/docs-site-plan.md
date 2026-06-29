@@ -75,7 +75,7 @@
 
 - [x] Consumer smoke test passes (`tsc --noEmit` + `vite build` on clean project) — React 18 ✅ and React 19 ✅, resolved from `https://registry.npmjs.org/`
 - [x] Minimal demo built (single-page Vite app importing `<DateRangePicker />`) — `demo/`, resolves from `https://registry.npmjs.org/`, typecheck ✅, build ✅
-- [x] API docs written (props table, examples, migration notes) ✅
+- [x] API docs written (props table, examples, migration notes) ✅ — covered by `README.md`, `src/index.d.ts` types, and `docs/migration-from-upstream.md`; standalone `docs/api-reference.md` is deferred
 - [x] Migration notes written — see `docs/migration-from-upstream.md` ✅
 - [ ] Vercel connected to GitHub repo
 - [ ] Landing page deployed with beta badge

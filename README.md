@@ -1,7 +1,7 @@
 # @cyberlz/react-date-range
 
 > Maintained fork/rescue of [`react-date-range`](https://github.com/hypeserver/react-date-range).
-> **Current channel**: `0.1.0-beta.0` is the latest published. `v1.0.0` is the upcoming stable release — see [Dist-tag policy](#dist-tag-policy) below.
+> **Current channel**: `1.0.0-rc.0` is published under the `rc` dist-tag (`npm install @cyberlz/react-date-range@rc`). `v1.0.0` stable is the upcoming release — see [Dist-tag policy](#dist-tag-policy) below.
 
 ---
 
@@ -64,7 +64,8 @@ A **modern, maintained, production-ready** date range picker for React that:
 | **Phase 3** — Core refactor | Complete (Slices 1–21 done) |
 | **Phase 4** — Dual skins | Not started |
 
-**`@cyberlz/react-date-range@1.0.0` is the stable release.** See
+**`@cyberlz/react-date-range@1.0.0-rc.0`** is the current release candidate (`rc` dist-tag).
+**`v1.0.0` stable** is the next release target (pending Slice 25). See
 [`docs/fork-roadmap.md`](docs/fork-roadmap.md) for the full plan and
 [`docs/refactor-roadmap.md`](docs/refactor-roadmap.md) for incremental refactor slices.
 
@@ -72,11 +73,11 @@ A **modern, maintained, production-ready** date range picker for React that:
 
 npm has three relevant dist-tags for this package:
 
-- **`latest`** — points to `1.0.0`. This is the stable install: `npm install @cyberlz/react-date-range`.
-- **`beta`** — points to `0.1.0-beta.0`. For consumers who want explicit prerelease tracking.
-- **`alpha`** — points to `0.1.0-alpha.3`. Legacy; may point to the same as beta going forward.
+- **`latest`** — currently points to `0.1.0-alpha.0`. Will be promoted to `1.0.0` stable after Slice 25.
+- **`rc`** — points to `1.0.0-rc.0`. Current release candidate for pre-release validation: `npm install @cyberlz/react-date-range@rc`.
+- **`beta`** — points to `0.1.0-beta.0`. Legacy prerelease channel.
 
-For `1.0.0`, all consumers use `npm install @cyberlz/react-date-range` (no tag). See
+After `1.0.0` stable, all consumers use `npm install @cyberlz/react-date-range` (no tag). See
 [`docs/migration-from-upstream.md`](docs/migration-from-upstream.md) for upgrade instructions.
 See [`docs/release-flow.md`](docs/release-flow.md#npm-dist-tags) for the full policy.
 
@@ -119,7 +120,7 @@ No custom Vite/esbuild loaders required — the compiled output is plain JS/CSS.
 
 ### Tree-shaking
 
-Tree-shaking works since `0.1.0-alpha.3` and remains part of `0.1.0-beta.0`. The build uses `tsdown` with `unbundle: true` and a
+Tree-shaking works since `0.1.0-alpha.3` and remains part of `1.0.0-rc.0`. The build uses `tsdown` with `unbundle: true` and a
 multi-entry glob, so each component is emitted as its own file and bundlers can drop unused
 exports. Verified empirically with `spikes/tree-shaking/analyze.mjs`:
 
