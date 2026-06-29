@@ -1,6 +1,6 @@
 import React from 'react';
 import { act, fireEvent, render, screen } from '@testing-library/react';
-import Calendar from '../Calendar/index.jsx';
+import Calendar, { calendarDefaultProps } from '../Calendar/index.jsx';
 import DateDisplay from '../DateDisplay/index.jsx';
 import { isSameDay } from 'date-fns';
 import { enUS } from 'date-fns/locale/en-US';
@@ -54,7 +54,7 @@ const selectionRange = {
 };
 
 const baseProps = {
-  ...Calendar.defaultProps,
+  ...calendarDefaultProps,
   shownDate: new Date(2025, 5, 15),
   minDate: new Date(2025, 0, 1),
   maxDate: new Date(2025, 11, 31),
@@ -113,11 +113,15 @@ describe('Calendar', () => {
   });
 
   describe('forwardRef scaffold and metadata', () => {
-    test('exports a forwardRef component while preserving defaultProps metadata', () => {
+    test('exports a forwardRef component without static defaultProps', () => {
       expect(Calendar.$$typeof).toBe(Symbol.for('react.forward_ref'));
-      expect(Calendar.defaultProps.scroll).toEqual({ enabled: false });
-      expect(Calendar.defaultProps.locale).toBe(enUS);
-      expect(Calendar.defaultProps.ariaLabels).toEqual({});
+      expect(Calendar.defaultProps).toBeUndefined();
+      // ariaLabels defaults are observable through rendering
+      renderCalendar();
+      expect(screen.getByLabelText('Previous month')).toBeInTheDocument();
+      expect(screen.getByLabelText('Next month')).toBeInTheDocument();
+      expect(screen.getByLabelText('Month')).toBeInTheDocument();
+      expect(screen.getByLabelText('Year')).toBeInTheDocument();
     });
 
     test('forwards refs to the compatibility instance seam', () => {

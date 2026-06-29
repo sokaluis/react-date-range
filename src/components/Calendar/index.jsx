@@ -70,15 +70,6 @@ const calendarDefaultProps = {
 
 const uninitializedTargetProp = Symbol('uninitializedTargetProp');
 
-const mergeDefaultProps = props =>
-  Object.keys(calendarDefaultProps).reduce(
-    (mergedProps, propName) => ({
-      ...mergedProps,
-      [propName]: props[propName] === undefined ? calendarDefaultProps[propName] : props[propName],
-    }),
-    { ...props }
-  );
-
 const getDateOptions = ({ locale, weekStartsOn }) => {
   const dateOptions = { locale };
   if (weekStartsOn !== undefined) dateOptions.weekStartsOn = weekStartsOn;
@@ -378,8 +369,8 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
   const renderMonthAndYear = useCallback(
     (date, changeDate, calendarProps) => {
       const { showMonthArrow, minDate, maxDate, showMonthAndYearPickers, ariaLabels } = calendarProps;
-      const upperYearLimit = (maxDate || Calendar.defaultProps.maxDate).getFullYear();
-      const lowerYearLimit = (minDate || Calendar.defaultProps.minDate).getFullYear();
+      const upperYearLimit = maxDate.getFullYear();
+      const lowerYearLimit = minDate.getFullYear();
       return (
         <div onMouseUp={e => e.stopPropagation()} className={styles.monthAndYearWrapper}>
           {showMonthArrow ? (
@@ -630,8 +621,75 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
   );
 });
 
-const ForwardedCalendar = React.forwardRef(function Calendar(props, ref) {
-  const resolvedProps = mergeDefaultProps(props);
+const ForwardedCalendar = React.forwardRef(function Calendar(
+  {
+    showMonthArrow = calendarDefaultProps.showMonthArrow,
+    showMonthAndYearPickers = calendarDefaultProps.showMonthAndYearPickers,
+    disabledDates = calendarDefaultProps.disabledDates,
+    disabledDay = calendarDefaultProps.disabledDay,
+    classNames = calendarDefaultProps.classNames,
+    locale = calendarDefaultProps.locale,
+    ranges = calendarDefaultProps.ranges,
+    focusedRange = calendarDefaultProps.focusedRange,
+    dateDisplayFormat = calendarDefaultProps.dateDisplayFormat,
+    monthDisplayFormat = calendarDefaultProps.monthDisplayFormat,
+    weekdayDisplayFormat = calendarDefaultProps.weekdayDisplayFormat,
+    dayDisplayFormat = calendarDefaultProps.dayDisplayFormat,
+    showDateDisplay = calendarDefaultProps.showDateDisplay,
+    showPreview = calendarDefaultProps.showPreview,
+    displayMode = calendarDefaultProps.displayMode,
+    months = calendarDefaultProps.months,
+    color = calendarDefaultProps.color,
+    scroll = calendarDefaultProps.scroll,
+    direction = calendarDefaultProps.direction,
+    maxDate = calendarDefaultProps.maxDate,
+    minDate = calendarDefaultProps.minDate,
+    rangeColors = calendarDefaultProps.rangeColors,
+    startDatePlaceholder = calendarDefaultProps.startDatePlaceholder,
+    endDatePlaceholder = calendarDefaultProps.endDatePlaceholder,
+    editableDateInputs = calendarDefaultProps.editableDateInputs,
+    dragSelectionEnabled = calendarDefaultProps.dragSelectionEnabled,
+    fixedHeight = calendarDefaultProps.fixedHeight,
+    calendarFocus = calendarDefaultProps.calendarFocus,
+    preventSnapRefocus = calendarDefaultProps.preventSnapRefocus,
+    ariaLabels = calendarDefaultProps.ariaLabels,
+    ...rest
+  },
+  ref
+) {
+  const resolvedProps = {
+    showMonthArrow,
+    showMonthAndYearPickers,
+    disabledDates,
+    disabledDay,
+    classNames,
+    locale,
+    ranges,
+    focusedRange,
+    dateDisplayFormat,
+    monthDisplayFormat,
+    weekdayDisplayFormat,
+    dayDisplayFormat,
+    showDateDisplay,
+    showPreview,
+    displayMode,
+    months,
+    color,
+    scroll,
+    direction,
+    maxDate,
+    minDate,
+    rangeColors,
+    startDatePlaceholder,
+    endDatePlaceholder,
+    editableDateInputs,
+    dragSelectionEnabled,
+    fixedHeight,
+    calendarFocus,
+    preventSnapRefocus,
+    ariaLabels,
+    ...rest,
+  };
   const dateOptions = useMemo(
     () => getDateOptions(resolvedProps),
     [resolvedProps.locale, resolvedProps.weekStartsOn]
@@ -660,6 +718,5 @@ const ForwardedCalendar = React.forwardRef(function Calendar(props, ref) {
 
 const Calendar = ForwardedCalendar;
 
-Calendar.defaultProps = calendarDefaultProps;
-
+export { calendarDefaultProps };
 export default Calendar;
