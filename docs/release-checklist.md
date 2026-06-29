@@ -1,8 +1,20 @@
-# Release Checklist — `0.1.0-beta.0`
+# Release Checklist — `1.0.0`
 
-> Canonical release checklist for the first beta release.
-> Last published prerelease before this checkpoint: `0.1.0-alpha.3`.
+> Canonical release checklist for the first stable release.
 > Do not tag or publish until this checklist is complete.
+
+---
+
+## Before tagging `v1.0.0`
+
+- [x] **Doc sweep complete**: all 13 doc files updated to reflect Slices 13–21 cumulative state; `docs/migration-from-upstream.md` written.
+- [x] **Migration guide live**: `docs/migration-from-upstream.md` added; link placed in README.md install block and in `docs/npm-publishing.md` §At launch.
+- [x] **All 5 Slice-15 bug regressions locked**: `#607` disabledDates guard, `#658` TDZ color fallback, `#664/#663` date-fns ESM interop — all have regression tests.
+- [x] **Strict TypeScript + a11y in place**: `tsconfig.json` `strict: true` enabled; `checkJs` deferred to `1.0.x`; navigation and role-based accessibility verified (Slice 21).
+- [x] **`src/index.js` byte-identical** vs `df17998` (public API unchanged since alpha).
+- [x] **`src/index.d.ts` additive-only diff** vs `df17998` (only +33/−1 from Slice 16, no new modifications).
+- [ ] **Release verification**: run the approved release checks before tagging.
+- [ ] **`npm pack --dry-run`** shows only expected package files.
 
 ---
 

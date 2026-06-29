@@ -66,8 +66,7 @@ Scoped packages require `--access public` (or `publishConfig.access: "public"` i
    ```bash
    npm install @cyberlz/react-date-range@beta
    ```
-2. **Write a "Migrating from react-date-range" guide** — minimal friction for
-   existing users.
+2. **"Migrating from react-date-range" guide** is live at [`docs/migration-from-upstream.md`](docs/migration-from-upstream.md) — drop-in byte-compatible replacement for `react-date-range@2.0.1`.
 3. **Post in React communities**: r/reactjs, Reactiflux Discord, Twitter/X,
    dev.to, etc.
 
@@ -89,6 +88,9 @@ Scoped packages require `--access public` (or `publishConfig.access: "public"` i
 | **Beta** | `0.1.0-beta.0` | `beta` | Internal refactor complete, public API stable for `0.1.x`; Phase 2 stylability deferred to `0.2.0`. |
 | **RC** | `0.1.0-rc.0` | `rc` | Release candidate. Final testing before stable. |
 | **Stable** | `1.0.0` | `latest` | Production-ready. Follows semver strictly. |
+
+For `1.0.0`: all consumers use `npm install @cyberlz/react-date-range` (no tag required).
+`latest` is intentionally pinned to `1.0.0` after promotion.
 
 ### Before `1.0.0`
 

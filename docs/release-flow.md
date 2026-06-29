@@ -47,6 +47,10 @@ docs: add release flow documentation
 | RC | `v{version}-rc.{n}` | `v0.1.0-rc.0` |
 | Stable | `v{version}` | `v1.0.0` |
 
+**Stable tag (current target):** `v1.0.0`
+- `package.json` version: `1.0.0` (update before tagging)
+- npm dist-tag: `latest`
+
 The `package.json` `version` field **must match** the tag version exactly.
 
 **First alpha tag:** `v0.1.0-alpha.0`
@@ -148,7 +152,7 @@ npm dist-tag ls @cyberlz/react-date-range
 # Move a tag (e.g., point alpha to the first beta after publish)
 npm dist-tag add @cyberlz/react-date-range@0.1.0-beta.0 alpha
 
-# Promote stable to latest only when stable exists
+# Promote stable to latest — only when stable exists (v1.0.0 launch)
 npm dist-tag add @cyberlz/react-date-range@1.0.0 latest
 ```
 
