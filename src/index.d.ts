@@ -10,7 +10,7 @@
  * `refs` on Component) and @types/react@19 (which removed it).
  */
 
-import { Locale } from 'date-fns';
+import type { FormatOptions, Locale } from 'date-fns';
 import * as React from 'react';
 
 // =============================================================================
@@ -323,6 +323,37 @@ export interface DateRangePickerProps extends DateRangeProps, DefinedRangeProps 
 }
 
 export function DateRangePicker(props: DateRangePickerProps): React.JSX.Element;
+
+// =============================================================================
+// DateInput Component (type-only; not exported from src/index.js runtime barrel)
+// =============================================================================
+
+/**
+ * Props for the internal DateInput component used by DateDisplay.
+ * NOTE: DateInput is NOT a public runtime export — this interface is a
+ * type-only contract addition for TypeScript consumers (obs #8626).
+ */
+export interface DateInputProps {
+  className?: string | undefined;
+  readOnly?: boolean | undefined;
+  placeholder?: string | undefined;
+  ariaLabel?: string | undefined;
+  disabled?: boolean | undefined;
+  onFocus?: ((e: React.FocusEvent<HTMLInputElement>) => void) | undefined;
+  value?: Date | null | undefined;
+  dateDisplayFormat?: string | undefined;
+  dateOptions?: FormatOptions | undefined;
+  onChange?: ((date: Date) => void) | undefined;
+  minDate?: Date | undefined;
+  maxDate?: Date | undefined;
+  disabledDates?: Date[] | undefined;
+}
+
+/**
+ * Internal DateInput component — NOT exported from src/index.js runtime barrel.
+ * Type-only declaration (obs #8626).
+ */
+export function DateInput(props: DateInputProps): React.JSX.Element;
 
 // =============================================================================
 // Style import declarations (SCSS / CSS consumed by library users)
