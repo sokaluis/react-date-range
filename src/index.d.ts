@@ -10,7 +10,8 @@
  * `refs` on Component) and @types/react@19 (which removed it).
  */
 
-import type { FormatOptions, Locale } from 'date-fns';
+import type { Locale } from 'date-fns';
+import type { FormatOptions } from 'date-fns';
 import * as React from 'react';
 
 // =============================================================================
@@ -334,19 +335,19 @@ export function DateRangePicker(props: DateRangePickerProps): React.JSX.Element;
  * type-only contract addition for TypeScript consumers (obs #8626).
  */
 export interface DateInputProps {
-  className?: string | undefined;
-  readOnly?: boolean | undefined;
-  placeholder?: string | undefined;
   ariaLabel?: string | undefined;
-  disabled?: boolean | undefined;
-  onFocus?: ((e: React.FocusEvent<HTMLInputElement>) => void) | undefined;
-  value?: Date | null | undefined;
+  className?: string | undefined;
   dateDisplayFormat?: string | undefined;
   dateOptions?: FormatOptions | undefined;
-  onChange?: ((date: Date) => void) | undefined;
-  minDate?: Date | undefined;
-  maxDate?: Date | undefined;
+  disabled?: boolean | undefined;
   disabledDates?: Date[] | undefined;
+  maxDate?: Date | undefined;
+  minDate?: Date | undefined;
+  onChange?: ((date: Date) => void) | undefined;
+  onFocus?: ((e: React.FocusEvent<HTMLInputElement>) => void) | undefined;
+  placeholder?: string | undefined;
+  readOnly?: boolean | undefined;
+  value?: Date | null | undefined;
 }
 
 /**
