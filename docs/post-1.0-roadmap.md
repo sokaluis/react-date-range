@@ -36,6 +36,33 @@
 
 ---
 
+## Documentation & adoption track (runs in parallel)
+
+This track supports adoption. It does not block `1.0.x` bugfixes or product work,
+but it should happen before asking external users to evaluate the library.
+
+### Public landing page / demo
+
+Candidate direction — docs/demo only, no runtime API change.
+
+- Promote the existing [`demo/`](../demo/) into a public landing-page baseline
+- Deploy a small Vercel site with install command, live `<DateRangePicker />`, and links to npm/GitHub
+- Keep the landing honest: maintained fork, stable `1.0.0`, roadmap candidates are exploratory
+- Add the public demo URL to `README.md` once deployed
+
+### Full library documentation
+
+Candidate direction — requires docs inventory and examples.
+
+- Component docs for `Calendar`, `DateRange`, `DateRangePicker`, `DefinedRange`, and exported helpers
+- Props tables backed by `src/index.d.ts`, with examples for common use cases
+- Migration guide from upstream kept current with package releases
+- Styling/customization guide covering CSS imports, theme CSS, future CSS variables, and slot/className plans
+- Accessibility guide for keyboard navigation, ARIA expectations, and known follow-up work
+- Troubleshooting page for SSR, CJS/ESM imports, date-fns locales, and bundler integration
+
+---
+
 ## Evolution track (sequential)
 
 ### 1.1 — Ergonomics
@@ -123,5 +150,6 @@ case-by-case basis during spec for each phase.
 ## Next steps
 
 - Each `1.x` phase needs a separate spec before becoming a committed release phase.
+- Landing page and full docs need their own small docs/demo plan before deployment.
 - The 2.x/Labs track is aspirational and depends on 1.x evolution track completion.
 - Bugfixes and maintenance continue in parallel regardless of roadmap phase.

@@ -1,7 +1,7 @@
 # @cyberlz/react-date-range
 
 > Maintained fork/rescue of [`react-date-range`](https://github.com/hypeserver/react-date-range).
-> **Current channel**: `1.0.0` is the stable release target. This commit prepares stable metadata; npm publish and `latest`-tag promotion to follow. `rc` still points to `1.0.0-rc.0` until publish. See [Dist-tag policy](#dist-tag-policy) below.
+> **Current channel**: `1.0.0` is the stable release on npm `latest`. The `rc` tag remains on `1.0.0-rc.0` for historical validation. See [Dist-tag policy](#dist-tag-policy) below.
 
 ---
 
@@ -61,8 +61,8 @@ A **modern, maintained, production-ready** date range picker for React that:
 | **Phase 1** — Compatible rescue | Complete |
 | **Phase 3** — Core refactor | Complete (Slices 1–21 done) |
 
-**`@cyberlz/react-date-range@1.0.0`** is the stable release (this commit prepares metadata; npm publish pending).
-**`v1.0.0` stable** is the current release target. See
+**`@cyberlz/react-date-range@1.0.0`** is the stable release on npm `latest`.
+The first milestone is complete; future work is tracked separately. See
 [`docs/fork-roadmap.md`](docs/fork-roadmap.md) for the full plan and
 [`docs/refactor-roadmap.md`](docs/refactor-roadmap.md) for incremental refactor slices.
 
@@ -70,15 +70,15 @@ A **modern, maintained, production-ready** date range picker for React that:
 
 npm has three relevant dist-tags for this package:
 
-- **`latest`** — will point to `1.0.0` stable after npm publish. Currently points to `0.1.0-alpha.0`; promotion happens at publish time.
-- **`rc`** — points to `1.0.0-rc.0`. Current release candidate for pre-release validation: `npm install @cyberlz/react-date-range@rc`.
+- **`latest`** — points to `1.0.0` stable. Default install path: `npm install @cyberlz/react-date-range`.
+- **`rc`** — points to `1.0.0-rc.0`. Historical release candidate for pre-release validation: `npm install @cyberlz/react-date-range@rc`.
 - **`beta`** — points to `0.1.0-beta.0`. Legacy prerelease channel.
 
-After `1.0.0` stable, all consumers use `npm install @cyberlz/react-date-range` (no tag). See
+For stable installs, consumers use `npm install @cyberlz/react-date-range` (no tag). See
 [`docs/migration-from-upstream.md`](docs/migration-from-upstream.md) for upgrade instructions.
 See [`docs/release-flow.md`](docs/release-flow.md#npm-dist-tags) for the full policy.
 
-## Beta build pipeline (current)
+## Build pipeline
 
 Package build produces consumable `dist/` output:
 
@@ -117,7 +117,7 @@ No custom Vite/esbuild loaders required — the compiled output is plain JS/CSS.
 
 ### Tree-shaking
 
-Tree-shaking works since `0.1.0-alpha.3` and remains part of `1.0.0-rc.0`. The build uses `tsdown` with `unbundle: true` and a
+Tree-shaking works since `0.1.0-alpha.3` and remains part of `1.0.0`. The build uses `tsdown` with `unbundle: true` and a
 multi-entry glob, so each component is emitted as its own file and bundlers can drop unused
 exports. Verified empirically with `spikes/tree-shaking/analyze.mjs`:
 
@@ -136,23 +136,31 @@ bundlers (Vite, Webpack 5, esbuild, Rollup) get the full benefit.
 - Speculative visual redesign tracks such as dual skins or Tailwind theming
 - New features
 
+## Demo and documentation roadmap
+
+- **Local demo:** [`demo/`](demo/) is the current verified Vite consumer for `@cyberlz/react-date-range@1.0.0`.
+- **Landing page:** planned as the next public adoption asset, using the demo as the base and deploying a small public site.
+- **Full library documentation:** planned after the landing baseline, covering component props, examples, migration notes, styling, accessibility, and roadmap status.
+
+See [`docs/docs-site-plan.md`](docs/docs-site-plan.md) for the landing/docs plan and
+[`docs/post-1.0-roadmap.md`](docs/post-1.0-roadmap.md) for the broader post-1.0 direction.
+
 ## License
 
 Upstream is [MIT](https://github.com/hypeserver/react-date-range/blob/main/LICENSE).
-This workspace currently uses MIT as a placeholder — **verify and preserve the upstream
-license before publishing**. See [`NOTICE.md`](NOTICE.md).
+This package is published as MIT and preserves upstream attribution in [`NOTICE.md`](NOTICE.md).
 
 ## Navigation
 
 - [`docs/research.md`](docs/research.md) — Consolidated investigation: upstream status, issues, PRs, fork landscape
-- [`docs/fork-roadmap.md`](docs/fork-roadmap.md) — Full phase plan (0–4)
+- [`docs/fork-roadmap.md`](docs/fork-roadmap.md) — Completed rescue roadmap and milestone history
 - [`docs/refactor-roadmap.md`](docs/refactor-roadmap.md) — Completed internal refactor slices
 - [`docs/post-1.0-roadmap.md`](docs/post-1.0-roadmap.md) — Future direction for 1.x and 2.x/Labs (exploratory, not committed)
 - [`docs/build-output.md`](docs/build-output.md) — Build pipeline and tree-shaking details
 - [`docs/release-checklist.md`](docs/release-checklist.md) — Canonical release checklist
 - [`docs/release-flow.md`](docs/release-flow.md) — Tag/npm/GitHub pipeline and dist-tag policy
 - [`docs/npm-publishing.md`](docs/npm-publishing.md) — npm publishing process, costs, visibility
-- [`docs/docs-site-plan.md`](docs/docs-site-plan.md) — Landing page & Vercel timing recommendation
+- [`docs/docs-site-plan.md`](docs/docs-site-plan.md) — Landing page, demo, and full documentation plan
 
 ## Links
 
