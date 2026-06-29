@@ -10,6 +10,14 @@ For upstream release history (up to `2.0.1`), see [`CHANGELOG.upstream.md`](CHAN
 
 ---
 
+## [Unreleased]
+
+### Changed
+
+- DateInput: migrated from PureComponent class to function component with React hooks (useState, useEffect, useCallback). No public API change. Per-method destructuring defaults preserved (Slice 13). Tests rewritten to @testing-library/react (82/82 green).
+
+---
+
 ## [0.1.0-beta.0] — 2026-06-28
 
 First beta release. Internal refactor complete (Slices 1–11): all components migrated to function + hooks, real tree-shaking verified (41KB Calendar-only / 58KB DateRangePicker), build migrated to `tsdown`, Sass `@use` ready for Dart Sass 3.0, ESLint and TypeScript check wired, tests migrated to `@testing-library/react`. Public API unchanged.
