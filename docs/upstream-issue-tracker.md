@@ -24,6 +24,10 @@ Issues/PRs that required code changes and have been implemented + verified in th
 | [#577](https://github.com/hypeserver/react-date-range/issues/577) | Scroll issues in React 18 StrictMode | ✅ Resolved | Two root causes fixed: (1) stale `setTimeout` in `Calendar.componentDidMount` → crash on unmounted `this.list` ref; fixed with timer cleanup in `componentWillUnmount` + null guards. (2) ReactList stale `cachedScrollPosition` after StrictMode double-mount; fixed with `this.list.updateFrameAndClearCache()` (typeof guard). 15 Jest tests pass. User manually verified via browser smoke test in spike fixture. | Alpha 0.1 | See `spikes/scroll-strictmode/README.md`. |
 | [#653](https://github.com/hypeserver/react-date-range/issues/653) | Infinite scroll in StrictMode | ✅ Resolved | Same fix as #577 — both issues share the same root cause (StrictMode double-mount + ReactList cache staleness). Verified together. | Alpha 0.1 | See `spikes/scroll-strictmode/README.md`. |
 | [#539](https://github.com/hypeserver/react-date-range/pull/539) | `DateInput` min/max typed validation | ✅ Resolved | Editable `DateInput` now rejects values outside `minDate`/`maxDate` and dates in `disabledDates`, matching calendar grid constraints. | Alpha 0.1 | Covered by Slice 1. |
+| [#658](https://github.com/hypeserver/react-date-range/issues/658) | `DateRange.updatePreview` temporal dead zone | ✅ Resolved | Hooks migration (Slice 11) organically fixed TDZ — `color` resolved before `setPreview`. Regression lock-in test at commit `eaf0bf3`. | Alpha 0.1 | Covered by Slice 15. |
+| [#664](https://github.com/hypeserver/react-date-range/issues/664) | date-fns v4 `addYears is not a function` ( CRA/Webpack) | ✅ Resolved | All source-tree imports use named-export syntax; zero `_dateFns` wrapper references. Build config externalizes `date-fns`. Lock-in audit test at commit `b9ee316`. | Alpha 0.1 | Covered by Slice 15. |
+| [#663](https://github.com/hypeserver/react-date-range/issues/663) | date-fns v4 import changes (CRA/Webpack smoke) | ✅ Resolved | Same root fix as #664 — peer dep narrowed to `date-fns: ^3.0.0` prevents v4 import hazard. | Alpha 0.1 | Covered by Slice 15; see also #664. |
+| [#607](https://github.com/hypeserver/react-date-range/issues/607) | `disabledDates` prop crash on non-array | ✅ Resolved | Runtime array guard added at Calendar `ForwardedCalendar.resolvedProps` boundary. Guard uses frozen empty-array constant for referential stability. Fix at commit `82736b0`. | Alpha 0.1 | Covered by Slice 15 WU-1. |
 
 ---
 
@@ -57,7 +61,7 @@ Issues that are explicitly not planned for this fork, either because they expand
 
 | # | Upstream Topic | Decision | Reason |
 |---|----------------|----------|--------|
-| [#663](https://github.com/hypeserver/react-date-range/issues/663) | date-fns v4 import changes (CRA/Webpack smoke) | ⏸ Deferred | Peer dep guard (`^3.0.0`) prevents v4 imports. CRA/Webpack-specific smoke test is low-value once peer dep is enforced. Can revisit if users report issues. |
+
 | [#470](https://github.com/hypeserver/react-date-range/pull/470) | Time picker support | ❌ Out of scope | Feature expansion — changes component API. Fork mission is compatibility + stylability, not new features. |
 | [#590](https://github.com/hypeserver/react-date-range/issues/590) | Maintenance / takeover discussion | 📝 Docs only | Upstream repo is archived. This fork IS the maintenance effort. No code change needed — status documented in `research.md` and `fork-roadmap.md`. |
 
@@ -67,8 +71,8 @@ Issues that are explicitly not planned for this fork, either because they expand
 
 | Category | Count |
 |----------|-------|
-| Resolved in fork | 12 |
+| Resolved in fork | 16 (+4) |
 | Verified (no code change) | 1 |
 | Pending future phases | 5 |
-| Deferred / Out of scope | 3 |
-| **Total tracked** | **21** |
+| Deferred / Out of scope | 2 (-1) |
+| **Total tracked** | **24 (+3)** |

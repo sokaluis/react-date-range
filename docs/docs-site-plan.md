@@ -66,6 +66,7 @@
 | Beta prepared | ❌ Don't deploy |
 | Consumer smoke test passed | ❌ Don't deploy yet |
 | Minimal demo built + API docs drafted | ✅ Deploy to Vercel |
+| 1.0.0 released | ✅ Deploy to Vercel |
 | External announcement | Landing must be live |
 
 ---
@@ -74,7 +75,8 @@
 
 - [x] Consumer smoke test passes (`tsc --noEmit` + `vite build` on clean project) — React 18 ✅ and React 19 ✅, resolved from `https://registry.npmjs.org/`
 - [x] Minimal demo built (single-page Vite app importing `<DateRangePicker />`) — `demo/`, resolves from `https://registry.npmjs.org/`, typecheck ✅, build ✅
-- [ ] API docs written (props table, examples, migration notes)
+- [x] API docs written (props table, examples, migration notes) ✅
+- [x] Migration notes written — see `docs/migration-from-upstream.md` ✅
 - [ ] Vercel connected to GitHub repo
 - [ ] Landing page deployed with beta badge
 - [ ] Link added to README.md under "Demo"
