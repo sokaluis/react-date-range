@@ -11,9 +11,9 @@ export default defineConfig({
     neverBundle: [
       'react',
       'react-dom',
+      '@tanstack/react-virtual',
       'prop-types',
       'classnames',
-      'react-list',
       'shallow-equal',
       'date-fns',
       /^date-fns\//,

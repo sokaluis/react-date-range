@@ -2,41 +2,41 @@ import React from 'react';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import Calendar from '../Calendar/index.jsx';
 import DateDisplay from '../DateDisplay/index.jsx';
-import ReactList from 'react-list';
 import { isSameDay } from 'date-fns';
 import { enUS } from 'date-fns/locale/en-US';
 import { es } from 'date-fns/locale/es';
 
-let mockReactListInstance;
+let mockVirtualizerInstance;
 let mockDateDisplayProps;
 
-jest.mock('react-list', () => {
+jest.mock('@tanstack/react-virtual', () => {
   const React = require('react');
 
-  return class ReactListMock extends React.Component {
-    visibleRange = [0, 1];
+  const buildVirtualItems = visibleRange =>
+    visibleRange.map(index => ({ index, key: index, start: index * 240, size: 240 }));
 
-    constructor(props) {
-      super(props);
-      mockReactListInstance = this;
-    }
+  const useVirtualizer = options => {
+    const [visibleRange, setVisibleRange] = React.useState([0, 1]);
+    const visibleRangeRef = React.useRef(visibleRange);
+    visibleRangeRef.current = visibleRange;
 
-    getVisibleRange() {
-      return this.visibleRange;
-    }
+    const instance = React.useMemo(
+      () => ({
+        getTotalSize: () => options.count * 240,
+        getVirtualItems: () => buildVirtualItems(visibleRangeRef.current),
+        scrollToIndex: index => setVisibleRange([index, index + 1]),
+        measure: jest.fn(),
+        setVisibleRange,
+      }),
+      [options.count]
+    );
 
-    scrollTo(index) {
-      this.visibleRange = [index, index + 1];
-    }
-
-    updateFrameAndClearCache() {}
-
-    render() {
-      const [firstVisible] = this.visibleRange;
-      return <div data-testid="react-list">{this.props.itemRenderer(firstVisible, firstVisible)}</div>;
-    }
+    mockVirtualizerInstance = instance;
+    return instance;
   };
-});
+
+  return { useVirtualizer };
+}, { virtual: true });
 
 jest.mock('../DateDisplay/index.jsx', () => {
   const DateDisplayMock = props => {
@@ -72,7 +72,7 @@ const baseProps = {
 
 const renderCalendar = props => {
   mockDateDisplayProps = undefined;
-  mockReactListInstance = undefined;
+  mockVirtualizerInstance = undefined;
   return render(<Calendar {...baseProps} {...props} />);
 };
 
@@ -182,7 +182,7 @@ describe('Calendar', () => {
       expectSameDay(onShownDateChange.mock.calls[1][0], new Date(2026, 8, 15));
     });
 
-    test('non-scroll rendered months derive from updated focused date without ReactList refs', () => {
+    test('non-scroll rendered months derive from updated focused date without virtualizer refs', () => {
       const { container } = renderCalendar({
         shownDate: new Date(2025, 0, 15),
         months: 2,
@@ -376,34 +376,34 @@ describe('Calendar', () => {
       expect(calendarRef.current.setState).toBeUndefined();
     });
 
-    test('scroll focus calls updateFrameAndClearCache after scrollTo (#577, #653)', () => {
+    test('scroll focus measures after scrollToIndex (#577, #653)', () => {
       const { calendarRef } = renderScrollCalendar();
-      const list = mockReactListInstance;
-      const updateFrameAndClearCache = jest
-        .spyOn(list, 'updateFrameAndClearCache')
-        .mockImplementation(() => {});
-      const getVisibleRange = jest.spyOn(list, 'getVisibleRange').mockReturnValue([0, 10]);
-      const scrollTo = jest.spyOn(list, 'scrollTo').mockImplementation(() => {});
+      const virtualizer = mockVirtualizerInstance;
+      const measure = jest.spyOn(virtualizer, 'measure').mockImplementation(() => {});
+      const getVirtualItems = jest
+        .spyOn(virtualizer, 'getVirtualItems')
+        .mockReturnValue([{ index: 0 }, { index: 10 }]);
+      const scrollToIndex = jest.spyOn(virtualizer, 'scrollToIndex').mockImplementation(() => {});
 
       act(() => {
         calendarRef.current.focusToDate(new Date(2025, 5, 15));
       });
 
-      expect(getVisibleRange).toHaveBeenCalled();
-      expect(scrollTo).toHaveBeenCalledWith(65);
-      expect(updateFrameAndClearCache).toHaveBeenCalledTimes(1);
-      expect(scrollTo.mock.invocationCallOrder[0]).toBeLessThan(
-        updateFrameAndClearCache.mock.invocationCallOrder[0]
+      expect(getVirtualItems).toHaveBeenCalled();
+      expect(scrollToIndex).toHaveBeenCalledWith(65);
+      expect(measure).toHaveBeenCalledTimes(1);
+      expect(scrollToIndex.mock.invocationCallOrder[0]).toBeLessThan(
+        measure.mock.invocationCallOrder[0]
       );
     });
 
-    test('scroll focus is safe when updateFrameAndClearCache is missing', () => {
+    test('scroll focus is safe when measure is missing', () => {
       const { calendarRef } = renderScrollCalendar();
-      const list = mockReactListInstance;
-      jest.spyOn(list, 'getVisibleRange').mockReturnValue([0, 10]);
-      const scrollTo = jest.spyOn(list, 'scrollTo').mockImplementation(() => {});
-      const originalUpdateFrameAndClearCache = list.updateFrameAndClearCache;
-      list.updateFrameAndClearCache = undefined;
+      const virtualizer = mockVirtualizerInstance;
+      jest.spyOn(virtualizer, 'getVirtualItems').mockReturnValue([{ index: 0 }, { index: 10 }]);
+      const scrollToIndex = jest.spyOn(virtualizer, 'scrollToIndex').mockImplementation(() => {});
+      const originalMeasure = virtualizer.measure;
+      virtualizer.measure = undefined;
 
       expect(() => {
         act(() => {
@@ -411,47 +411,71 @@ describe('Calendar', () => {
         });
       }).not.toThrow();
 
-      expect(scrollTo).toHaveBeenCalledWith(65);
-      list.updateFrameAndClearCache = originalUpdateFrameAndClearCache;
+      expect(scrollToIndex).toHaveBeenCalledWith(65);
+      virtualizer.measure = originalMeasure;
     });
 
-    test('handleScroll updates frame before reading visible range and reports later scrolls', () => {
+    test('handleScroll measures before reading visible range and reports later scrolls', () => {
       const onShownDateChange = jest.fn();
       const { view } = renderScrollCalendar({ onShownDateChange });
-      const list = mockReactListInstance;
-      const updateFrameAndClearCache = jest
-        .spyOn(list, 'updateFrameAndClearCache')
-        .mockImplementation(() => {});
-      const getVisibleRange = jest
-        .spyOn(list, 'getVisibleRange')
-        .mockReturnValueOnce([65, 66])
-        .mockReturnValueOnce([66, 67]);
+      const virtualizer = mockVirtualizerInstance;
+      const measure = jest.spyOn(virtualizer, 'measure').mockImplementation(() => {});
+      const getVirtualItems = jest
+        .spyOn(virtualizer, 'getVirtualItems')
+        .mockReturnValueOnce([{ index: 65 }, { index: 66 }])
+        .mockReturnValueOnce([{ index: 66 }, { index: 67 }]);
       const scrollContainer = findScrollContainer(view.container);
 
       fireEvent.scroll(scrollContainer);
       fireEvent.scroll(scrollContainer);
 
-      expect(updateFrameAndClearCache).toHaveBeenCalledTimes(2);
-      expect(updateFrameAndClearCache.mock.invocationCallOrder[0]).toBeLessThan(
-        getVisibleRange.mock.invocationCallOrder[0]
+      expect(measure).toHaveBeenCalledTimes(2);
+      expect(measure.mock.invocationCallOrder[0]).toBeLessThan(
+        getVirtualItems.mock.invocationCallOrder[0]
       );
       expect(onShownDateChange).toHaveBeenCalledTimes(1);
       expectSameDay(onShownDateChange.mock.calls[0][0], new Date(2025, 6, 1));
     });
 
-    test('handleScroll is safe when visible range is empty or updateFrameAndClearCache is missing', () => {
+    test('handleScroll is safe when visible range is empty or measure is missing', () => {
       const { view } = renderScrollCalendar();
-      const list = mockReactListInstance;
-      jest.spyOn(list, 'getVisibleRange').mockReturnValue([]);
-      const originalUpdateFrameAndClearCache = list.updateFrameAndClearCache;
-      list.updateFrameAndClearCache = undefined;
+      const virtualizer = mockVirtualizerInstance;
+      jest.spyOn(virtualizer, 'getVirtualItems').mockReturnValue([]);
+      const originalMeasure = virtualizer.measure;
+      virtualizer.measure = undefined;
       const scrollContainer = findScrollContainer(view.container);
 
       expect(() => {
         fireEvent.scroll(scrollContainer);
       }).not.toThrow();
 
-      list.updateFrameAndClearCache = originalUpdateFrameAndClearCache;
+      virtualizer.measure = originalMeasure;
+    });
+
+    test('scroll virtualization renders only the current virtual window and can move back', () => {
+      const { view } = renderScrollCalendar({
+        scroll: { enabled: true, monthHeight: 240, longMonthHeight: 280, calendarHeight: 420 },
+        minDate: new Date(1900, 0, 1),
+        maxDate: new Date(2019, 11, 31),
+        shownDate: new Date(1900, 0, 15),
+        showMonthAndYearPickers: false,
+      });
+
+      expect(visibleMonthLabels(view.container)).toEqual(['Jan 1900', 'Feb 1900']);
+
+      act(() => {
+        mockVirtualizerInstance.setVisibleRange([120, 121]);
+      });
+
+      expect(visibleMonthLabels(view.container)).toEqual(['Jan 1910', 'Feb 1910']);
+      expect(view.container.querySelectorAll('.rdrMonth')).toHaveLength(2);
+
+      act(() => {
+        mockVirtualizerInstance.setVisibleRange([0, 1]);
+      });
+
+      expect(visibleMonthLabels(view.container)).toEqual(['Jan 1900', 'Feb 1900']);
+      expect(view.container.querySelectorAll('.rdrMonth')).toHaveLength(2);
     });
 
     test('scroll focus timer is cleaned up on unmount', () => {

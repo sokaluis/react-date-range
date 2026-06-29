@@ -6,13 +6,11 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import PropTypes from 'prop-types';
-import { rangeShape } from '../DayCell';
 import Month from '../Month';
 import DateDisplay from '../DateDisplay';
 import { calcFocusDate, generateStyles, getMonthDisplayRange } from '../../utils';
 import classnames from 'classnames';
-import ReactListModule from 'react-list';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import {
   addMonths,
   subMonths,
@@ -35,8 +33,6 @@ import {
 } from 'date-fns';
 import { enUS as defaultLocale } from 'date-fns/locale/en-US';
 import coreStyles from '../../styles';
-import { ariaLabelsShape } from '../../accessibility';
-
 const calendarDefaultProps = {
   showMonthArrow: true,
   showMonthAndYearPickers: true,
@@ -73,7 +69,6 @@ const calendarDefaultProps = {
 };
 
 const uninitializedTargetProp = Symbol('uninitializedTargetProp');
-const ReactList = ReactListModule.default || ReactListModule;
 
 const mergeDefaultProps = props =>
   Object.keys(calendarDefaultProps).reduce(
@@ -126,8 +121,8 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
   });
   const [previewState, setPreviewState] = useState(null);
   const focusedDateRef = useRef(focusedDate);
+  const scrollContainerRef = useRef(null);
   const listRef = useRef(null);
-  const listSizeCacheRef = useRef({});
   const isFirstRenderRef = useRef(true);
   const focusTimerRef = useRef(null);
   const focusToDateRef = useRef(null);
@@ -136,6 +131,50 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
   useEffect(() => {
     focusedDateRef.current = focusedDate;
   }, [focusedDate]);
+
+  const estimateMonthSize = useCallback(
+    index => {
+      const { direction, minDate, _calendarScrollArea: scrollArea } = props;
+      if (direction === 'horizontal') return scrollArea.monthWidth;
+      const monthStep = addMonths(minDate, index);
+      const { start, end } = getMonthDisplayRange(monthStep, dateOptions);
+      const isLongMonth = differenceInDays(end, start, dateOptions) + 1 > 7 * 5;
+      return isLongMonth ? scrollArea.longMonthHeight : scrollArea.monthHeight;
+    },
+    [dateOptions, props]
+  );
+
+  const monthCount = useMemo(
+    () =>
+      props.scroll.enabled
+        ? differenceInCalendarMonths(
+          endOfMonth(props.maxDate),
+          addDays(startOfMonth(props.minDate), -1),
+          dateOptions
+        )
+        : 0,
+    [dateOptions, props.maxDate, props.minDate, props.scroll.enabled]
+  );
+
+  const monthVirtualizer = useVirtualizer({
+    count: monthCount,
+    getScrollElement: () => scrollContainerRef.current,
+    estimateSize: estimateMonthSize,
+    horizontal: props.direction === 'horizontal',
+    overscan: 2,
+  });
+
+  useEffect(() => {
+    listRef.current = {
+      getVisibleRange: () => monthVirtualizer.getVirtualItems().map(item => item.index),
+      scrollTo: index => monthVirtualizer.scrollToIndex(index),
+      updateFrameAndClearCache: () => {
+        if (typeof monthVirtualizer.measure === 'function') {
+          monthVirtualizer.measure();
+        }
+      },
+    };
+  }, [monthVirtualizer]);
 
   const focusToDate = useCallback(
     (date, nextProps = props, preventUnnecessary = true) => {
@@ -214,22 +253,6 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
     }
     isFirstRenderRef.current = false;
   }, [props]);
-
-  const estimateMonthSize = useCallback(
-    (index, cache) => {
-      const { direction, minDate, _calendarScrollArea: scrollArea } = props;
-      if (cache) {
-        listSizeCacheRef.current = cache;
-        if (cache[index]) return cache[index];
-      }
-      if (direction === 'horizontal') return scrollArea.monthWidth;
-      const monthStep = addMonths(minDate, index);
-      const { start, end } = getMonthDisplayRange(monthStep, dateOptions);
-      const isLongMonth = differenceInDays(end, start, dateOptions) + 1 > 7 * 5;
-      return isLongMonth ? scrollArea.longMonthHeight : scrollArea.monthHeight;
-    },
-    [dateOptions, props]
-  );
 
   useEffect(() => {
     const propMapper = {
@@ -466,7 +489,6 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
     direction,
     disabledDates,
     disabledDay,
-    maxDate,
     minDate,
     rangeColors,
     color,
@@ -481,6 +503,10 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
     ...range,
     color: range.color || rangeColors[i] || color,
   }));
+  const virtualMonths = scroll.enabled ? monthVirtualizer.getVirtualItems() : [];
+  const virtualSizeStyle = isVertical
+    ? { height: monthVirtualizer.getTotalSize(), width: '100%', position: 'relative' }
+    : { width: monthVirtualizer.getTotalSize(), height: '100%', position: 'relative' };
 
   return (
     <div
@@ -515,27 +541,32 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
               width: scrollArea.calendarWidth + 11,
               height: scrollArea.calendarHeight + 11,
             }}
+            ref={scrollContainerRef}
             onScroll={handleScroll}>
-            <ReactList
-              length={differenceInCalendarMonths(
-                endOfMonth(maxDate),
-                addDays(startOfMonth(minDate), -1),
-                dateOptions
-              )}
-              treshold={500}
-              type="variable"
-              ref={target => (listRef.current = target)}
-              itemSizeEstimator={estimateMonthSize}
-              axis={isVertical ? 'y' : 'x'}
-              itemRenderer={(index, key) => {
-                const monthStep = addMonths(minDate, index);
+            <div style={virtualSizeStyle}>
+              {virtualMonths.map(virtualMonth => {
+                const monthStep = addMonths(minDate, virtualMonth.index);
+                const itemStyle = {
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  transform: isVertical
+                    ? `translateY(${virtualMonth.start}px)`
+                    : `translateX(${virtualMonth.start}px)`,
+                };
                 return (
+                  <div
+                    key={virtualMonth.key ?? virtualMonth.index}
+                    style={
+                      isVertical
+                        ? { ...itemStyle, height: virtualMonth.size, width: '100%' }
+                        : { ...itemStyle, width: virtualMonth.size, height: '100%' }
+                    }>
                   <Month
                     {...props}
                     onPreviewChange={onPreviewChange || updatePreview}
                     preview={preview || previewState}
                     ranges={ranges}
-                    key={key}
                     drag={drag}
                     dateOptions={dateOptions}
                     disabledDates={disabledDates}
@@ -548,15 +579,16 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
                     styles={styles}
                     style={
                       isVertical
-                        ? { height: estimateMonthSize(index) }
-                        : { height: scrollArea.monthHeight, width: estimateMonthSize(index) }
+                        ? { height: estimateMonthSize(virtualMonth.index) }
+                        : { height: scrollArea.monthHeight, width: estimateMonthSize(virtualMonth.index) }
                     }
                     showMonthName
                     showWeekDays={!isVertical}
                   />
+                  </div>
                 );
-              }}
-            />
+              })}
+            </div>
           </div>
         </div>
       ) : (
@@ -629,61 +661,5 @@ const ForwardedCalendar = React.forwardRef(function Calendar(props, ref) {
 const Calendar = ForwardedCalendar;
 
 Calendar.defaultProps = calendarDefaultProps;
-
-Calendar.propTypes = {
-  showMonthArrow: PropTypes.bool,
-  showMonthAndYearPickers: PropTypes.bool,
-  disabledDates: PropTypes.array,
-  disabledDay: PropTypes.func,
-  minDate: PropTypes.object,
-  maxDate: PropTypes.object,
-  date: PropTypes.object,
-  onChange: PropTypes.func,
-  onPreviewChange: PropTypes.func,
-  onRangeFocusChange: PropTypes.func,
-  classNames: PropTypes.object,
-  locale: PropTypes.object,
-  shownDate: PropTypes.object,
-  onShownDateChange: PropTypes.func,
-  ranges: PropTypes.arrayOf(rangeShape),
-  preview: PropTypes.shape({
-    startDate: PropTypes.object,
-    endDate: PropTypes.object,
-    color: PropTypes.string,
-  }),
-  dateDisplayFormat: PropTypes.string,
-  monthDisplayFormat: PropTypes.string,
-  weekdayDisplayFormat: PropTypes.string,
-  weekStartsOn: PropTypes.number,
-  dayDisplayFormat: PropTypes.string,
-  focusedRange: PropTypes.arrayOf(PropTypes.number),
-  initialFocusedRange: PropTypes.arrayOf(PropTypes.number),
-  months: PropTypes.number,
-  className: PropTypes.string,
-  showDateDisplay: PropTypes.bool,
-  showPreview: PropTypes.bool,
-  displayMode: PropTypes.oneOf(['dateRange', 'date']),
-  color: PropTypes.string,
-  updateRange: PropTypes.func,
-  scroll: PropTypes.shape({
-    enabled: PropTypes.bool,
-    monthHeight: PropTypes.number,
-    longMonthHeight: PropTypes.number,
-    monthWidth: PropTypes.number,
-    calendarWidth: PropTypes.number,
-    calendarHeight: PropTypes.number,
-  }),
-  direction: PropTypes.oneOf(['vertical', 'horizontal']),
-  startDatePlaceholder: PropTypes.string,
-  endDatePlaceholder: PropTypes.string,
-  navigatorRenderer: PropTypes.func,
-  rangeColors: PropTypes.arrayOf(PropTypes.string),
-  editableDateInputs: PropTypes.bool,
-  dragSelectionEnabled: PropTypes.bool,
-  fixedHeight: PropTypes.bool,
-  calendarFocus: PropTypes.string,
-  preventSnapRefocus: PropTypes.bool,
-  ariaLabels: ariaLabelsShape,
-};
 
 export default Calendar;
