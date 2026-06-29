@@ -113,5 +113,51 @@ describe('defaultInputRanges', () => {
       expect(typeof result2).toBe('number');
       expect(result2).toBeGreaterThan(0);
     });
+
+    // REQ-CG-004: range(0) produces a sensible same-day range
+    test('range(0) produces valid startDate/endDate (same-day range)', () => {
+      defaultInputRanges.forEach(inputRange => {
+        const range = inputRange.range(0);
+        expect(range.startDate).toBeInstanceOf(Date);
+        expect(range.endDate).toBeInstanceOf(Date);
+        expect(range.startDate.getTime()).not.toBeNaN();
+        expect(range.endDate.getTime()).not.toBeNaN();
+        // range(0) should produce a same-day range (start <= end)
+        expect(range.startDate.getTime()).toBeLessThanOrEqual(range.endDate.getTime());
+      });
+    });
+
+    // REQ-CG-004: range(NaN) produces Invalid Date (known edge — do NOT "fix" in production)
+    // Each input range has one endpoint computed from value and one fixed to "today"
+    test('range(NaN) produces Invalid Date on value-derived endpoint (known edge)', () => {
+      // defaultInputRanges[0]: startDate derived from value, endDate = endOfToday
+      const range0 = defaultInputRanges[0].range(NaN);
+      expect(Number.isNaN(range0.startDate.getTime())).toBe(true); // derived from value
+      expect(Number.isNaN(range0.endDate.getTime())).toBe(false); // fixed to endOfToday
+
+      // defaultInputRanges[1]: startDate = today, endDate derived from value
+      const range1 = defaultInputRanges[1].range(NaN);
+      expect(Number.isNaN(range1.startDate.getTime())).toBe(false); // fixed to today
+      expect(Number.isNaN(range1.endDate.getTime())).toBe(true); // derived from value
+    });
+
+    // REQ-CG-004: getCurrentValue returns '∞' when endpoint is null (unbounded range)
+    test("getCurrentValue returns '∞' when startDate is null (unbounded range)", () => {
+      // "days up to today" with open start
+      const result0 = defaultInputRanges[0].getCurrentValue({
+        startDate: null,
+        endDate: new Date(),
+      });
+      expect(result0).toBe('∞');
+    });
+
+    test("getCurrentValue returns '∞' when endDate is null (unbounded range)", () => {
+      // "days starting today" with open end
+      const result1 = defaultInputRanges[1].getCurrentValue({
+        startDate: new Date(),
+        endDate: null,
+      });
+      expect(result1).toBe('∞');
+    });
   });
 });
