@@ -691,7 +691,7 @@ const ForwardedCalendar = React.forwardRef(function Calendar(
     ...rest,
   };
   const dateOptions = useMemo(
-    () => getDateOptions(resolvedProps),
+    () => getDateOptions({ locale: resolvedProps.locale, weekStartsOn: resolvedProps.weekStartsOn }),
     [resolvedProps.locale, resolvedProps.weekStartsOn]
   );
   const styles = useMemo(
@@ -700,7 +700,7 @@ const ForwardedCalendar = React.forwardRef(function Calendar(
   );
   const monthNames = useMemo(() => getMonthNames(resolvedProps.locale), [resolvedProps.locale]);
   const scrollArea = useMemo(
-    () => calcScrollArea(resolvedProps),
+    () => calcScrollArea({ direction: resolvedProps.direction, months: resolvedProps.months, scroll: resolvedProps.scroll }),
     [resolvedProps.direction, resolvedProps.months, resolvedProps.scroll]
   );
 

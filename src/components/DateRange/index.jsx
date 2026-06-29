@@ -26,15 +26,18 @@ const DateRange = forwardRef(function DateRange(
   },
   ref
 ) {
-  const props = {
-    classNames,
-    ranges,
-    moveRangeOnFirstSelection,
-    retainEndDateOnFirstSelection,
-    rangeColors,
-    disabledDates,
-    ...rest,
-  };
+  const props = useMemo(
+    () => ({
+      classNames,
+      ranges,
+      moveRangeOnFirstSelection,
+      retainEndDateOnFirstSelection,
+      rangeColors,
+      disabledDates,
+      ...rest,
+    }),
+    [classNames, ranges, moveRangeOnFirstSelection, retainEndDateOnFirstSelection, rangeColors, disabledDates, rest]
+  );
   const calendarRef = useRef(null);
   const [focusedRangeState, setFocusedRangeState] = useState(
     () => props.initialFocusedRange || [findNextRangeIndex(props.ranges), 0]
