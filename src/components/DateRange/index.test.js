@@ -1,7 +1,7 @@
 import React from 'react';
 import { act, render, screen } from '@testing-library/react';
 import { subDays, addDays, isSameDay } from 'date-fns';
-import DateRange from '../DateRange/index.jsx';
+import DateRange, { dateRangeDefaultProps } from '../DateRange/index.jsx';
 import Calendar from '../Calendar/index.jsx';
 
 let latestCalendarProps;
@@ -27,7 +27,7 @@ const endDate = new Date(2025, 5, 15);
 const startDate = subDays(endDate, 7);
 
 const commonProps = {
-  ...DateRange.defaultProps,
+  ...dateRangeDefaultProps,
   ranges: [{ startDate, endDate, key: 'selection' }],
   onChange: () => {},
   moveRangeOnFirstSelection: false,
@@ -132,7 +132,7 @@ describe('DateRange', () => {
     const { ref } = renderDateRange();
 
     expect(DateRange.$$typeof).toBe(Symbol.for('react.forward_ref'));
-    expect(DateRange.defaultProps.rangeColors).toEqual(['#3d91ff', '#3ecf8e', '#fed14c']);
+    expect(DateRange.defaultProps).toBeUndefined();
     ['calcNewSelection', 'updatePreview', 'focusToDate', 'changeShownDate', 'updateShownDate', 'handleScroll'].forEach(
       methodName => expect(ref.current[methodName]).toEqual(expect.any(Function))
     );

@@ -14,8 +14,27 @@ const dateRangeDefaultProps = {
   disabledDates: [],
 };
 
-const DateRange = forwardRef(function DateRange(rawProps, ref) {
-  const props = Object.keys(rawProps).reduce((mergedProps, propName) => (rawProps[propName] === undefined ? mergedProps : { ...mergedProps, [propName]: rawProps[propName] }), { ...dateRangeDefaultProps });
+const DateRange = forwardRef(function DateRange(
+  {
+    classNames = dateRangeDefaultProps.classNames,
+    ranges = dateRangeDefaultProps.ranges,
+    moveRangeOnFirstSelection = dateRangeDefaultProps.moveRangeOnFirstSelection,
+    retainEndDateOnFirstSelection = dateRangeDefaultProps.retainEndDateOnFirstSelection,
+    rangeColors = dateRangeDefaultProps.rangeColors,
+    disabledDates = dateRangeDefaultProps.disabledDates,
+    ...rest
+  },
+  ref
+) {
+  const props = {
+    classNames,
+    ranges,
+    moveRangeOnFirstSelection,
+    retainEndDateOnFirstSelection,
+    rangeColors,
+    disabledDates,
+    ...rest,
+  };
   const calendarRef = useRef(null);
   const [focusedRangeState, setFocusedRangeState] = useState(
     () => props.initialFocusedRange || [findNextRangeIndex(props.ranges), 0]
@@ -175,6 +194,5 @@ const DateRange = forwardRef(function DateRange(rawProps, ref) {
   );
 });
 
-DateRange.defaultProps = dateRangeDefaultProps;
-
+export { dateRangeDefaultProps };
 export default DateRange;
