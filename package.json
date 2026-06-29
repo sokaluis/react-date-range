@@ -11,7 +11,7 @@
   "bugs": {
     "url": "https://github.com/sokaluis/react-date-range/issues"
   },
-  "homepage": "https://github.com/sokaluis/react-date-range#readme",
+  "homepage": "https://sokaluis.github.io/react-date-range/",
   "publishConfig": {
     "access": "public"
   },
