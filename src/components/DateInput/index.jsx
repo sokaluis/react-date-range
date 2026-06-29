@@ -1,107 +1,117 @@
-import React, { PureComponent } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import classnames from 'classnames';
-import { format, parse, isValid, isEqual, startOfDay, endOfDay, isAfter, isBefore, isSameDay } from 'date-fns';
+import { format, parse, isValid, startOfDay, endOfDay, isAfter, isBefore, isSameDay } from 'date-fns';
 
-class DateInput extends PureComponent {
-  constructor(props, context) {
-    super(props, context);
+function DateInput(props) {
+  const {
+    className,
+    readOnly = true,
+    placeholder,
+    ariaLabel,
+    disabled = false,
+    onFocus,
+    value,
+    dateDisplayFormat = 'MMM D, YYYY',
+    dateOptions,
+    onChange,
+    minDate,
+    maxDate,
+    disabledDates = [],
+  } = props;
 
-    this.state = {
-      invalid: false,
-      changed: false,
-      value: this.formatDate(props),
-    };
-  }
+  const [invalid, setInvalid] = useState(false);
+  const [changed, setChanged] = useState(false);
 
-  componentDidUpdate(prevProps) {
-    const { value } = prevProps;
+  // Lazy initializer: formatDate runs once on mount (Spec Risk #6 — arrow wrapper)
+  const [inputValue, setInputValue] = useState(() =>
+    formatDate({ value, dateDisplayFormat, dateOptions })
+  );
 
-    if (!isEqual(value, this.props.value)) {
-      this.setState({ value: this.formatDate(this.props) });
-    }
-  }
-
-  formatDate({ value, dateDisplayFormat = 'MMM D, YYYY', dateOptions }) {
-    if (value && isValid(value)) {
-      return format(value, dateDisplayFormat, dateOptions);
+  function formatDate({ value: v, dateDisplayFormat: fmt, dateOptions: opts }) {
+    if (v && isValid(v)) {
+      return format(v, fmt, opts);
     }
     return '';
   }
 
-  isWithinConstraints(parsed) {
-    const { minDate, maxDate, disabledDates = [] } = this.props;
-
-    if (minDate && isBefore(startOfDay(parsed), startOfDay(minDate))) {
-      return false;
-    }
-    if (maxDate && isAfter(endOfDay(parsed), endOfDay(maxDate))) {
-      return false;
-    }
-    if (disabledDates.some(d => isSameDay(d, parsed))) {
-      return false;
-    }
-    return true;
-  }
-
-  update(value) {
-    const { invalid, changed } = this.state;
-
-    if (invalid || !changed || !value) {
+  // Controlled-sync effect: re-format when external props.value changes,
+  // but skip if user is mid-edit (changed flag — REQ-HM-003, Spec Risk #1).
+  // We intentionally call setInputValue inside this effect because the
+  // controlled-input pattern requires syncing state from props. The changed
+  // guard prevents clobbering user mid-typing on parent re-renders.
+  /* eslint-disable react-hooks/set-state-in-effect */
+  useEffect(() => {
+    if (changed) {
       return;
     }
+    setInputValue(formatDate({ value, dateDisplayFormat, dateOptions }));
+  }, [value, dateDisplayFormat, dateOptions, changed]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
-    const { onChange, dateDisplayFormat = 'MMM D, YYYY', dateOptions } = this.props;
-    const parsed = parse(value, dateDisplayFormat, new Date(), dateOptions);
-
-    if (isValid(parsed)) {
-      if (this.isWithinConstraints(parsed)) {
-        this.setState({ changed: false }, () => onChange(parsed));
-      } else {
-        this.setState({ invalid: true });
+  const isWithinConstraints = useCallback(
+    (parsed) => {
+      if (minDate && isBefore(startOfDay(parsed), startOfDay(minDate))) {
+        return false;
       }
-    } else {
-      this.setState({ invalid: true });
-    }
-  }
+      if (maxDate && isAfter(endOfDay(parsed), endOfDay(maxDate))) {
+        return false;
+      }
+      if (disabledDates.some(d => isSameDay(d, parsed))) {
+        return false;
+      }
+      return true;
+    },
+    [minDate, maxDate, disabledDates]
+  );
 
-  onKeyDown = e => {
-    const { value } = this.state;
+  const update = useCallback(
+    (val) => {
+      if (invalid || !changed || !val) {
+        return;
+      }
 
-    if (e.key === 'Enter') {
-      this.update(value);
-    }
-  };
+      const parsed = parse(val, dateDisplayFormat, new Date(), dateOptions);
 
-  onChange = e => {
-    this.setState({ value: e.target.value, changed: true, invalid: false });
-  };
+      if (isValid(parsed)) {
+        if (isWithinConstraints(parsed)) {
+          setChanged(false);
+          // Spec Risk #2: onChange after setChanged — React 18+ batches both,
+          // so parent reading changed synchronously sees stale value. Acceptable.
+          onChange(parsed);
+        } else {
+          setInvalid(true);
+        }
+      } else {
+        setInvalid(true);
+      }
+    },
+    [invalid, changed, dateDisplayFormat, dateOptions, onChange, isWithinConstraints]
+  );
 
-  onBlur = () => {
-    const { value } = this.state;
-    this.update(value);
-  };
-
-  render() {
-    const { className, readOnly = true, placeholder, ariaLabel, disabled = false, onFocus } = this.props;
-    const { value, invalid } = this.state;
-
-    return (
-      <span className={classnames('rdrDateInput', className)}>
-        <input
-          readOnly={readOnly}
-          disabled={disabled}
-          value={value}
-          placeholder={placeholder}
-          aria-label={ariaLabel}
-          onKeyDown={this.onKeyDown}
-          onChange={this.onChange}
-          onBlur={this.onBlur}
-          onFocus={onFocus}
-        />
-        {invalid && <span className="rdrWarning">&#9888;</span>}
-      </span>
-    );
-  }
+  return (
+    <span className={classnames('rdrDateInput', className)}>
+      <input
+        readOnly={readOnly}
+        disabled={disabled}
+        value={inputValue}
+        placeholder={placeholder}
+        aria-label={ariaLabel}
+        onKeyDown={e => {
+          if (e.key === 'Enter') {
+            update(inputValue);
+          }
+        }}
+        onChange={e => {
+          setInputValue(e.target.value);
+          setChanged(true);
+          setInvalid(false);
+        }}
+        onBlur={() => update(inputValue)}
+        onFocus={onFocus}
+      />
+      {invalid && <span className="rdrWarning">&#9888;</span>}
+    </span>
+  );
 }
 
 export default DateInput;
