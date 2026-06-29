@@ -1,7 +1,7 @@
 import React from 'react';
 import { act, render, screen } from '@testing-library/react';
 import { subDays, addDays, isSameDay } from 'date-fns';
-import DateRange, { dateRangeDefaultProps } from '../DateRange/index.jsx';
+import DateRange from '../DateRange/index.jsx';
 import Calendar from '../Calendar/index.jsx';
 import fs from 'fs';
 import path from 'path';
@@ -29,7 +29,12 @@ const endDate = new Date(2025, 5, 15);
 const startDate = subDays(endDate, 7);
 
 const commonProps = {
-  ...dateRangeDefaultProps,
+  classNames: {},
+  ranges: [],
+  moveRangeOnFirstSelection: false,
+  retainEndDateOnFirstSelection: false,
+  rangeColors: ['#3d91ff', '#3ecf8e', '#fed14c'],
+  disabledDates: [],
   ranges: [{ startDate, endDate, key: 'selection' }],
   onChange: () => {},
   moveRangeOnFirstSelection: false,

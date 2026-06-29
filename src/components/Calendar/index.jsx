@@ -729,5 +729,4 @@ const ForwardedCalendar = React.forwardRef(function Calendar(
 
 const Calendar = ForwardedCalendar;
 
-export { calendarDefaultProps };
 export default Calendar;

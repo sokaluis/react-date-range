@@ -2,7 +2,7 @@ import React from 'react';
 import { act, render, screen } from '@testing-library/react';
 import { addDays } from 'date-fns';
 import DateRangePicker from '../DateRangePicker/index.jsx';
-import DateRange, { dateRangeDefaultProps as drDefaults } from '../DateRange/index.jsx';
+import DateRange from '../DateRange/index.jsx';
 import DefinedRange from '../DefinedRange/index.jsx';
 
 let mockLatestDateRangeProps;
@@ -47,7 +47,12 @@ const ranges = [
 ];
 
 const baseProps = {
-  ...drDefaults,
+  classNames: {},
+  ranges: [],
+  moveRangeOnFirstSelection: false,
+  retainEndDateOnFirstSelection: false,
+  rangeColors: ['#3d91ff', '#3ecf8e', '#fed14c'],
+  disabledDates: [],
   ranges,
   onChange: () => {},
   staticRanges: [],

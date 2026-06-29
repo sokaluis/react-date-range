@@ -197,5 +197,4 @@ const DateRange = forwardRef(function DateRange(
   );
 });
 
-export { dateRangeDefaultProps };
 export default DateRange;

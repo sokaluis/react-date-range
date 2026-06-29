@@ -1,6 +1,6 @@
 import React from 'react';
 import { act, fireEvent, render, screen } from '@testing-library/react';
-import Calendar, { calendarDefaultProps } from '../Calendar/index.jsx';
+import Calendar from '../Calendar/index.jsx';
 import DateDisplay from '../DateDisplay/index.jsx';
 import { isSameDay } from 'date-fns';
 import { enUS } from 'date-fns/locale/en-US';
@@ -54,7 +54,36 @@ const selectionRange = {
 };
 
 const baseProps = {
-  ...calendarDefaultProps,
+  showMonthArrow: true,
+  showMonthAndYearPickers: true,
+  disabledDates: [],
+  disabledDay: () => {},
+  classNames: {},
+  locale: enUS,
+  ranges: [],
+  focusedRange: [0, 0],
+  dateDisplayFormat: 'MMM d, yyyy',
+  monthDisplayFormat: 'MMM yyyy',
+  weekdayDisplayFormat: 'E',
+  dayDisplayFormat: 'd',
+  showDateDisplay: true,
+  showPreview: true,
+  displayMode: 'date',
+  months: 1,
+  color: '#3d91ff',
+  scroll: { enabled: false },
+  direction: 'vertical',
+  maxDate: new Date(2090, 0, 1),
+  minDate: new Date(1925, 0, 1),
+  rangeColors: ['#3d91ff', '#3ecf8e', '#fed14c'],
+  startDatePlaceholder: 'Early',
+  endDatePlaceholder: 'Continuous',
+  editableDateInputs: false,
+  dragSelectionEnabled: true,
+  fixedHeight: false,
+  calendarFocus: 'forwards',
+  preventSnapRefocus: false,
+  ariaLabels: {},
   shownDate: new Date(2025, 5, 15),
   minDate: new Date(2025, 0, 1),
   maxDate: new Date(2025, 11, 31),
