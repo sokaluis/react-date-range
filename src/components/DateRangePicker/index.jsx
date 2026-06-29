@@ -52,6 +52,4 @@ const DateRangePicker = forwardRef(function DateRangePicker(props, ref) {
   );
 });
 
-DateRangePicker.defaultProps = {};
-
 export default DateRangePicker;

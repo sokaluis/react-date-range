@@ -2,7 +2,7 @@ import React from 'react';
 import { act, render, screen } from '@testing-library/react';
 import { addDays } from 'date-fns';
 import DateRangePicker from '../DateRangePicker/index.jsx';
-import DateRange from '../DateRange/index.jsx';
+import DateRange, { dateRangeDefaultProps as drDefaults } from '../DateRange/index.jsx';
 import DefinedRange from '../DefinedRange/index.jsx';
 
 let mockLatestDateRangeProps;
@@ -47,7 +47,7 @@ const ranges = [
 ];
 
 const baseProps = {
-  ...DateRange.defaultProps,
+  ...drDefaults,
   ranges,
   onChange: () => {},
   staticRanges: [],
@@ -68,7 +68,7 @@ describe('DateRangePicker hooks parity', () => {
     const { ref } = renderDateRangePicker({ className: 'customPicker' });
 
     expect(DateRangePicker.$$typeof).toBe(Symbol.for('react.forward_ref'));
-    expect(DateRangePicker.defaultProps).toEqual({});
+    expect(DateRangePicker.defaultProps).toBeUndefined();
     expect(ref.current.setState).toBeUndefined();
     expect(mockLatestDefinedRangeProps.className).toBeUndefined();
     expect(mockLatestDateRangeProps.className).toBeUndefined();
