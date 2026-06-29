@@ -30,6 +30,11 @@ import {
   differenceInDays,
   min,
   max,
+  subYears,
+  isBefore,
+  isAfter,
+  startOfDay,
+  endOfDay,
 } from 'date-fns';
 import { enUS as defaultLocale } from 'date-fns/locale/en-US';
 import coreStyles from '../../styles';
@@ -120,6 +125,7 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
   const scrollContainerRef = useRef(null);
   const listRef = useRef(null);
   const isFirstRenderRef = useRef(true);
+  const calendarWrapperRef = useRef(null);
   const focusTimerRef = useRef(null);
   const focusToDateRef = useRef(null);
   const previousTargetPropRef = useRef(uninitializedTargetProp);
@@ -360,6 +366,62 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
     [drag, props.dragSelectionEnabled]
   );
 
+  // REQ-CG-005: keyboard navigation on calendar day cells
+  const handleCalendarKeyDown = useCallback(
+    (e) => {
+      const activeEl = document.activeElement;
+      if (!activeEl || !activeEl.dataset.date) return;
+
+      const currentDate = new Date(activeEl.dataset.date);
+      if (isNaN(currentDate.getTime())) return;
+
+      let newDate;
+      switch (e.key) {
+        case 'ArrowLeft':
+          newDate = addDays(currentDate, -1);
+          break;
+        case 'ArrowRight':
+          newDate = addDays(currentDate, 1);
+          break;
+        case 'ArrowUp':
+          newDate = addDays(currentDate, -7);
+          break;
+        case 'ArrowDown':
+          newDate = addDays(currentDate, 7);
+          break;
+        case 'PageUp':
+          newDate = e.shiftKey ? subYears(currentDate, 1) : subMonths(currentDate, 1);
+          break;
+        case 'PageDown':
+          newDate = e.shiftKey ? addYears(currentDate, 1) : addMonths(currentDate, 1);
+          break;
+        default:
+          return;
+      }
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      // Clamp to minDate / maxDate
+      const minDay = props.minDate ? startOfDay(props.minDate) : null;
+      const maxDay = props.maxDate ? endOfDay(props.maxDate) : null;
+      if (minDay && isBefore(startOfDay(newDate), minDay)) newDate = minDay;
+      if (maxDay && isAfter(endOfDay(newDate), maxDay)) newDate = startOfDay(maxDay);
+
+      // Query within the calendar wrapper to isolate from other calendars on the page
+      const wrapper = calendarWrapperRef.current;
+      if (wrapper) {
+        const targetButton = wrapper.querySelector(
+          `button[data-date="${newDate.toISOString()}"]`
+        );
+        if (targetButton && targetButton.tabIndex !== -1) {
+          targetButton.focus();
+        }
+      }
+    },
+    [props.minDate, props.maxDate]
+  );
+
   useImperativeHandle(
     ref,
     () => ({
@@ -506,7 +568,9 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
 
   return (
     <div
+      ref={calendarWrapperRef}
       className={classnames(styles.calendarWrapper, className)}
+      onKeyDown={handleCalendarKeyDown}
       onMouseUp={() => setDrag({ status: false, range: {} })}
       onMouseLeave={() => {
         setDrag({ status: false, range: {} });

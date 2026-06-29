@@ -154,6 +154,7 @@ function DayCell(props) {
   return (
     <button
       type="button"
+      data-date={day.toISOString()}
       onMouseEnter={handleMouseEvent}
       onMouseLeave={handleMouseEvent}
       onFocus={handleMouseEvent}

@@ -571,6 +571,171 @@ describe('Calendar', () => {
     });
   });
 
+  describe('keyboard navigation (REQ-CG-005)', () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date(2025, 5, 15));
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    const navBaseProps = {
+      shownDate: new Date(2025, 5, 15),
+      minDate: new Date(2025, 5, 1),
+      maxDate: new Date(2025, 5, 30),
+      direction: 'vertical',
+      showMonthAndYearPickers: false,
+      showDateDisplay: false,
+    };
+
+    test('ArrowLeft on a focused day moves focus to the previous day', () => {
+      renderCalendar(navBaseProps);
+      const day15 = findDayButton(15);
+      day15.focus();
+      expect(document.activeElement).toBe(day15);
+
+      fireEvent.keyDown(day15, { key: 'ArrowLeft' });
+      expect(document.activeElement).not.toBe(day15);
+      expect(document.activeElement.textContent).toBe('14');
+    });
+
+    test('ArrowRight on a focused day moves focus to the next day', () => {
+      renderCalendar(navBaseProps);
+      const day15 = findDayButton(15);
+      day15.focus();
+
+      fireEvent.keyDown(day15, { key: 'ArrowRight' });
+      expect(document.activeElement.textContent).toBe('16');
+    });
+
+    test('ArrowUp moves focus to the same weekday in the previous week (−7 days)', () => {
+      renderCalendar(navBaseProps);
+      const day15 = findDayButton(15);
+      day15.focus();
+
+      fireEvent.keyDown(day15, { key: 'ArrowUp' });
+      expect(document.activeElement.textContent).toBe('8');
+    });
+
+    test('ArrowDown moves focus to the same weekday in the next week (+7 days)', () => {
+      renderCalendar(navBaseProps);
+      const day15 = findDayButton(15);
+      day15.focus();
+
+      fireEvent.keyDown(day15, { key: 'ArrowDown' });
+      expect(document.activeElement.textContent).toBe('22');
+    });
+
+    test('PageUp moves focus to the same day-of-month in the previous month', () => {
+      renderCalendar({
+        ...navBaseProps,
+        shownDate: new Date(2025, 6, 15),
+        minDate: new Date(2025, 5, 1),
+        maxDate: new Date(2025, 11, 31),
+      });
+      const day15 = findDayButton(15);
+      day15.focus();
+
+      fireEvent.keyDown(day15, { key: 'PageUp' });
+      // In June, day 15 should exist
+      expect(document.activeElement.textContent).toBe('15');
+    });
+
+    test('PageDown moves focus to the same day-of-month in the next month', () => {
+      renderCalendar({
+        ...navBaseProps,
+        shownDate: new Date(2025, 5, 15),
+        minDate: new Date(2025, 5, 1),
+        maxDate: new Date(2025, 11, 31),
+      });
+      const day15 = findDayButton(15);
+      day15.focus();
+
+      fireEvent.keyDown(day15, { key: 'PageDown' });
+      // Moves to July 15 — should be focusable (not disabled)
+      const newFocused = document.activeElement;
+      expect(newFocused).toBeTruthy();
+      expect(newFocused.textContent).toBe('15');
+    });
+
+    test('Shift+PageUp moves focus to the same day-of-month in the previous year', () => {
+      renderCalendar({
+        ...navBaseProps,
+        shownDate: new Date(2025, 5, 15),
+        minDate: new Date(2024, 0, 1),
+        maxDate: new Date(2026, 11, 31),
+      });
+      const day15 = findDayButton(15);
+      day15.focus();
+
+      fireEvent.keyDown(day15, { key: 'PageUp', shiftKey: true });
+      // Moves to June 15, 2024 — should exist
+      expect(document.activeElement.textContent).toBe('15');
+    });
+
+    test('Shift+PageDown moves focus to the same day-of-month in the next year', () => {
+      renderCalendar({
+        ...navBaseProps,
+        shownDate: new Date(2025, 5, 15),
+        minDate: new Date(2024, 0, 1),
+        maxDate: new Date(2026, 11, 31),
+      });
+      const day15 = findDayButton(15);
+      day15.focus();
+
+      fireEvent.keyDown(day15, { key: 'PageDown', shiftKey: true });
+      expect(document.activeElement.textContent).toBe('15');
+    });
+
+    test('focus does not move outside minDate/maxDate boundaries', () => {
+      renderCalendar({
+        ...navBaseProps,
+        shownDate: new Date(2025, 5, 1),
+        minDate: new Date(2025, 5, 1),
+        maxDate: new Date(2025, 5, 15),
+      });
+      const day1 = findDayButton(1);
+      day1.focus();
+
+      // ArrowLeft should be clamped to minDate (June 1)
+      fireEvent.keyDown(day1, { key: 'ArrowLeft' });
+      expect(document.activeElement.textContent).toBe('1');
+    });
+
+    test('focus does not move beyond maxDate', () => {
+      renderCalendar({
+        ...navBaseProps,
+        shownDate: new Date(2025, 5, 15),
+        minDate: new Date(2025, 5, 1),
+        maxDate: new Date(2025, 5, 15),
+      });
+      const day15 = findDayButton(15);
+      day15.focus();
+
+      // ArrowRight at max boundary should stay at day 15
+      fireEvent.keyDown(day15, { key: 'ArrowRight' });
+      expect(document.activeElement.textContent).toBe('15');
+    });
+
+    test('Enter keyDown/keyUp still triggers onChange (regression guard)', () => {
+      const onChange = jest.fn();
+      renderCalendar({
+        ...navBaseProps,
+        displayMode: 'date',
+        date: new Date(2025, 5, 15),
+        onChange,
+      });
+      const day20 = findDayButton(20);
+
+      fireEvent.keyDown(day20, { key: 'Enter', keyCode: 13 });
+      fireEvent.keyUp(day20, { key: 'Enter', keyCode: 13 });
+
+      expectSameDay(onChange.mock.calls[0][0], new Date(2025, 5, 20));
+    });
+  });
+
   describe('DateDisplay delegation', () => {
     const min = new Date(2025, 0, 1);
     const max = new Date(2025, 11, 31);
