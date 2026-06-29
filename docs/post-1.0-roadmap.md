@@ -46,7 +46,7 @@ but it should happen before asking external users to evaluate the library.
 Candidate direction — docs/demo only, no runtime API change.
 
 - Promote the existing [`demo/`](../demo/) into a public landing-page baseline
-- Deploy a small Vercel site with install command, live `<DateRangePicker />`, and links to npm/GitHub
+- Deploy a small GitHub Pages site with install command, live `<DateRangePicker />`, and links to npm/GitHub
 - Keep the landing honest: maintained fork, stable `1.0.0`, roadmap candidates are exploratory
 - Add the public demo URL to `README.md` once deployed
 

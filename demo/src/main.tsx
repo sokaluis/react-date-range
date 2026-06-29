@@ -105,14 +105,14 @@ function App() {
       <header>
         <h1>
           @cyberlz/react-date-range
-          <span className="badge">RC</span>
+          <span className="badge">Stable</span>
         </h1>
         <p>
           Modern maintained fork of{' '}
           <code>react-date-range</code>. React 18/19 compatible, TypeScript-first.
         </p>
         <div className="install-block">
-          npm install @cyberlz/react-date-range@rc
+          npm install @cyberlz/react-date-range
         </div>
       </header>
 

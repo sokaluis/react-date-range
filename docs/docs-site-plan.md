@@ -11,7 +11,7 @@
 
 1. Use the existing `demo/` Vite app as the public demo baseline.
 2. Add landing copy around the demo: value proposition, install command, migration link, GitHub/npm links.
-3. Deploy to Vercel (or equivalent static hosting) from `demo/`.
+3. Deploy to GitHub Pages from `demo/`.
 4. Add the public demo URL to `README.md`.
 5. Expand into full documentation: component props, examples, styling, accessibility, troubleshooting.
 6. Announce externally only after the landing URL and core docs are reachable.
@@ -62,19 +62,15 @@ Full docs should grow after the landing baseline, not before it.
 
 ---
 
-## Vercel setup (when ready)
+## GitHub Pages setup
 
-```bash
-# 1. Use demo/ as the app root
-# 2. Add vercel.json if needed:
-{
-  "buildCommand": "cd demo && npm install && npm run build",
-  "outputDirectory": "demo/dist",
-  "installCommand": null
-}
-# 3. Connect repo to Vercel dashboard
-# 4. Set root directory to demo/ if using Vercel project settings instead
-```
+The demo is deployed by `.github/workflows/pages-demo.yml`.
+
+- Vite uses `base: '/react-date-range/'`, matching the GitHub Pages project path.
+- The workflow installs `demo/` dependencies, runs `npm run typecheck`, builds the demo,
+  and publishes `demo/dist` through GitHub Pages Actions.
+- The expected URL is `https://sokaluis.github.io/react-date-range/` once Pages is enabled
+  for GitHub Actions in the repository settings.
 
 ---
 
@@ -84,7 +80,7 @@ Full docs should grow after the landing baseline, not before it.
 |-----------|---------------|
 | `1.0.0` stable published | ✅ Ready to plan |
 | Local demo validates npm stable | ✅ Ready to reuse as baseline |
-| Landing copy + Vercel config ready | ✅ Deploy |
+| Landing copy + GitHub Pages workflow ready | ✅ Deploy |
 | Public demo URL live | Add link to README |
 | Full docs expanded | Announce more broadly |
 
@@ -97,12 +93,13 @@ Full docs should grow after the landing baseline, not before it.
 - [x] Migration notes written — see `docs/migration-from-upstream.md`
 - [x] Roadmap written — see `docs/post-1.0-roadmap.md`
 - [ ] Landing copy added to `demo/`
-- [ ] Vercel connected to GitHub repo
+- [x] GitHub Pages workflow added
 - [ ] Landing page deployed with stable status badge
 - [ ] Public demo URL added to `README.md`
 - [ ] Full component docs written
 
 ## Next step
 
-Turn `demo/` into a small landing/demo page and deploy it. Full documentation can
-then grow from the same public entry point without blocking `1.0.x` bugfix work.
+Enable GitHub Pages from Actions in repository settings if it is not already enabled,
+then let the workflow deploy `demo/`. Full documentation can grow from the same public
+entry point without blocking `1.0.x` bugfix work.

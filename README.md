@@ -139,7 +139,7 @@ bundlers (Vite, Webpack 5, esbuild, Rollup) get the full benefit.
 ## Demo and documentation roadmap
 
 - **Local demo:** [`demo/`](demo/) is the current verified Vite consumer for `@cyberlz/react-date-range@1.0.0`.
-- **Landing page:** planned as the next public adoption asset, using the demo as the base and deploying a small public site.
+- **Landing page:** planned as the next public adoption asset, using the demo as the base and deploying it with GitHub Pages.
 - **Full library documentation:** planned after the landing baseline, covering component props, examples, migration notes, styling, accessibility, and roadmap status.
 
 See [`docs/docs-site-plan.md`](docs/docs-site-plan.md) for the landing/docs plan and
