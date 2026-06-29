@@ -1,13 +1,13 @@
-# Release Checklists — `rc.0` (done) · `1.0.0` stable (pending Slice 25)
+# Release Checklists — `rc.0` (done) · `1.0.0` stable (metadata prepared; npm publish pending)
 
 > **`1.0.0-rc.0` publishing is complete** (2026-06-29, `rc` dist-tag).
 > The below checklist is split: items done for `rc.0` are marked ✅;
-> items for `v1.0.0` stable are pending Slice 25.
+> items for `v1.0.0` stable are pending npm publish (stable metadata is prepared in this commit).
 > Do not tag or publish stable until the stable section is complete.
 
 ---
 
-## Before tagging `v1.0.0` stable (pending Slice 25)
+## Before tagging `v1.0.0` stable (this commit prepares metadata; npm publish pending)
 
 - [ ] **Doc sweep complete**: all 13 doc files updated to reflect Slices 13–21 cumulative state; `docs/migration-from-upstream.md` written.
 - [ ] **Migration guide live**: `docs/migration-from-upstream.md` added; link placed in README.md install block and in `docs/npm-publishing.md` §At launch.

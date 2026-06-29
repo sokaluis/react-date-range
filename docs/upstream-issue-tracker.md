@@ -50,8 +50,8 @@ Issues acknowledged for the fork roadmap but not yet implemented. Scheduled for 
 | [#373](https://github.com/hypeserver/react-date-range/issues/373) | Accessibility / keyboard navigation | Future accessibility pass | Requires ARIA audit and keyboard navigation fixes beyond the internal refactor. |
 | [#415](https://github.com/hypeserver/react-date-range/issues/415) | Accessibility improvements | Future accessibility pass | Same as #373 — batch with accessibility audit. |
 | [#416](https://github.com/hypeserver/react-date-range/issues/416) | ARIA roles and labels | Future accessibility pass | Same as #373 — batch with accessibility audit. |
-| [#669](https://github.com/hypeserver/react-date-range/pull/669) | RTL styles | Phase 4 (Dual Skins) | RTL support is a visual/styling concern — better addressed during skin architecture work. |
-| [#495](https://github.com/hypeserver/react-date-range/pull/495) | Cross-month range selection UX | Post-Beta | Edge-case UX improvement. Low priority compared to core compatibility and stylability. |
+| [#669](https://github.com/hypeserver/react-date-range/pull/669) | RTL styles | Future visual proposal | RTL support is a visual/styling concern and needs its own scoped proposal before implementation. |
+| [#495](https://github.com/hypeserver/react-date-range/pull/495) | Cross-month range selection UX | Future UX proposal | Edge-case UX improvement. Low priority compared to core compatibility. |
 
 ---
 
@@ -62,7 +62,7 @@ Issues that are explicitly not planned for this fork, either because they expand
 | # | Upstream Topic | Decision | Reason |
 |---|----------------|----------|--------|
 
-| [#470](https://github.com/hypeserver/react-date-range/pull/470) | Time picker support | ❌ Out of scope | Feature expansion — changes component API. Fork mission is compatibility + stylability, not new features. |
+| [#470](https://github.com/hypeserver/react-date-range/pull/470) | Time picker support | ❌ Out of scope | Feature expansion — changes component API. Fork mission is compatibility and maintenance, not new features. |
 | [#590](https://github.com/hypeserver/react-date-range/issues/590) | Maintenance / takeover discussion | 📝 Docs only | Upstream repo is archived. This fork IS the maintenance effort. No code change needed — status documented in `research.md` and `fork-roadmap.md`. |
 
 ---

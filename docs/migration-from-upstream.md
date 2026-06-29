@@ -1,10 +1,10 @@
 # Migrating from `react-date-range` upstream
 
-> `@cyberlz/react-date-range@1.0.0-rc.0` (`@rc`) is a drop-in byte-compatible replacement for `react-date-range@2.0.1`. `v1.0.0` stable will follow after Slice 25.
+> `@cyberlz/react-date-range@1.0.0-rc.0` (`@rc`) is a drop-in byte-compatible replacement for `react-date-range@2.0.1`. `v1.0.0` stable metadata is prepared; npm publish and `latest` promotion to follow.
 
 ## TL;DR
 
-`@cyberlz/react-date-range` is a community-maintained fork of `hypeserver/react-date-range` targeting React 18/19 compatibility, first-party TypeScript types, and modern build tooling. Install `@cyberlz/react-date-range@rc` (or `@1.0.0-rc.0`) in place of `react-date-range@2.0.1` — the public API is byte-identical. If you were using `prop-types` or `react-list` as runtime dependencies, or deep-importing `react-date-range/dist/locale`, see [What you need to do](#what-you-need-to-do).
+`@cyberlz/react-date-range` is a community-maintained fork of `hypeserver/react-date-range` targeting React 18/19 compatibility, first-party TypeScript types, and modern build tooling. Install `@cyberlz/react-date-range@rc` (or `@1.0.0-rc.0`) in place of `react-date-range@2.0.1` — the public API is byte-identical. After npm publish, `npm install @cyberlz/react-date-range` (no tag) will resolve to stable `1.0.0`. If you were using `prop-types` or `react-list` as runtime dependencies, or deep-importing `react-date-range/dist/locale`, see [What you need to do](#what-you-need-to-do).
 
 ---
 
@@ -54,11 +54,11 @@ The following are type-only additions — they do not appear in the runtime barr
 
 ## What you need to do
 
-In most cases, **no code changes are required**. `@cyberlz/react-date-range@1.0.0-rc.0` is a drop-in byte-compatible replacement.
+In most cases, **no code changes are required**. `@cyberlz/react-date-range@1.0.0-rc.0` is a drop-in byte-compatible replacement. Stable `1.0.0` will be available via `npm install @cyberlz/react-date-range` after npm publish.
 
 If you encounter issues, check the following:
 
-1. **Replace the package**: `npm install @cyberlz/react-date-range@rc` (or `npm install @cyberlz/react-date-range@1.0.0-rc.0`). After `v1.0.0` stable publishes, plain `npm install @cyberlz/react-date-range` will work.
+1. **Replace the package**: `npm install @cyberlz/react-date-range@rc` (or `npm install @cyberlz/react-date-range@1.0.0-rc.0`). After npm publishes `1.0.0`, plain `npm install @cyberlz/react-date-range` will resolve to stable.
 2. **Drop `prop-types` if unused**: If `prop-types` was in your `dependencies` solely because `react-date-range` required it, remove it. First-party TypeScript types are included.
 3. **Replace `src/locale` deep-imports**: If your code imports `react-date-range/dist/locale/index.cjs` or similar deep paths, replace with `date-fns/locale` directly:
    ```ts
@@ -70,7 +70,7 @@ If you encounter issues, check the following:
    ```
 4. **No other changes needed**: All public component props, event signatures, and return types are unchanged.
 
-For the full list of changes, see the [CHANGELOG](./CHANGELOG.md) `[Unreleased]` entry.
+For the full list of changes, see the [CHANGELOG](../CHANGELOG.md) `[1.0.0]` entry.
 
 ---
 
@@ -86,12 +86,12 @@ For the full list of changes, see the [CHANGELOG](./CHANGELOG.md) `[Unreleased]`
 
 ## Roadmap
 
-For the full 1.0.x release plan and Phase 2 (stylability) deferred work, see [`docs/fork-roadmap.md`](./fork-roadmap.md).
+For the full 1.0.x release plan and current maintenance status, see [`docs/fork-roadmap.md`](./fork-roadmap.md). Future visual redesign ideas are not committed release phases yet.
 
 ---
 
 ## See also
 
-- [CHANGELOG](./CHANGELOG.md) — full release history including upstream history
+- [CHANGELOG](../CHANGELOG.md) — full release history including upstream history
 - [Upstream Issue Tracker](./upstream-issue-tracker.md) — tracked upstream bugs, their resolution status, and evidence
-- [Fork Roadmap](./fork-roadmap.md) — Phase 1 (1.0.0) and Phase 2 (stylability) planning
+- [Fork Roadmap](./fork-roadmap.md) — 1.0.0 status and future planning policy

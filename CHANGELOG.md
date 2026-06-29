@@ -44,9 +44,21 @@ First release candidate. All internal refactor slices (13–22) completed; publi
 
 ---
 
-## [Unreleased]
+## [1.0.0] — 2026-06-29
 
-(Pending changes between `1.0.0-rc.0` and `v1.0.0` stable.)
+Stable release. `1.0.0-rc.0` was validated through consumer spikes (React 18/19, SSR CJS+ESM, tree-shaking) and demo build/typecheck. This commit finalizes stable metadata; npm publish and git tag to follow.
+
+### Added
+
+- CHANGELOG, README, and doc metadata updated to reflect `1.0.0` stable. Install guidance now says `npm install @cyberlz/react-date-range` (no tag) post-publish.
+
+### Documentation
+
+- All "stable pending / Slice 25 pending" wording updated to "stable — this commit prepares metadata; publish/latest-promotion to follow".
+- `docs/migration-from-upstream.md` install instructions updated to reflect stable target.
+- `docs/release-checklist.md`, `docs/release-flow.md`, `docs/fork-roadmap.md`, `docs/refactor-roadmap.md` all updated to remove "pending Slice 25" references.
+
+> **rc.0 consumers**: `npm install @cyberlz/react-date-range@1.0.0-rc.0` remains valid and unchanged. After npm publish, `latest` will point to `1.0.0` and plain `npm install @cyberlz/react-date-range` will resolve to stable.
 
 ---
 
@@ -54,7 +66,7 @@ First release candidate. All internal refactor slices (13–22) completed; publi
 
 First beta release. Internal refactor complete (Slices 1–11): all components migrated to function + hooks, real tree-shaking verified (41KB Calendar-only / 58KB DateRangePicker), build migrated to `tsdown`, Sass `@use` ready for Dart Sass 3.0, ESLint and TypeScript check wired, tests migrated to `@testing-library/react`. Public API unchanged.
 
-> **Beta scope (redefined)**: This beta is "internal refactor done, public API frozen". Phase 2 (stylability — CSS variables, `className` pass-through, styling API) is intentionally deferred to `0.2.0` and will be additive. This redefinition is documented in `docs/fork-roadmap.md` and reflects the project's actual progress.
+> **Beta scope (redefined)**: This beta is "internal refactor done, public API frozen". Visual redesign ideas are intentionally not part of the beta/stable commitment; they require a separate proposal before becoming release work.
 
 ### Added
 
@@ -160,7 +172,7 @@ Third alpha release: Calendar hooks migration and ReactList ESM/CJS interop fix.
 ### Warnings / Technical debt
 
 - `react-test-renderer` deprecation noise in test output (planned migration to `@testing-library/react`).
-- Sass `@import` deprecation warnings in build output (migration to `@use`/`@forward` planned for Phase 2).
+- Sass `@import` deprecation warnings in build output (later resolved by the `@use` migration).
 - Root lint/typecheck tooling debt: `npm run lint` and `npm run type-check` are not yet wired into CI.
 
 ---
@@ -236,4 +248,4 @@ bug fixes.
   are always included (~57 KB). Fix planned for Beta 1.0 (`bundle: false`).
   See `spikes/tree-shaking/README.md`.
 - **Sass `@import` deprecation**: Build emits deprecation warnings. Migration to
-  `@use`/`@forward` planned for Phase 2.
+  `@use`/`@forward` was planned as follow-up work and later resolved.

@@ -7,7 +7,6 @@ export default [
   {
     ignores: ['dist/**', 'node_modules/**', 'spikes/**', '**/*.test.js'],
   },
-  js.configs.recommended,
   {
     files: ['src/**/*.{js,jsx}'],
     languageOptions: {
@@ -29,6 +28,7 @@ export default [
       react: { version: 'detect' },
     },
     rules: {
+      ...js.configs.recommended.rules,
       ...reactPlugin.configs.recommended.rules,
       ...reactHooks.configs.recommended.rules,
       'react/react-in-jsx-scope': 'off',

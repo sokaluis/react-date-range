@@ -10,8 +10,8 @@
 
 | Item | Status |
 |------|--------|
-| Current checkpoint | `1.0.0-rc.0` (`rc` dist-tag); `v1.0.0` stable pending Slice 25 |
-| Public API | Stable for the `1.x` line pending `1.0.0` stable; no breaking changes planned |
+| Current checkpoint | `1.0.0` stable metadata prepared; npm publish and `latest`-tag promotion to follow. `rc` still points to `1.0.0-rc.0`. |
+| Public API | Stable for the `1.x` line; no breaking changes planned |
 | Internal refactor | ✅ Complete — Slices 1–21 done; Slice 22 docs sweep complete |
 | Tree-shaking | ✅ Verified: ~41 KB Calendar-only / ~58 KB DateRangePicker (~17 KB delta) |
 | Build | ✅ `tsdown` with multi-entry glob + `unbundle: true` |
@@ -19,7 +19,7 @@
 | Type-check / lint | ✅ Root `tsconfig.json` and ESLint flat config wired |
 | Sass | ✅ `@use` migration complete |
 | Strict TypeScript | ✅ `strict: true` enabled; `checkJs` deferred to `1.0.x` |
-| Next phase | Phase 2 stylability for `0.2.0` |
+| Next phase | No committed post-1.0 roadmap yet; future ideas need a separate spec before becoming release phases. |
 
 ---
 
@@ -50,13 +50,9 @@
 
 ## Next slice
 
-The next work is **Phase 2 stylability** for `0.2.0`:
-
-- CSS variables / design tokens.
-- `className` pass-through where missing.
-- Public styling API documentation.
-
-This work should be additive and preserve the stable `1.x` public API.
+No post-1.0 implementation slice is committed in this roadmap. Visual redesign,
+styling API, or theming ideas should be captured as proposals first, then promoted
+only after scope, compatibility impact, and maintainer priority are clear.
 
 ---
 
@@ -65,7 +61,7 @@ This work should be additive and preserve the stable `1.x` public API.
 - ❌ Breaking component API changes.
 - ❌ Replacing date-fns.
 - ❌ New feature expansion such as time picker.
-- ❌ Dual-skin architecture before Phase 2 styling primitives are in place.
+- ❌ Treating speculative visual redesign ideas as committed release phases.
 - ❌ Publishing/tagging without the release checklist.
 
 ---

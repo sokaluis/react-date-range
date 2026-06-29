@@ -1,7 +1,7 @@
 # @cyberlz/react-date-range
 
 > Maintained fork/rescue of [`react-date-range`](https://github.com/hypeserver/react-date-range).
-> **Current channel**: `1.0.0-rc.0` is published under the `rc` dist-tag (`npm install @cyberlz/react-date-range@rc`). `v1.0.0` stable is the upcoming release — see [Dist-tag policy](#dist-tag-policy) below.
+> **Current channel**: `1.0.0` is the stable release target. This commit prepares stable metadata; npm publish and `latest`-tag promotion to follow. `rc` still points to `1.0.0-rc.0` until publish. See [Dist-tag policy](#dist-tag-policy) below.
 
 ---
 
@@ -51,8 +51,7 @@ A **modern, maintained, production-ready** date range picker for React that:
 - Has a **modern build** (ESM + CJS, real tree-shaking, no side-effect imports)
 - Is **SSR-safe**
 - **Preserves the existing API** so current users can upgrade without rewrites
-- Eventually supports **two visual skins**: the classic robust `react-date-range` look
-  and a simpler, composable alternative
+- Keeps the compatibility surface focused on the maintained `react-date-range` experience
 
 ## Current phase
 
@@ -60,12 +59,10 @@ A **modern, maintained, production-ready** date range picker for React that:
 |-------|--------|
 | **Phase 0** — Audit & planning | Complete |
 | **Phase 1** — Compatible rescue | Complete |
-| **Phase 2** — Stylability | Deferred to `0.2.0` |
 | **Phase 3** — Core refactor | Complete (Slices 1–21 done) |
-| **Phase 4** — Dual skins | Not started |
 
-**`@cyberlz/react-date-range@1.0.0-rc.0`** is the current release candidate (`rc` dist-tag).
-**`v1.0.0` stable** is the next release target (pending Slice 25). See
+**`@cyberlz/react-date-range@1.0.0`** is the stable release (this commit prepares metadata; npm publish pending).
+**`v1.0.0` stable** is the current release target. See
 [`docs/fork-roadmap.md`](docs/fork-roadmap.md) for the full plan and
 [`docs/refactor-roadmap.md`](docs/refactor-roadmap.md) for incremental refactor slices.
 
@@ -73,7 +70,7 @@ A **modern, maintained, production-ready** date range picker for React that:
 
 npm has three relevant dist-tags for this package:
 
-- **`latest`** — currently points to `0.1.0-alpha.0`. Will be promoted to `1.0.0` stable after Slice 25.
+- **`latest`** — will point to `1.0.0` stable after npm publish. Currently points to `0.1.0-alpha.0`; promotion happens at publish time.
 - **`rc`** — points to `1.0.0-rc.0`. Current release candidate for pre-release validation: `npm install @cyberlz/react-date-range@rc`.
 - **`beta`** — points to `0.1.0-beta.0`. Legacy prerelease channel.
 
@@ -133,11 +130,10 @@ exports. Verified empirically with `spikes/tree-shaking/analyze.mjs`:
 CJS consumers do not benefit equally (CJS is not tree-shakeable by design); ESM + modern
 bundlers (Vite, Webpack 5, esbuild, Rollup) get the full benefit.
 
-### Not in scope for `0.1.x`
+### Not committed for `1.x`
 
 - Breaking API changes
-- Phase 2 stylability work (planned for `0.2.0`)
-- New visual skins or Tailwind theming
+- Speculative visual redesign tracks such as dual skins or Tailwind theming
 - New features
 
 ## License

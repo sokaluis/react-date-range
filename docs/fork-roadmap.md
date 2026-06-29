@@ -7,16 +7,15 @@
 
 ## Current release meaning
 
-`1.0.0-rc.0` is published (`rc` dist-tag). `1.0.0` stable is the target for Slice 25 under the updated checkpoint definition:
+`1.0.0-rc.0` was validated (consumer spikes passed: React 18/19, SSR CJS+ESM, tree-shaking). `1.0.0` stable metadata is prepared in this commit; npm publish and `latest`-tag promotion to follow.
 
 > **Stable = internal refactor complete, public API frozen, no breaking changes planned.**
 
 Slices 1–21 are complete: all upstream bugs fixed, strict TypeScript enabled,
 `react-list`/`prop-types`/`src/locale` removed, coverage gaps closed, navigation
-and role-based accessibility verified, and documentation fully swept. Phase 2
-stylability is intentionally **deferred to `0.2.0`**. It remains additive (CSS
-variables, `className` pass-through, styling API) and is not expected to break
-existing `1.x` consumers.
+and role-based accessibility verified, and documentation fully swept. Future
+visual redesign ideas are intentionally not tracked as committed release phases
+until they have a concrete spec and maintainer decision.
 
 ## Phase status
 
@@ -25,9 +24,7 @@ existing `1.x` consumers.
 | Phase 0 — Audit & planning | Understand upstream, risks, publishing, and source provenance | ✅ Complete | Done before first alpha |
 | Phase 1 — Compatible rescue | Drop-in React 18/19 + TypeScript-compatible package | ✅ Complete | `0.1.0-alpha.0`–`0.1.0-alpha.2` |
 | **Phase 3 — Core refactor (completed)** | Function components, tooling, tests, tree-shaking | ✅ Complete | `0.1.0-beta.0` |
-| **1.0.0 — Stable release** | Bug fixes, strict TypeScript, upstream parity, docs sweep | ⏳ Pending (Slice 25) | `1.0.0` |
-| Phase 2 — Stylability | CSS variables, `className` pass-through, documented styling API | ⏳ Deferred | `0.2.0` |
-| Phase 4 — Dual skins | Classic + simple visual experiences on one core | ⏳ Future | TBD |
+| **1.0.0 — Stable release** | Bug fixes, strict TypeScript, upstream parity, docs sweep | ✅ This commit prepares stable | `1.0.0` |
 
 ---
 
@@ -60,21 +57,6 @@ Delivered:
 
 ---
 
-## Phase 2 — Stylability ⏳ deferred to `0.2.0`
-
-**Goal**: Make the library easier to style without specificity fights.
-
-Planned additive work:
-
-- Extract CSS variables / design tokens.
-- Support `className` pass-through where missing.
-- Document the styling API.
-- Prepare for dual-skin architecture without implementing the second skin yet.
-
-This is **not** part of `0.1.0-beta.0`.
-
----
-
 ## Phase 3 — Core Refactor ✅
 
 **Goal**: Modernize internals without changing the public API.
@@ -92,18 +74,7 @@ Completed in Slices 1–21:
 
 ---
 
-## Phase 4 — Dual Skins ⏳ future
+## Future Ideas
 
-**Goal**: Ship two visual experiences from one core.
-
-- **Classic skin**: familiar `react-date-range` look, polished and maintained.
-- **Simple skin**: minimal, composable style closer to `react-day-picker`.
-
-Stretch goals remain future work: RTL support, mobile-first variants, and deeper
-
----
-
-## Future Ideas — Multi-framework Strategy
-
-Only revisit after the React package has a stable API, a separated core, and real
-usage that justifies the maintenance surface.
+Only promote exploratory ideas to roadmap phases after they have a concrete spec,
+reviewable scope, and real user demand that justifies the maintenance surface.
