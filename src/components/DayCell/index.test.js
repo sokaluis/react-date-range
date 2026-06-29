@@ -55,7 +55,7 @@ describe('DayCell', () => {
       const onMouseDown = jest.fn();
       const onMouseUp = jest.fn();
       render(<DayCell {...baseProps} onMouseDown={onMouseDown} onMouseUp={onMouseUp} />);
-      const button = screen.getByRole('button');
+      const button = screen.getByRole('gridcell');
 
       fireEvent.keyDown(button, { key: 'Enter', keyCode: 13 });
       expect(onMouseDown).toHaveBeenCalledTimes(1);
@@ -70,7 +70,7 @@ describe('DayCell', () => {
       const onMouseDown = jest.fn();
       const onMouseUp = jest.fn();
       render(<DayCell {...baseProps} onMouseDown={onMouseDown} onMouseUp={onMouseUp} />);
-      const button = screen.getByRole('button');
+      const button = screen.getByRole('gridcell');
 
       fireEvent.keyDown(button, { key: ' ', keyCode: 32 });
       expect(onMouseDown).toHaveBeenCalledTimes(1);
@@ -83,17 +83,17 @@ describe('DayCell', () => {
   describe('tabIndex', () => {
     test('tabIndex is -1 when disabled', () => {
       render(<DayCell {...baseProps} disabled={true} />);
-      expect(screen.getByRole('button').tabIndex).toBe(-1);
+      expect(screen.getByRole('gridcell').tabIndex).toBe(-1);
     });
 
     test('tabIndex is -1 when isPassive', () => {
       render(<DayCell {...baseProps} isPassive={true} />);
-      expect(screen.getByRole('button').tabIndex).toBe(-1);
+      expect(screen.getByRole('gridcell').tabIndex).toBe(-1);
     });
 
     test('tabIndex is 0 (default) when not disabled or passive', () => {
       render(<DayCell {...baseProps} disabled={false} isPassive={false} />);
-      expect(screen.getByRole('button').tabIndex).toBe(0);
+      expect(screen.getByRole('gridcell').tabIndex).toBe(0);
     });
   });
 
@@ -111,7 +111,7 @@ describe('DayCell', () => {
       const day = new Date(2025, 5, 15);
       render(<DayCell {...baseProps} day={day} dayDisplayFormat="d" />);
       // Should render the day number "15"
-      expect(screen.getByRole('button')).toHaveTextContent('15');
+      expect(screen.getByRole('gridcell')).toHaveTextContent('15');
     });
   });
 
@@ -126,7 +126,7 @@ describe('DayCell', () => {
 
       // Day 15 is in-range between 14 and 16
       render(<DayCell {...baseProps} day={day} preview={preview} />);
-      const button = screen.getByRole('button');
+      const button = screen.getByRole('gridcell');
       expect(button.innerHTML).toContain('rdrDayInPreview');
     });
 
@@ -137,7 +137,7 @@ describe('DayCell', () => {
         endDate: new Date(2025, 5, 16),
       };
       render(<DayCell {...baseProps} day={day} preview={preview} />);
-      const button = screen.getByRole('button');
+      const button = screen.getByRole('gridcell');
       expect(button.innerHTML).toContain('rdrDayStartPreview');
     });
 
@@ -148,7 +148,7 @@ describe('DayCell', () => {
         endDate: new Date(2025, 5, 16),
       };
       render(<DayCell {...baseProps} day={day} preview={preview} />);
-      const button = screen.getByRole('button');
+      const button = screen.getByRole('gridcell');
       expect(button.innerHTML).toContain('rdrDayEndPreview');
     });
   });
@@ -159,7 +159,7 @@ describe('DayCell', () => {
       render(
         <DayCell {...baseProps} day={day} displayMode="date" date={day} />
       );
-      const button = screen.getByRole('button');
+      const button = screen.getByRole('gridcell');
       expect(button.innerHTML).toContain('rdrSelected');
     });
 
@@ -169,7 +169,7 @@ describe('DayCell', () => {
       render(
         <DayCell {...baseProps} day={day} displayMode="date" date={differentDate} />
       );
-      const button = screen.getByRole('button');
+      const button = screen.getByRole('gridcell');
       expect(button.innerHTML).not.toContain('rdrSelected');
     });
   });

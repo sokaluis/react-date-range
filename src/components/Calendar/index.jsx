@@ -653,6 +653,7 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
         </div>
       ) : (
         <div
+          role="grid"
           className={classnames(
             styles.months,
             isVertical ? styles.monthsVertical : styles.monthsHorizontal

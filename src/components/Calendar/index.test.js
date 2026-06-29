@@ -123,7 +123,9 @@ const weekdayLabels = container =>
   Array.from(container.querySelectorAll('.rdrWeekDay')).map(node => node.textContent);
 
 const calendarDayButtons = () =>
-  screen.getAllByRole('button').filter(button => /^\d+$/.test(button.textContent));
+  screen
+    .getAllByRole('gridcell')
+    .filter(button => /^\d+$/.test(button.textContent));
 
 const dayButtons = () => calendarDayButtons().filter(button => button.tabIndex !== -1);
 
@@ -733,6 +735,61 @@ describe('Calendar', () => {
       fireEvent.keyUp(day20, { key: 'Enter', keyCode: 13 });
 
       expectSameDay(onChange.mock.calls[0][0], new Date(2025, 5, 20));
+    });
+  });
+
+  describe('ARIA roles and states (REQ-CG-006)', () => {
+    const ariaBaseProps = {
+      shownDate: new Date(2025, 5, 15),
+      minDate: new Date(2025, 5, 1),
+      maxDate: new Date(2025, 5, 30),
+      direction: 'vertical',
+      showMonthAndYearPickers: false,
+      showDateDisplay: false,
+    };
+
+    test('calendar root exposes role="grid"', () => {
+      const { container } = renderCalendar(ariaBaseProps);
+      const grid = container.querySelector('[role="grid"]');
+      expect(grid).toBeInTheDocument();
+    });
+
+    test('each day cell exposes role="gridcell"', () => {
+      renderCalendar(ariaBaseProps);
+      const cells = calendarDayButtons();
+      expect(cells.length).toBeGreaterThan(28);
+      cells.forEach(cell => {
+        expect(cell).toHaveAttribute('role', 'gridcell');
+      });
+    });
+
+    test('disabled day cells expose aria-disabled="true"', () => {
+      renderCalendar({
+        ...ariaBaseProps,
+        disabledDates: [new Date(2025, 5, 18)],
+      });
+      const disabledDay = findCalendarDayButton(18);
+      expect(disabledDay).toBeDefined();
+      expect(disabledDay).toHaveAttribute('aria-disabled', 'true');
+    });
+
+    test('selected day cell exposes aria-selected="true" in date mode', () => {
+      renderCalendar({
+        ...ariaBaseProps,
+        displayMode: 'date',
+        date: new Date(2025, 5, 15),
+      });
+      const selectedDay = findCalendarDayButton(15);
+      expect(selectedDay).toHaveAttribute('aria-selected', 'true');
+    });
+
+    test('today exposes aria-current="date"', () => {
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date(2025, 5, 15));
+      renderCalendar(ariaBaseProps);
+      const todayCell = calendarDayButtons().find(btn => btn.textContent === '15');
+      expect(todayCell).toHaveAttribute('aria-current', 'date');
+      jest.useRealTimers();
     });
   });
 

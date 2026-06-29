@@ -151,10 +151,34 @@ function DayCell(props) {
     ));
   };
 
+  // REQ-CG-006: compute ARIA selection state
+  let isSelectedForAria = false;
+  if (displayMode === 'date') {
+    isSelectedForAria = isSameDay(day, date);
+  } else {
+    isSelectedForAria = ranges.some(range => {
+      let s = range.startDate;
+      let e = range.endDate;
+      if (s && e && isBefore(e, s)) {
+        [s, e] = [e, s];
+      }
+      s = s ? endOfDay(s) : null;
+      e = e ? startOfDay(e) : null;
+      const inRng = (!s || isAfter(day, s)) && (!e || isBefore(day, e));
+      const startEdge = !inRng && isSameDay(day, s);
+      const endEdge = !inRng && isSameDay(day, e);
+      return inRng || startEdge || endEdge;
+    });
+  }
+
   return (
     <button
       type="button"
       data-date={day.toISOString()}
+      role="gridcell"
+      aria-selected={isSelectedForAria ? true : undefined}
+      aria-current={isToday ? 'date' : undefined}
+      aria-disabled={disabled ? true : undefined}
       onMouseEnter={handleMouseEvent}
       onMouseLeave={handleMouseEvent}
       onFocus={handleMouseEvent}
