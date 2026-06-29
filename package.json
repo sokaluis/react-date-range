@@ -49,7 +49,7 @@
     "test": "jest",
     "test:ci": "jest --testPathPatterns='Calendar|DateRange' --ci",
     "type-check": "tsc --noEmit",
-    "build:js": "tsdown",
+    "build:js": "tsdown --config-loader unrun",
     "build:css": "sass src/styles.scss:dist/styles.css --no-source-map && sass src/theme/default.scss:dist/theme/default.css --no-source-map",
     "build:types": "cp src/index.d.ts dist/index.d.ts",
     "build": "npm run build:js && npm run build:css && npm run build:types"
