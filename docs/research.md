@@ -98,3 +98,22 @@ with a published React 19 fix. There is a clear gap.
 - **Community has attempted fixes** (open PRs like #654, #665) but no one merged them upstream.
 - **Existing forks are partial and mostly inactive** — opportunity to become the definitive maintained fork.
 - **Phase 0 should focus on types, React 19, build, and SSR**, not on feature expansion or visual redesign.
+
+---
+
+## Verified June 2026 — pre-1.0.0
+
+As of 2026-06-29, the following remain unchanged from the original research:
+
+- `hypeserver/react-date-range` is still **archived/read-only** on GitHub.
+- **No new active fork** has emerged in the React 19 ecosystem that resolves the upstream issues tracked in this project.
+- The fork landscape table above is unchanged: no new fork candidate has published a React 19-compatible, TypeScript-first drop-in replacement.
+
+The library is ready for `1.0.0` stable as `@cyberlz/react-date-range`.
+
+- **Upstream is dead** — archived, no maintainer, no future releases.
+- **The library is still widely used** — significant npm downloads, 2.6k stars.
+- **Modernization debt is concentrated** in React 19, TypeScript, date-fns v4, and build tooling.
+- **Community has attempted fixes** (open PRs like #654, #665) but no one merged them upstream.
+- **Existing forks are partial and mostly inactive** — opportunity to become the definitive maintained fork.
+- **Phase 0 should focus on types, React 19, build, and SSR**, not on feature expansion or visual redesign.

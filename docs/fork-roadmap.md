@@ -7,16 +7,16 @@
 
 ## Current release meaning
 
-`0.1.0-beta.0` is the first beta under the updated checkpoint definition:
+`1.0.0` is the first stable release under the updated checkpoint definition:
 
-> **Beta = internal refactor done, public API frozen for the `0.1.x` line.**
+> **Stable = internal refactor complete, public API frozen, no breaking changes planned.**
 
-Slices 1–11 are complete: all components have been migrated to function components
-with hooks, build output has real tree-shaking, Sass uses `@use`, ESLint and
-TypeScript checking are wired, and tests use `@testing-library/react`.
-
-Phase 2 stylability is intentionally **deferred to `0.2.0`**. It remains additive
-(CSS variables, `className` pass-through, styling API) and is not expected to break
+Slices 1–21 are complete: all upstream bugs fixed, strict TypeScript enabled,
+`react-list`/`prop-types`/`src/locale` removed, coverage gaps closed, navigation
+and role-based accessibility verified, and documentation fully swept. Phase 2
+stylability is intentionally **deferred to `0.2.0`**. It remains additive (CSS
+variables, `className` pass-through, styling API) and is not expected to break
+existing `1.x` consumers.
 
 ## Phase status
 
@@ -24,8 +24,9 @@ Phase 2 stylability is intentionally **deferred to `0.2.0`**. It remains additiv
 |-------|------|--------|----------------|
 | Phase 0 — Audit & planning | Understand upstream, risks, publishing, and source provenance | ✅ Complete | Done before first alpha |
 | Phase 1 — Compatible rescue | Drop-in React 18/19 + TypeScript-compatible package | ✅ Complete | `0.1.0-alpha.0`–`0.1.0-alpha.2` |
+| **Phase 3 — Core refactor (completed)** | Function components, tooling, tests, tree-shaking | ✅ Complete | `0.1.0-beta.0` |
+| **1.0.0 — Stable release** | Bug fixes, strict TypeScript, upstream parity, docs sweep | ✅ Complete | `1.0.0` |
 | Phase 2 — Stylability | CSS variables, `className` pass-through, documented styling API | ⏳ Deferred | `0.2.0` |
-| Phase 3 — Core refactor | Function components, tooling, tests, tree-shaking | ✅ Complete | `0.1.0-beta.0` |
 | Phase 4 — Dual skins | Classic + simple visual experiences on one core | ⏳ Future | TBD |
 
 ---
@@ -78,14 +79,16 @@ This is **not** part of `0.1.0-beta.0`.
 
 **Goal**: Modernize internals without changing the public API.
 
-Completed in Slices 1–11:
+Completed in Slices 1–21:
 
-- All class components migrated to function components and hooks.
+- Slices 1–11: all class components migrated to function components and hooks.
+- Slices 12–17: `defaultProps` removal, `DateInput` hooks, upstream bug fixes (TDZ, addYears, disabledDates), strict TypeScript, dependency modernization (`react-list`/`prop-types`/`src/locale` removed).
+- Slices 21: coverage gaps closed, navigation and role-based accessibility verified.
+- Slice 22: documentation sweep and `docs/migration-from-upstream.md` added.
 - Real tree-shaking via `tsdown` + `unbundle: true` + multi-entry glob.
 - Sass migrated to `@use`.
 - Root `tsconfig.json` and ESLint flat config added.
 - Tests migrated from `react-test-renderer` to `@testing-library/react`.
-- `defaultProps` on `forwardRef` removed in favor of destructuring defaults.
 
 ---
 

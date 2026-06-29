@@ -6,18 +6,19 @@
 
 ---
 
-## Current status (2026-06-28)
+## Current status (2026-06-29)
 
 | Item | Status |
 |------|--------|
-| Current checkpoint | `0.1.0-beta.0` prepared |
-| Public API | Stable for the `0.1.x` line; no breaking changes planned |
-| Internal refactor | ✅ Complete — Slices 1–11 done |
+| Current checkpoint | `1.0.0` stable |
+| Public API | Stable for the `1.x` line; no breaking changes planned |
+| Internal refactor | ✅ Complete — Slices 1–21 done; Slice 22 docs sweep complete |
 | Tree-shaking | ✅ Verified: ~41 KB Calendar-only / ~58 KB DateRangePicker (~17 KB delta) |
 | Build | ✅ `tsdown` with multi-entry glob + `unbundle: true` |
 | Tests | ✅ `@testing-library/react` harness wired |
 | Type-check / lint | ✅ Root `tsconfig.json` and ESLint flat config wired |
 | Sass | ✅ `@use` migration complete |
+| Strict TypeScript | ✅ `strict: true` enabled; `checkJs` deferred to `1.0.x` |
 | Next phase | Phase 2 stylability for `0.2.0` |
 
 ---
@@ -37,6 +38,13 @@
 | 9 — ESLint | ✅ | Flat config with React and React Hooks plugins wired. |
 | 10/10b — Testing-library + `.jsx` cleanup | ✅ | Migrated tests to `@testing-library/react`; fixed JSX-in-`.js` Vite issue by renaming JSX files to `.jsx`; removed obsolete Vite plugin cleanup. |
 | 11 — `DateDisplay` / `InputRangeField` hooks | ✅ | Final class components migrated to functions/hooks. |
+| 13 — `defaultProps` removal | ✅ | `defaultProps` on `forwardRef` removed in favor of destructuring defaults (React 18+ deprecation). |
+| 14 — `DateInput` hooks migration | ✅ | DateInput migrated from PureComponent class to function component with React hooks (useState, useEffect, useCallback). |
+| 15 — Upstream bug fixes | ✅ | `disabledDates` array guard (#607); `DateRange.updatePreview` TDZ-safe color fallback (#658); date-fns ESM named-export interop (#664/#663). |
+| 16 — Strict TypeScript | ✅ | `tsconfig.json` `strict: true` enabled; `checkJs: true` deferred to `1.0.x`; source JSDoc pass deferred to `1.0.y`. |
+| 17 — Dependency modernization | ✅ | `react-list`, `prop-types`, and `src/locale/index.js` removed from build output; `classnames` and `shallow-equal` remain. |
+| 21 — Coverage + a11y | ✅ | Coverage gaps closed; navigation and role-based accessibility verified (keyboard focus, ARIA roles). |
+| 22 — Documentation sweep | ✅ | All 13 doc files updated to reflect cumulative Slices 13–21 state; new `docs/migration-from-upstream.md` added. |
 
 ---
 
@@ -48,11 +56,11 @@ The next work is **Phase 2 stylability** for `0.2.0`:
 - `className` pass-through where missing.
 - Public styling API documentation.
 
-This work should be additive and preserve the stable `0.1.x` public API.
+This work should be additive and preserve the stable `1.x` public API.
 
 ---
 
-## What not to do in `0.1.x`
+## What not to do in `1.x`
 
 - ❌ Breaking component API changes.
 - ❌ Replacing date-fns.
