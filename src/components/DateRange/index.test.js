@@ -3,6 +3,8 @@ import { act, render, screen } from '@testing-library/react';
 import { subDays, addDays, isSameDay } from 'date-fns';
 import DateRange, { dateRangeDefaultProps } from '../DateRange/index.jsx';
 import Calendar from '../Calendar/index.jsx';
+import fs from 'fs';
+import path from 'path';
 
 let latestCalendarProps;
 
@@ -192,6 +194,96 @@ describe('DateRange', () => {
         endDate,
         color: '#3d91ff',
       });
+    });
+  });
+
+  describe('REQ-UBF-002 / #664 #663: date-fns ESM named-import audit (regression lock-in)', () => {
+    const srcDir = path.resolve(__dirname, '..', '..');
+
+    const readSourceFiles = () => {
+      const files = [];
+      const walk = dir => {
+        for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+          const full = path.join(dir, entry.name);
+          if (entry.isDirectory()) {
+            if (entry.name !== '__tests__') walk(full);
+          } else if (
+            (full.endsWith('.js') || full.endsWith('.jsx')) &&
+            !entry.name.includes('.test.')
+          ) {
+            files.push(full);
+          }
+        }
+      };
+      walk(srcDir);
+      return files;
+    };
+
+    let sourceFiles;
+    let fileContents;
+
+    beforeAll(() => {
+      sourceFiles = readSourceFiles();
+      fileContents = sourceFiles.map(f => ({ file: f, content: fs.readFileSync(f, 'utf-8') }));
+    });
+
+    test('zero _dateFns interop wrapper references in src/', () => {
+      const violations = [];
+      for (const { file, content } of fileContents) {
+        const lines = content.split('\n');
+        lines.forEach((line, i) => {
+          if (/_dateFns/.test(line)) {
+            violations.push(`${file}:${i + 1}`);
+          }
+        });
+      }
+      expect(violations).toEqual([]);
+    });
+
+    test('zero default imports from date-fns (named imports only)', () => {
+      // Matches: `import name from 'date-fns'` or `import name from 'date-fns/subpath'`
+      // Excludes named imports and locale paths
+      const defaultImportRe = /^import\s+(?!\{|type)([a-zA-Z_$][\w$]*)\s+from\s+['"]date-fns(\/[^'"]*)?['"]/;
+      const violations = [];
+      for (const { file, content } of fileContents) {
+        const lines = content.split('\n');
+        lines.forEach((line, i) => {
+          if (defaultImportRe.test(line.trim())) {
+            violations.push(`${file}:${i + 1}: ${line.trim()}`);
+          }
+        });
+      }
+      expect(violations).toEqual([]);
+    });
+
+    test('all date-fns imports use ESM named syntax', () => {
+      // Collect all import lines from 'date-fns' or 'date-fns/...'
+      const dateFnsImportRe = /^import\s+.+?\s+from\s+['"]date-fns(\/[^'"]*)?['"]/;
+      const imports = [];
+      for (const { file, content } of fileContents) {
+        const lines = content.split('\n');
+        lines.forEach((line, i) => {
+          if (dateFnsImportRe.test(line.trim())) {
+            imports.push({ file: path.relative(srcDir, file), line: i + 1, text: line.trim() });
+          }
+        });
+      }
+
+      expect(imports.length).toBeGreaterThan(0);
+
+      // Every import must use destructured named syntax: `import { x, y } from ...`
+      const namedImportRe = /^import\s+\{/;
+      const violations = imports.filter(imp => !namedImportRe.test(imp.text));
+      expect(violations).toEqual([]);
+    });
+
+    test('tsdown.config.ts externalizes date-fns from bundle', () => {
+      const configPath = path.resolve(srcDir, '..', 'tsdown.config.ts');
+      const configContent = fs.readFileSync(configPath, 'utf-8');
+
+      // Verify date-fns is in neverBundle (as string entry AND regex pattern)
+      expect(configContent).toContain("'date-fns'");
+      expect(configContent).toMatch(/\/\^date-fns/);
     });
   });
 });
