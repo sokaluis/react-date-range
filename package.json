@@ -1,7 +1,7 @@
 {
   "name": "@cyberlz/react-date-range",
-  "version": "0.1.0-beta.0",
-  "description": "Modern maintained fork/rescue of react-date-range. First beta — internal refactor done, public API stable.",
+  "version": "1.0.0-rc.0",
+  "description": "Modern maintained fork/rescue of react-date-range. 1.0.0 release candidate — public API stable, internal refactor complete; ready for adopter validation before stable.",
   "license": "MIT",
   "author": "Luis Azocar <lazocar.dev@gmail.com>",
   "repository": {

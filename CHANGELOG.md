@@ -10,7 +10,12 @@ For upstream release history (up to `2.0.1`), see [`CHANGELOG.upstream.md`](CHAN
 
 ---
 
-## [Unreleased]
+## [1.0.0-rc.0] — 2026-06-29
+
+First release candidate. All internal refactor slices (13–22) completed; public API stable since `0.1.0-beta.0`. Consumer validation window open before promoting to `1.0.0` stable.
+
+> **Install:** `npm install @cyberlz/react-date-range@rc`
+> **Migrating from upstream?** See [`docs/migration-from-upstream.md`](docs/migration-from-upstream.md).
 
 ### Added
 
@@ -36,6 +41,12 @@ For upstream release history (up to `2.0.1`), see [`CHANGELOG.upstream.md`](CHAN
 - `date-fns` ESM interop: verified all source-tree imports use named-import syntax; zero `_dateFns` wrapper references exist. Build config (`tsdown.config.ts`) externalizes `date-fns`. Regression lock-in audit test added (upstream #664/#663).
 
 > **Known limitation**: direct `<DateRange disabledDates={null} />` (NOT wrapped in `<Calendar />`) bypasses the Calendar-boundary guard and may still crash. Consumers should always wrap DateRange in Calendar. A future slice may add a guard at the DateRange boundary.
+
+---
+
+## [Unreleased]
+
+(Pending changes between `1.0.0-rc.0` and `v1.0.0` stable.)
 
 ---
 
