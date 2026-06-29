@@ -1,7 +1,7 @@
 # @cyberlz/react-date-range
 
 > Maintained fork/rescue of [`react-date-range`](https://github.com/hypeserver/react-date-range).
-> **Latest published beta**: `0.1.0-beta.0` (install via `@beta` or `@alpha`; see [Dist-tag policy](#dist-tag-policy) below).
+> **Current channel**: `0.1.0-beta.0` is the latest published. `v1.0.0` is the upcoming stable release — see [Dist-tag policy](#dist-tag-policy) below.
 
 ---
 

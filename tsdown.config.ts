@@ -12,7 +12,6 @@ export default defineConfig({
       'react',
       'react-dom',
       '@tanstack/react-virtual',
-      'prop-types',
       'classnames',
       'shallow-equal',
       'date-fns',

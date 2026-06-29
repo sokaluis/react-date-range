@@ -162,10 +162,10 @@ npm dist-tag add @cyberlz/react-date-range@1.0.0 latest
 
 | Source | Example | Must match |
 |--------|---------|------------|
-| `package.json` → `version` | `0.1.0-beta.0` | Git tag |
-| Git tag | `v0.1.0-beta.0` | `package.json` version (minus `v` prefix) |
-| GitHub Release tag | `v0.1.0-beta.0` | Git tag |
-| npm version (registry) | `0.1.0-beta.0` | `package.json` version |
+| `package.json` → `version` | `1.0.0` | Git tag |
+| Git tag | `v1.0.0` | `package.json` version (minus `v` prefix) |
+| GitHub Release tag | `v1.0.0` | Git tag |
+| npm version (registry) | `1.0.0` | `package.json` version |
 
 **Order matters:** update `package.json` version → commit → tag → push → publish.
 

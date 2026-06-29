@@ -83,5 +83,5 @@
 
 ## Next step
 
-Complete the API docs and migration notes. See `docs/release-checklist.md` → "Demo page checklist".
-The demo app (`demo/`) is built and verified locally — still need API docs/migration notes before Vercel deploy.
+API docs and migration notes are written. Remaining: connect Vercel and deploy. See `docs/release-checklist.md` → "Demo page checklist".
+The demo app (`demo/`) is built and verified locally; `docs/migration-from-upstream.md` ships with `v1.0.0`.

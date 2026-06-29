@@ -14,7 +14,7 @@ tree-shaking.
 | JSX source | `.js` and `.jsx` source is compiled to plain JS output. |
 | Format support | Emits ESM (`.mjs`) and CJS (`.cjs`). |
 | Tree-shaking | `unbundle: true` + multi-entry glob preserves per-component modules. |
-| External deps | React, react-dom, date-fns, classnames, shallow-equal, @tanstack/react-virtual, prop-types are never bundled. |
+| External deps | React, react-dom, date-fns, classnames, shallow-equal, @tanstack/react-virtual are never bundled. |
 | Types | `src/index.d.ts` is copied to `dist/index.d.ts`. |
 
 ### Configuration (`tsdown.config.ts`)
@@ -28,7 +28,7 @@ export default defineConfig({
   unbundle: true,
   loader: { '.js': 'jsx' },
   deps: {
-    neverBundle: ['react', 'react-dom', '@tanstack/react-virtual', 'prop-types', 'classnames', 'shallow-equal', 'date-fns', /^date-fns\//],
+    neverBundle: ['react', 'react-dom', '@tanstack/react-virtual', 'classnames', 'shallow-equal', 'date-fns', /^date-fns\//],
   },
 });
 ```
