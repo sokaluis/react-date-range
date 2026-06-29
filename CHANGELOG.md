@@ -12,8 +12,20 @@ For upstream release history (up to `2.0.1`), see [`CHANGELOG.upstream.md`](CHAN
 
 ## [Unreleased]
 
+### Added
+
+- `src/index.d.ts`: `DateInputProps` interface (13 keys, alphabetical) and `DateInput`
+  function declaration added as type-only contracts. `DateInput` is NOT exported from
+  `src/index.js` runtime barrel — this is a type-only surface addition per obs #8626.
+  Defaults: `readOnly=true`, `disabled=false`, `dateDisplayFormat='MMM D, YYYY'`,
+  `disabledDates=[]`.
+
 ### Changed
 
+- `tsconfig.json`: `strict: true` now enabled. `checkJs: true` explicitly deferred to
+  `1.0.x` per Option X user directive (m0123) — source JSDoc pass (REQ-TS-004) is
+  also a `1.0.y` concern. Tests remain excluded via `**/*.test.js` and are unchanged
+  (91/91 green).
 - DateInput: migrated from PureComponent class to function component with React hooks (useState, useEffect, useCallback). No public API change. Per-method destructuring defaults preserved (Slice 13). Tests rewritten to @testing-library/react (82/82 green).
 
 ### Fixed
