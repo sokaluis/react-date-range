@@ -495,6 +495,53 @@ describe('Calendar', () => {
     });
   });
 
+  describe('REQ-UBF-003 / #607: disabledDates array guard', () => {
+    test('null disabledDates does not crash Month.some()', () => {
+      expect(() =>
+        renderCalendar({
+          shownDate: new Date(2025, 5, 1),
+          disabledDates: null,
+        })
+      ).not.toThrow();
+
+      const dayCells = calendarDayButtons();
+      expect(dayCells.length).toBeGreaterThanOrEqual(35);
+      expect(dayCells.length).toBeLessThanOrEqual(42);
+    });
+
+    test('single-Date disabledDates does not crash Month.some()', () => {
+      expect(() =>
+        renderCalendar({
+          shownDate: new Date(2025, 5, 1),
+          disabledDates: new Date(2025, 5, 18),
+        })
+      ).not.toThrow();
+
+      const dayCells = calendarDayButtons();
+      expect(dayCells.length).toBeGreaterThanOrEqual(35);
+      // Single Date treated as "no disabled dates" — day 18 is NOT disabled
+      const day18 = findCalendarDayButton(18);
+      expect(day18).toBeDefined();
+      expect(day18.tabIndex).not.toBe(-1);
+    });
+
+    test('valid array disabledDates marks the right day', () => {
+      renderCalendar({
+        shownDate: new Date(2025, 5, 1),
+        disabledDates: [new Date(2025, 5, 18)],
+      });
+
+      const disabledDay = findCalendarDayButton(18);
+      expect(disabledDay).toBeDefined();
+      expect(disabledDay.tabIndex).toBe(-1);
+
+      // Non-disabled date is reachable and interactive
+      const activeDay = findCalendarDayButton(10);
+      expect(activeDay).toBeDefined();
+      expect(activeDay.tabIndex).not.toBe(-1);
+    });
+  });
+
   describe('DateDisplay delegation', () => {
     const min = new Date(2025, 0, 1);
     const max = new Date(2025, 11, 31);

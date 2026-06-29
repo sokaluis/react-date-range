@@ -33,6 +33,11 @@ import {
 } from 'date-fns';
 import { enUS as defaultLocale } from 'date-fns/locale/en-US';
 import coreStyles from '../../styles';
+
+// REQ-UBF-003: frozen empty array preserves referential equality across renders
+// so downstream useMemo/useCallback deps remain stable when disabledDates is non-array.
+const EMPTY_DATES = Object.freeze([]);
+
 const calendarDefaultProps = {
   showMonthArrow: true,
   showMonthAndYearPickers: true,
@@ -657,10 +662,16 @@ const ForwardedCalendar = React.forwardRef(function Calendar(
   },
   ref
 ) {
+  // REQ-UBF-003: normalize disabledDates to a guaranteed non-null array.
+  // The frozen EMPTY_DATES constant preserves referential stability for
+  // downstream useMemo / useCallback deps. This guard covers Month:93,
+  // DateRange:98, DateInput:59, and DateDisplay via resolvedProps.
+  const safeDisabledDates = Array.isArray(disabledDates) ? disabledDates : EMPTY_DATES;
+
   const resolvedProps = {
     showMonthArrow,
     showMonthAndYearPickers,
-    disabledDates,
+    disabledDates: safeDisabledDates,
     disabledDay,
     classNames,
     locale,
