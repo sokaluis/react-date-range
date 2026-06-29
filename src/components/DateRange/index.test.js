@@ -158,4 +158,40 @@ describe('DateRange', () => {
 
     expect(latestCalendarProps.preview).toBe(null);
   });
+
+  describe('REQ-UBF-001 / #658: updatePreview color fallback chain (regression lock-in)', () => {
+    test('falls back to rangeColors[i] when range has no color', () => {
+      const { ref } = renderDateRange({
+        ranges: [{ startDate, endDate, key: 'selection' /* no color */ }],
+        rangeColors: ['#abcdef', '#fed14c'],
+      });
+
+      act(() => {
+        ref.current.updatePreview({ range: { startDate, endDate } });
+      });
+
+      expect(latestCalendarProps.preview).toEqual({
+        startDate,
+        endDate,
+        color: '#abcdef',
+      });
+    });
+
+    test('falls back to default #3d91ff when rangeColors is empty', () => {
+      const { ref } = renderDateRange({
+        ranges: [{ startDate, endDate, key: 'selection' /* no color */ }],
+        rangeColors: [],
+      });
+
+      act(() => {
+        ref.current.updatePreview({ range: { startDate, endDate } });
+      });
+
+      expect(latestCalendarProps.preview).toEqual({
+        startDate,
+        endDate,
+        color: '#3d91ff',
+      });
+    });
+  });
 });
