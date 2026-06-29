@@ -139,7 +139,7 @@ bundlers (Vite, Webpack 5, esbuild, Rollup) get the full benefit.
 ## Demo and documentation roadmap
 
 - **Local demo:** [`demo/`](demo/) is the current verified Vite consumer for `@cyberlz/react-date-range@1.0.0`.
-- **Landing page:** planned as the next public adoption asset, using the demo as the base and deploying it with GitHub Pages.
+- **Public demo:** <https://sokaluis.github.io/react-date-range/> is deployed with GitHub Pages from `demo/`.
 - **Full library documentation:** planned after the landing baseline, covering component props, examples, migration notes, styling, accessibility, and roadmap status.
 
 See [`docs/docs-site-plan.md`](docs/docs-site-plan.md) for the landing/docs plan and
@@ -165,5 +165,6 @@ This package is published as MIT and preserves upstream attribution in [`NOTICE.
 ## Links
 
 - npm: <https://www.npmjs.com/package/@cyberlz/react-date-range>
+- Demo: <https://sokaluis.github.io/react-date-range/>
 - GitHub Releases: <https://github.com/sokaluis/react-date-range/releases>
 - CHANGELOG: <https://github.com/sokaluis/react-date-range/blob/main/CHANGELOG.md>

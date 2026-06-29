@@ -2,7 +2,7 @@
 
 > **Status: ready to plan.** `@cyberlz/react-date-range@1.0.0` is live on npm
 > `latest`, the local demo consumes the stable package, and migration notes exist.
-> The next adoption asset is a small public landing/demo site, followed by full
+> The current adoption asset is a small public landing/demo site, followed by full
 > component documentation.
 
 ---
@@ -11,8 +11,8 @@
 
 1. Use the existing `demo/` Vite app as the public demo baseline.
 2. Add landing copy around the demo: value proposition, install command, migration link, GitHub/npm links.
-3. Deploy to GitHub Pages from `demo/`.
-4. Add the public demo URL to `README.md`.
+3. Deploy to GitHub Pages from `demo/`. ✅
+4. Add the public demo URL to `README.md`. ✅
 5. Expand into full documentation: component props, examples, styling, accessibility, troubleshooting.
 6. Announce externally only after the landing URL and core docs are reachable.
 
@@ -69,8 +69,7 @@ The demo is deployed by `.github/workflows/pages-demo.yml`.
 - Vite uses `base: '/react-date-range/'`, matching the GitHub Pages project path.
 - The workflow installs `demo/` dependencies, runs `npm run typecheck`, builds the demo,
   and publishes `demo/dist` through GitHub Pages Actions.
-- The expected URL is `https://sokaluis.github.io/react-date-range/` once Pages is enabled
-  for GitHub Actions in the repository settings.
+- Live URL: <https://sokaluis.github.io/react-date-range/>
 
 ---
 
@@ -81,7 +80,7 @@ The demo is deployed by `.github/workflows/pages-demo.yml`.
 | `1.0.0` stable published | ✅ Ready to plan |
 | Local demo validates npm stable | ✅ Ready to reuse as baseline |
 | Landing copy + GitHub Pages workflow ready | ✅ Deploy |
-| Public demo URL live | Add link to README |
+| Public demo URL live | ✅ Added to README |
 | Full docs expanded | Announce more broadly |
 
 ---
@@ -94,12 +93,11 @@ The demo is deployed by `.github/workflows/pages-demo.yml`.
 - [x] Roadmap written — see `docs/post-1.0-roadmap.md`
 - [ ] Landing copy added to `demo/`
 - [x] GitHub Pages workflow added
-- [ ] Landing page deployed with stable status badge
-- [ ] Public demo URL added to `README.md`
+- [x] Landing page deployed with stable status badge — <https://sokaluis.github.io/react-date-range/>
+- [x] Public demo URL added to `README.md`
 - [ ] Full component docs written
 
 ## Next step
 
-Enable GitHub Pages from Actions in repository settings if it is not already enabled,
-then let the workflow deploy `demo/`. Full documentation can grow from the same public
-entry point without blocking `1.0.x` bugfix work.
+Full documentation can now grow from the public demo entry point without blocking
+`1.0.x` bugfix work.
