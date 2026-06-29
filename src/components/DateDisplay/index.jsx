@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import DateInput from '../DateInput';
 
@@ -77,24 +76,5 @@ function DateDisplay({
     </div>
   );
 }
-
-DateDisplay.propTypes = {
-  ranges: PropTypes.array,
-  focusedRange: PropTypes.arrayOf(PropTypes.number),
-  rangeColors: PropTypes.arrayOf(PropTypes.string),
-  color: PropTypes.string,
-  dateDisplayFormat: PropTypes.string,
-  editableDateInputs: PropTypes.bool,
-  startDatePlaceholder: PropTypes.string,
-  endDatePlaceholder: PropTypes.string,
-  ariaLabels: PropTypes.object,
-  minDate: PropTypes.object,
-  maxDate: PropTypes.object,
-  disabledDates: PropTypes.array,
-  onChange: PropTypes.func,
-  onRangeFocusChange: PropTypes.func,
-  dateOptions: PropTypes.object,
-  styles: PropTypes.object,
-};
 
 export default DateDisplay;

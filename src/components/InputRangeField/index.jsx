@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react';
-import PropTypes from 'prop-types';
 
 const MIN = 0;
 const MAX = 99999;
@@ -44,19 +43,5 @@ const InputRangeField = React.memo(
 );
 
 InputRangeField.displayName = 'InputRangeField';
-
-InputRangeField.propTypes = {
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  label: PropTypes.oneOfType([PropTypes.element, PropTypes.node]).isRequired,
-  placeholder: PropTypes.string,
-  styles: PropTypes.shape({
-    inputRange: PropTypes.string,
-    inputRangeInput: PropTypes.string,
-    inputRangeLabel: PropTypes.string,
-  }).isRequired,
-  onBlur: PropTypes.func.isRequired,
-  onFocus: PropTypes.func.isRequired,
-  onChange: PropTypes.func.isRequired,
-};
 
 export default InputRangeField;

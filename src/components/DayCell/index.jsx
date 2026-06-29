@@ -1,6 +1,5 @@
  
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { startOfDay, format, isSameDay, isAfter, isBefore, endOfDay } from 'date-fns';
 
@@ -180,44 +179,5 @@ function DayCell(props) {
 }
 
 DayCell.defaultProps = {};
-
-export const rangeShape = PropTypes.shape({
-  startDate: PropTypes.object,
-  endDate: PropTypes.object,
-  color: PropTypes.string,
-  key: PropTypes.string,
-  autoFocus: PropTypes.bool,
-  disabled: PropTypes.bool,
-  showDateDisplay: PropTypes.bool,
-});
-
-DayCell.propTypes = {
-  day: PropTypes.object.isRequired,
-  dayDisplayFormat: PropTypes.string,
-  date: PropTypes.object,
-  ranges: PropTypes.arrayOf(rangeShape),
-  preview: PropTypes.shape({
-    startDate: PropTypes.object,
-    endDate: PropTypes.object,
-    color: PropTypes.string,
-  }),
-  onPreviewChange: PropTypes.func,
-  previewColor: PropTypes.string,
-  disabled: PropTypes.bool,
-  isPassive: PropTypes.bool,
-  isToday: PropTypes.bool,
-  isWeekend: PropTypes.bool,
-  isStartOfWeek: PropTypes.bool,
-  isEndOfWeek: PropTypes.bool,
-  isStartOfMonth: PropTypes.bool,
-  isEndOfMonth: PropTypes.bool,
-  color: PropTypes.string,
-  displayMode: PropTypes.oneOf(['dateRange', 'date']),
-  styles: PropTypes.object,
-  onMouseDown: PropTypes.func,
-  onMouseUp: PropTypes.func,
-  onMouseEnter: PropTypes.func,
-  dayContentRenderer: PropTypes.func,
-};
 
 export default DayCell;

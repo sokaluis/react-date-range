@@ -1,7 +1,6 @@
- 
+
 import React from 'react';
-import PropTypes from 'prop-types';
-import DayCell, { rangeShape } from '../DayCell';
+import DayCell from '../DayCell';
 import {
   format,
   startOfDay,
@@ -131,35 +130,5 @@ function Month(props) {
 }
 
 Month.defaultProps = {};
-
-Month.propTypes = {
-  style: PropTypes.object,
-  styles: PropTypes.object,
-  month: PropTypes.object,
-  drag: PropTypes.object,
-  dateOptions: PropTypes.object,
-  disabledDates: PropTypes.array,
-  disabledDay: PropTypes.func,
-  preview: PropTypes.shape({
-    startDate: PropTypes.object,
-    endDate: PropTypes.object,
-  }),
-  showPreview: PropTypes.bool,
-  displayMode: PropTypes.oneOf(['dateRange', 'date']),
-  minDate: PropTypes.object,
-  maxDate: PropTypes.object,
-  ranges: PropTypes.arrayOf(rangeShape),
-  focusedRange: PropTypes.arrayOf(PropTypes.number),
-  onDragSelectionStart: PropTypes.func,
-  onDragSelectionEnd: PropTypes.func,
-  onDragSelectionMove: PropTypes.func,
-  onMouseLeave: PropTypes.func,
-  monthDisplayFormat: PropTypes.string,
-  weekdayDisplayFormat: PropTypes.string,
-  dayDisplayFormat: PropTypes.string,
-  showWeekDays: PropTypes.bool,
-  showMonthName: PropTypes.bool,
-  fixedHeight: PropTypes.bool,
-};
 
 export default Month;

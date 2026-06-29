@@ -1,7 +1,5 @@
 import React, { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react';
-import PropTypes from 'prop-types';
 import Calendar from '../Calendar';
-import { rangeShape } from '../DayCell';
 import { findNextRangeIndex, generateStyles } from '../../utils';
 import { isBefore, differenceInCalendarDays, addDays, min, isWithinInterval, max } from 'date-fns';
 import classnames from 'classnames';
@@ -178,15 +176,5 @@ const DateRange = forwardRef(function DateRange(rawProps, ref) {
 });
 
 DateRange.defaultProps = dateRangeDefaultProps;
-
-DateRange.propTypes = {
-  ...Calendar.propTypes,
-  onChange: PropTypes.func,
-  onRangeFocusChange: PropTypes.func,
-  className: PropTypes.string,
-  ranges: PropTypes.arrayOf(rangeShape),
-  moveRangeOnFirstSelection: PropTypes.bool,
-  retainEndDateOnFirstSelection: PropTypes.bool,
-};
 
 export default DateRange;

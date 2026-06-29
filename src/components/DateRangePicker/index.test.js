@@ -22,7 +22,6 @@ jest.mock('../DateRange/index.jsx', () => {
   });
   DateRangeMock.displayName = 'DateRangeMock';
   DateRangeMock.defaultProps = { ranges: [] };
-  DateRangeMock.propTypes = { ranges: jest.fn(), className: jest.fn() };
   return { __esModule: true, default: DateRangeMock };
 });
 
@@ -34,7 +33,6 @@ jest.mock('../DefinedRange/index.jsx', () => {
   };
   DefinedRangeMock.displayName = 'DefinedRangeMock';
   DefinedRangeMock.defaultProps = {};
-  DefinedRangeMock.propTypes = { className: jest.fn() };
   return { __esModule: true, default: DefinedRangeMock };
 });
 
@@ -71,8 +69,6 @@ describe('DateRangePicker hooks parity', () => {
 
     expect(DateRangePicker.$$typeof).toBe(Symbol.for('react.forward_ref'));
     expect(DateRangePicker.defaultProps).toEqual({});
-    expect(DateRangePicker.propTypes.ranges).toEqual(expect.any(Function));
-    expect(DateRangePicker.propTypes.className).toEqual(expect.any(Function));
     expect(ref.current.setState).toBeUndefined();
     expect(mockLatestDefinedRangeProps.className).toBeUndefined();
     expect(mockLatestDateRangeProps.className).toBeUndefined();

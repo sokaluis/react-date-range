@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { format, parse, isValid, isEqual, startOfDay, endOfDay, isAfter, isBefore, isSameDay } from 'date-fns';
 
@@ -104,22 +103,6 @@ class DateInput extends PureComponent {
     );
   }
 }
-
-DateInput.propTypes = {
-  value: PropTypes.object,
-  placeholder: PropTypes.string,
-  disabled: PropTypes.bool,
-  readOnly: PropTypes.bool,
-  dateOptions: PropTypes.object,
-  dateDisplayFormat: PropTypes.string,
-  ariaLabel: PropTypes.string,
-  className: PropTypes.string,
-  onFocus: PropTypes.func.isRequired,
-  onChange: PropTypes.func.isRequired,
-  minDate: PropTypes.object,
-  maxDate: PropTypes.object,
-  disabledDates: PropTypes.array,
-};
 
 DateInput.defaultProps = {
   readOnly: true,

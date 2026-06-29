@@ -20,7 +20,6 @@ jest.mock('../Calendar/index.jsx', () => {
   });
   CalendarMock.displayName = 'CalendarMock';
   CalendarMock.defaultProps = {};
-  CalendarMock.propTypes = {};
   return { __esModule: true, default: CalendarMock };
 });
 
@@ -134,7 +133,6 @@ describe('DateRange', () => {
 
     expect(DateRange.$$typeof).toBe(Symbol.for('react.forward_ref'));
     expect(DateRange.defaultProps.rangeColors).toEqual(['#3d91ff', '#3ecf8e', '#fed14c']);
-    expect(DateRange.propTypes.onChange).toEqual(expect.any(Function));
     ['calcNewSelection', 'updatePreview', 'focusToDate', 'changeShownDate', 'updateShownDate', 'handleScroll'].forEach(
       methodName => expect(ref.current[methodName]).toEqual(expect.any(Function))
     );

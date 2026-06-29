@@ -44,7 +44,6 @@ describe('DefinedRange hooks parity', () => {
     const { ref } = renderDefinedRange();
 
     expect(DefinedRange.$$typeof).toBe(Symbol.for('react.forward_ref'));
-    expect(DefinedRange.propTypes.onChange).toEqual(expect.any(Function));
     expect(ref.current.setState).toBeUndefined();
   });
 

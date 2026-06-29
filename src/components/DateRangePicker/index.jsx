@@ -1,5 +1,4 @@
 import React, { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react';
-import PropTypes from 'prop-types';
 import DateRange from '../DateRange';
 import DefinedRange from '../DefinedRange';
 import { findNextRangeIndex, generateStyles } from '../../utils';
@@ -54,11 +53,5 @@ const DateRangePicker = forwardRef(function DateRangePicker(props, ref) {
 });
 
 DateRangePicker.defaultProps = {};
-
-DateRangePicker.propTypes = {
-  ...DateRange.propTypes,
-  ...DefinedRange.propTypes,
-  className: PropTypes.string,
-};
 
 export default DateRangePicker;
