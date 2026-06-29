@@ -14,24 +14,27 @@ tree-shaking.
 | JSX source | `.js` and `.jsx` source is compiled to plain JS output. |
 | Format support | Emits ESM (`.mjs`) and CJS (`.cjs`). |
 | Tree-shaking | `unbundle: true` + multi-entry glob preserves per-component modules. |
-| External deps | React, date-fns, prop-types, etc. are never bundled. |
+| External deps | React, react-dom, date-fns, classnames, shallow-equal, @tanstack/react-virtual, prop-types are never bundled. |
 | Types | `src/index.d.ts` is copied to `dist/index.d.ts`. |
 
 ### Configuration (`tsdown.config.ts`)
 
 ```ts
 export default defineConfig({
-  entry: ['src/**/*.{js,jsx}', '!src/**/*.test.js'],
+  entry: ['src/**/*.{js,jsx}', '!src/**/*.test.js', '!src/locale/**'],
   format: ['cjs', 'esm'],
   clean: true,
   dts: false,
   unbundle: true,
   loader: { '.js': 'jsx' },
   deps: {
-    neverBundle: ['react', 'react-dom', 'prop-types', 'classnames', 'react-list', 'shallow-equal', 'date-fns', /^date-fns\//],
+    neverBundle: ['react', 'react-dom', '@tanstack/react-virtual', 'prop-types', 'classnames', 'shallow-equal', 'date-fns', /^date-fns\//],
   },
 });
 ```
+
+> **Note:** `react-list` was removed in Slice 17 (no longer shipped in bundle).
+> `src/locale/**` is excluded from the entry glob — locale is sourced directly from `date-fns/locale`.
 
 ### Output files
 

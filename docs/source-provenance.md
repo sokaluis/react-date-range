@@ -109,3 +109,23 @@ From the original `package.json` at `v2.0.1`:
 
 Upstream license is MIT. The original `LICENSE` file has been copied to the repo root.
 See [`NOTICE.md`](../NOTICE.md) for attribution requirements before publishing.
+
+---
+
+## Dependency evolution (post-fork) 2026-06-29
+
+The following changes to `dependencies` were made after the fork was created:
+
+| Dependency | Original | Current | Slice |
+|------------|----------|---------|-------|
+| `react-list` | `^0.8.13` (runtime dep) | **Removed** — not shipped in bundle | Slice 17 |
+| `prop-types` | `^15.7.2` (runtime dep) | **Removed** — not shipped in bundle | Slice 17 |
+| `src/locale/index.js` | Present (i18n support) | **Deleted** — `date-fns/locale` used directly | Slice 17 |
+| `classnames` | `^2.2.6` | Remains (externalized) | — |
+| `shallow-equal` | `^1.2.1` | Remains (externalized) | — |
+| `date-fns` | Peer dep unchanged | Peer dep unchanged | — |
+
+**Note:** `classnames` and `shallow-equal` remain in `deps.neverBundle` in `tsdown.config.ts`
+and are externalized at build time (not bundled into the output). The original
+`package.json` snapshot above (lines 67–84) is a historical record and is preserved
+byte-identical.
