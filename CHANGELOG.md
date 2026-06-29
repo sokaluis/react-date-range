@@ -14,6 +14,10 @@ For upstream release history (up to `2.0.1`), see [`CHANGELOG.upstream.md`](CHAN
 
 ### Added
 
+- Documentation sweep: existing docs updated to reflect Slices 13–21 cumulative state; new `docs/migration-from-upstream.md` added; public API byte-identical to `0.1.0-beta.0` (Slice 22).
+
+### Added
+
 - `src/index.d.ts`: `DateInputProps` interface (13 keys, alphabetical) and `DateInput`
   function declaration added as type-only contracts. `DateInput` is NOT exported from
   `src/index.js` runtime barrel — this is a type-only surface addition per obs #8626.

@@ -31,9 +31,7 @@ This project aims to fill that gap.
 ## Install
 
 ```bash
-npm install @cyberlz/react-date-range@beta
-# or, for existing prerelease testers after dist-tag update
-npm install @cyberlz/react-date-range@alpha
+npm install @cyberlz/react-date-range
 ```
 
 ```js
@@ -42,8 +40,7 @@ import '@cyberlz/react-date-range/styles.css';
 import '@cyberlz/react-date-range/theme/default.css';
 ```
 
-> Beta means the internal refactor is complete and the public API is stable for the
-> `0.1.x` line. Phase 2 stylability is intentionally deferred to `0.2.0`.
+> **Migrating from `react-date-range` upstream?** See [`docs/migration-from-upstream.md`](docs/migration-from-upstream.md).
 
 ## Goal
 
@@ -64,33 +61,24 @@ A **modern, maintained, production-ready** date range picker for React that:
 | **Phase 0** — Audit & planning | Complete |
 | **Phase 1** — Compatible rescue | Complete |
 | **Phase 2** — Stylability | Deferred to `0.2.0` |
-| **Phase 3** — Core refactor | Complete (Slices 1–11 done) |
+| **Phase 3** — Core refactor | Complete (Slices 1–21 done) |
 | **Phase 4** — Dual skins | Not started |
 
-**There is no stable release yet.** Use the `beta` dist-tag for the first beta; `alpha`
-may also point to the same prerelease checkpoint for existing testers.
-See [`docs/fork-roadmap.md`](docs/fork-roadmap.md) for the full plan and
+**`@cyberlz/react-date-range@1.0.0` is the stable release.** See
+[`docs/fork-roadmap.md`](docs/fork-roadmap.md) for the full plan and
 [`docs/refactor-roadmap.md`](docs/refactor-roadmap.md) for incremental refactor slices.
 
 ## Dist-tag policy
 
 npm has three relevant dist-tags for this package:
 
-- **`beta`** — points to `0.1.0-beta.0`. **This is the explicit first-beta install** (`npm install @cyberlz/react-date-range@beta`).
-- **`alpha`** — prerelease convenience tag for existing testers; after beta publish it points to `0.1.0-beta.0`.
-- **`latest`** — still points to the first published version (`0.1.0-alpha.0`) until a stable release exists. Do not rely on the npm sidebar for current prerelease docs; use this README, [`CHANGELOG.md`](CHANGELOG.md), and [`docs/refactor-roadmap.md`](docs/refactor-roadmap.md).
+- **`latest`** — points to `1.0.0`. This is the stable install: `npm install @cyberlz/react-date-range`.
+- **`beta`** — points to `0.1.0-beta.0`. For consumers who want explicit prerelease tracking.
+- **`alpha`** — points to `0.1.0-alpha.3`. Legacy; may point to the same as beta going forward.
 
+For `1.0.0`, all consumers use `npm install @cyberlz/react-date-range` (no tag). See
+[`docs/migration-from-upstream.md`](docs/migration-from-upstream.md) for upgrade instructions.
 See [`docs/release-flow.md`](docs/release-flow.md#npm-dist-tags) for the full policy.
-
-## Beta scope
-
-`0.1.0-beta.0` means:
-
-1. **Internal refactor complete** — Slices 1–11 are done; all components use functions/hooks.
-2. **Public API stable** — no breaking changes planned for the `0.1.x` line.
-3. **Build modernization complete** — `tsdown`, ESM/CJS output, and real tree-shaking.
-4. **Tooling wired** — ESLint, TypeScript check, and `@testing-library/react` tests.
-5. **Stylability deferred** — CSS variables, `className` pass-through, and styling API are planned for additive `0.2.0` work.
 
 ## Beta build pipeline (current)
 
