@@ -12,11 +12,9 @@
   "dependencies": {
     "classnames": "^2.2.6",
     "date-fns": "^3.0.6",
-    "prop-types": "^15.7.2",
     "react": "^18.3.1",
     "react-date-range-modern": "file:../..",
     "react-dom": "^18.3.1",
-    "react-list": "^0.8.13",
     "shallow-equal": "^1.2.1"
   },
   "devDependencies": {
