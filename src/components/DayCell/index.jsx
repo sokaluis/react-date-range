@@ -178,6 +178,4 @@ function DayCell(props) {
   );
 }
 
-DayCell.defaultProps = {};
-
 export default DayCell;

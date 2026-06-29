@@ -129,6 +129,4 @@ function Month(props) {
   );
 }
 
-Month.defaultProps = {};
-
 export default Month;
