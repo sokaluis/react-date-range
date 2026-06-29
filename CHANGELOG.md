@@ -16,6 +16,14 @@ For upstream release history (up to `2.0.1`), see [`CHANGELOG.upstream.md`](CHAN
 
 - DateInput: migrated from PureComponent class to function component with React hooks (useState, useEffect, useCallback). No public API change. Per-method destructuring defaults preserved (Slice 13). Tests rewritten to @testing-library/react (82/82 green).
 
+### Fixed
+
+- `disabledDates` prop: added runtime array guard at Calendar boundary to prevent crashes when consumers pass `null`, a single `Date`, or other non-array values (upstream #607). Guard uses a frozen empty-array constant to preserve `useMemo`/`useCallback` referential stability. Regression test covers null, single-Date, and valid-array paths (3 new Calendar tests).
+- `DateRange.updatePreview` color fallback chain: verified TDZ-safe — regression lock-in test confirms `color` is resolved before `setPreview` (upstream #658, already organically fixed by hooks migration in Slice 11).
+- `date-fns` ESM interop: verified all source-tree imports use named-import syntax; zero `_dateFns` wrapper references exist. Build config (`tsdown.config.ts`) externalizes `date-fns`. Regression lock-in audit test added (upstream #664/#663).
+
+> **Known limitation**: direct `<DateRange disabledDates={null} />` (NOT wrapped in `<Calendar />`) bypasses the Calendar-boundary guard and may still crash. Consumers should always wrap DateRange in Calendar. A future slice may add a guard at the DateRange boundary.
+
 ---
 
 ## [0.1.0-beta.0] — 2026-06-28
