@@ -11,11 +11,14 @@ import {
   differenceInCalendarDays,
 } from 'date-fns';
 
+const getWeekOptions = props => {
+  if (props && props.weekStartsOn !== undefined) {
+    return { weekStartsOn: props.weekStartsOn };
+  }
+  return {};
+};
+
 const defineds = {
-  startOfWeek: startOfWeek(new Date()),
-  endOfWeek: endOfWeek(new Date()),
-  startOfLastWeek: startOfWeek(addDays(new Date(), -7)),
-  endOfLastWeek: endOfWeek(addDays(new Date(), -7)),
   startOfToday: startOfDay(new Date()),
   endOfToday: endOfDay(new Date()),
   startOfYesterday: startOfDay(addDays(new Date(), -1)),
@@ -28,8 +31,8 @@ const defineds = {
 
 const staticRangeHandler = {
   range: {},
-  isSelected(range) {
-    const definedRange = this.range();
+  isSelected(range, props) {
+    const definedRange = this.range(props);
     return (
       isSameDay(range.startDate, definedRange.startDate) &&
       isSameDay(range.endDate, definedRange.endDate)
@@ -59,16 +62,16 @@ export const defaultStaticRanges = createStaticRanges([
 
   {
     label: 'This Week',
-    range: () => ({
-      startDate: defineds.startOfWeek,
-      endDate: defineds.endOfWeek,
+    range: (props) => ({
+      startDate: startOfWeek(new Date(), getWeekOptions(props)),
+      endDate: endOfWeek(new Date(), getWeekOptions(props)),
     }),
   },
   {
     label: 'Last Week',
-    range: () => ({
-      startDate: defineds.startOfLastWeek,
-      endDate: defineds.endOfLastWeek,
+    range: (props) => ({
+      startDate: startOfWeek(addDays(new Date(), -7), getWeekOptions(props)),
+      endDate: endOfWeek(addDays(new Date(), -7), getWeekOptions(props)),
     }),
   },
   {

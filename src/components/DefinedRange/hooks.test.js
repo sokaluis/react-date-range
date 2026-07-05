@@ -63,7 +63,10 @@ describe('DefinedRange hooks parity', () => {
       'Plain range',
       'Rendered Dynamic range',
     ]);
-    expect(defaultLabelRange.isSelected).toHaveBeenCalledWith(selectedRange);
+    expect(defaultLabelRange.isSelected).toHaveBeenCalledWith(
+      selectedRange,
+      expect.objectContaining({ ranges: [selectedRange] })
+    );
     expect(renderStaticRangeLabel).toHaveBeenCalledWith(customLabelRange);
 
     fireEvent.click(screen.getByRole('button', { name: 'Plain range' }));

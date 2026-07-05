@@ -4,10 +4,10 @@ import { defaultInputRanges, defaultStaticRanges } from '../../defaultRanges';
 import InputRangeField from '../InputRangeField';
 import cx from 'classnames';
 
-const getSelectedRange = (ranges, staticRange) => {
+const getSelectedRange = (ranges, staticRange, props) => {
   const focusedRangeIndex = ranges.findIndex(range => {
     if (!range.startDate || !range.endDate || range.disabled) return false;
-    return staticRange.isSelected(range);
+    return staticRange.isSelected(range, props);
   });
   const selectedRange = ranges[focusedRangeIndex];
   return { selectedRange, focusedRangeIndex };
@@ -60,7 +60,7 @@ const DefinedRange = forwardRef((props, ref) => {
       {headerContent}
       <div className={styles.staticRanges}>
         {staticRanges.map((staticRange, i) => {
-          const { selectedRange, focusedRangeIndex } = getSelectedRange(ranges, staticRange);
+          const { selectedRange, focusedRangeIndex } = getSelectedRange(ranges, staticRange, props);
           let labelContent;
 
           if (staticRange.hasCustomRendering) {

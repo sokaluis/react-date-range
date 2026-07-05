@@ -3,7 +3,7 @@ import {
   defaultStaticRanges,
   defaultInputRanges,
 } from './defaultRanges';
-import { isSameDay } from 'date-fns';
+import { addDays, endOfWeek, isSameDay, startOfWeek } from 'date-fns';
 
 describe('createStaticRanges', () => {
   test('preserves label and range, adds isSelected method', () => {
@@ -159,5 +159,148 @@ describe('defaultInputRanges', () => {
       });
       expect(result1).toBe('∞');
     });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// weekStartsOn propagation (tasks 1.1–1.5)
+// ---------------------------------------------------------------------------
+describe('defaultStaticRanges — weekStartsOn propagation', () => {
+  // 1.1 — This Week with Monday anchor
+  test('This Week range({ weekStartsOn: 1 }) startDate is Monday (getDay() === 1)', () => {
+    const range = defaultStaticRanges[2].range({ weekStartsOn: 1 });
+    expect(range.startDate.getDay()).toBe(1);
+    expect(range.endDate.getDay()).toBe(0);
+  });
+
+  // 1.2 — Last Week with Monday anchor
+  test('Last Week range({ weekStartsOn: 1 }) startDate is Monday of previous week', () => {
+    const range = defaultStaticRanges[3].range({ weekStartsOn: 1 });
+    expect(range.startDate.getDay()).toBe(1);
+    expect(range.endDate.getDay()).toBe(0);
+
+    const lastWeekAnchor = addDays(new Date(), -7);
+    const expectedStart = startOfWeek(lastWeekAnchor, { weekStartsOn: 1 });
+    expect(isSameDay(range.startDate, expectedStart)).toBe(true);
+  });
+
+  // 1.3 — no weekStartsOn preserves locale-default behavior
+  test('This Week range({}) preserves locale-default behavior', () => {
+    const range = defaultStaticRanges[2].range({});
+    const expectedStart = startOfWeek(new Date());
+    const expectedEnd = endOfWeek(new Date());
+    expect(isSameDay(range.startDate, expectedStart)).toBe(true);
+    expect(isSameDay(range.endDate, expectedEnd)).toBe(true);
+  });
+
+  // 1.3 — same for Last Week
+  test('Last Week range({}) preserves locale-default behavior', () => {
+    const range = defaultStaticRanges[3].range({});
+    const lastWeekAnchor = addDays(new Date(), -7);
+    const expectedStart = startOfWeek(lastWeekAnchor);
+    const expectedEnd = endOfWeek(lastWeekAnchor);
+    expect(isSameDay(range.startDate, expectedStart)).toBe(true);
+    expect(isSameDay(range.endDate, expectedEnd)).toBe(true);
+  });
+
+  // 1.4 — Sunday anchor (0)
+  test('This Week range({ weekStartsOn: 0 }) startDate is Sunday (getDay() === 0)', () => {
+    const range = defaultStaticRanges[2].range({ weekStartsOn: 0 });
+    expect(range.startDate.getDay()).toBe(0);
+  });
+
+  test('Last Week range({ weekStartsOn: 0 }) startDate is Sunday of previous week', () => {
+    const range = defaultStaticRanges[3].range({ weekStartsOn: 0 });
+    expect(range.startDate.getDay()).toBe(0);
+  });
+
+  // 1.4 — Saturday anchor (6)
+  test('This Week range({ weekStartsOn: 6 }) startDate is Saturday (getDay() === 6)', () => {
+    const range = defaultStaticRanges[2].range({ weekStartsOn: 6 });
+    expect(range.startDate.getDay()).toBe(6);
+  });
+
+  test('Last Week range({ weekStartsOn: 6 }) startDate is Saturday of previous week', () => {
+    const range = defaultStaticRanges[3].range({ weekStartsOn: 6 });
+    expect(range.startDate.getDay()).toBe(6);
+  });
+
+  // 1.5 — isSelected with props (must compute reference range from props.weekStartsOn,
+  //        not from module-load defineds)
+  test('isSelected(range, props) returns true for Monday-start current week with weekStartsOn=1', () => {
+    const mondayStart = startOfWeek(new Date(), { weekStartsOn: 1 });
+    const sundayEnd = endOfWeek(new Date(), { weekStartsOn: 1 });
+    const thisWeek = defaultStaticRanges[2];
+
+    expect(
+      thisWeek.isSelected(
+        { startDate: mondayStart, endDate: sundayEnd },
+        { weekStartsOn: 1 }
+      )
+    ).toBe(true);
+  });
+
+  test('isSelected(range, props) returns false for mismatched range', () => {
+    const thisWeek = defaultStaticRanges[2];
+    const wrongRange = {
+      startDate: new Date(2000, 0, 1),
+      endDate: new Date(2000, 0, 2),
+    };
+
+    expect(thisWeek.isSelected(wrongRange, { weekStartsOn: 1 })).toBe(false);
+  });
+
+  // 1.5 — isSelected without props still works (backward compat)
+  test('isSelected(range) without props uses default behavior', () => {
+    const thisWeek = defaultStaticRanges[2];
+    const defaultRange = thisWeek.range();
+
+    expect(thisWeek.isSelected(defaultRange)).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Backward compatible isSelected overrides (tasks 3.1–3.2)
+// ---------------------------------------------------------------------------
+describe('createStaticRanges — backward compatible isSelected', () => {
+  test('one-arg isSelected(range) override still works when called with extra props arg', () => {
+    const [range] = createStaticRanges([
+      {
+        label: 'Old API',
+        range: () => ({ startDate: new Date(2025, 5, 10), endDate: new Date(2025, 5, 12) }),
+        isSelected(r) {
+          return r.startDate.getDate() === 10;
+        },
+      },
+    ]);
+
+    expect(
+      range.isSelected({ startDate: new Date(2025, 5, 10), endDate: new Date(2025, 5, 12) }, { weekStartsOn: 1 })
+    ).toBe(true);
+    expect(
+      range.isSelected({ startDate: new Date(2025, 5, 11), endDate: new Date(2025, 5, 12) }, { weekStartsOn: 1 })
+    ).toBe(false);
+  });
+
+  test('two-arg isSelected(range, props) override reads props.weekStartsOn', () => {
+    const [range] = createStaticRanges([
+      {
+        label: 'New API',
+        range: () => ({ startDate: new Date(2025, 5, 10), endDate: new Date(2025, 5, 12) }),
+        isSelected(_r, props) {
+          return props && props.weekStartsOn === 3;
+        },
+      },
+    ]);
+
+    expect(
+      range.isSelected({ startDate: new Date(), endDate: new Date() }, { weekStartsOn: 3 })
+    ).toBe(true);
+    expect(
+      range.isSelected({ startDate: new Date(), endDate: new Date() }, { weekStartsOn: 1 })
+    ).toBe(false);
+    expect(
+      !!range.isSelected({ startDate: new Date(), endDate: new Date() })
+    ).toBe(false);
   });
 });

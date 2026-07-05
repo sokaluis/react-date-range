@@ -259,7 +259,7 @@ export function DateRange(props: DateRangeProps): React.JSX.Element;
 
 export interface StaticRange {
   range: (props?: DefinedRangeProps) => Preview;
-  isSelected: (range: Range) => boolean;
+  isSelected: (range: Range, props?: DefinedRangeProps) => boolean;
   label?: string | undefined;
   hasCustomRendering?: boolean | undefined;
 }
@@ -296,6 +296,8 @@ export interface DefinedRangeProps {
   renderStaticRangeLabel?: ((staticRange: StaticRange) => React.ReactNode) | undefined;
   /** default: `defaultStaticRanges` */
   staticRanges?: StaticRange[] | undefined;
+  /** 0=Sunday … 6=Saturday; forwarded into default weekly static ranges. */
+  weekStartsOn?: number | undefined;
 }
 
 export function DefinedRange(props: DefinedRangeProps): React.JSX.Element;
