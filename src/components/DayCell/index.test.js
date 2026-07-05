@@ -173,4 +173,155 @@ describe('DayCell', () => {
       expect(button.innerHTML).not.toContain('rdrSelected');
     });
   });
+
+  describe('renderSelectionPlaceholders — null endpoint guards', () => {
+    const rangeBaseProps = {
+      ...baseProps,
+      displayMode: 'range',
+      date: undefined,
+    };
+
+    test('both endpoints null renders no inRange/startEdge/endEdge spans', () => {
+      const day = new Date(2025, 5, 15);
+      render(
+        <DayCell
+          {...rangeBaseProps}
+          day={day}
+          ranges={[{ startDate: null, endDate: null, key: 'selection' }]}
+        />
+      );
+      const button = screen.getByRole('gridcell');
+      expect(button.querySelectorAll('.rdrInRange')).toHaveLength(0);
+      expect(button.querySelectorAll('.rdrStartEdge')).toHaveLength(0);
+      expect(button.querySelectorAll('.rdrEndEdge')).toHaveLength(0);
+    });
+
+    test('empty ranges array renders no placeholder spans', () => {
+      const day = new Date(2025, 5, 15);
+      render(<DayCell {...rangeBaseProps} day={day} ranges={[]} />);
+      const button = screen.getByRole('gridcell');
+      expect(button.querySelectorAll('.rdrInRange')).toHaveLength(0);
+      expect(button.querySelectorAll('.rdrStartEdge')).toHaveLength(0);
+      expect(button.querySelectorAll('.rdrEndEdge')).toHaveLength(0);
+    });
+
+    test('fully-populated range renders inRange span for intermediate day', () => {
+      const day = new Date(2025, 5, 15);
+      render(
+        <DayCell
+          {...rangeBaseProps}
+          day={day}
+          ranges={[
+            {
+              startDate: new Date(2025, 5, 10),
+              endDate: new Date(2025, 5, 20),
+              key: 'selection',
+            },
+          ]}
+        />
+      );
+      const button = screen.getByRole('gridcell');
+      expect(button.querySelectorAll('.rdrInRange')).toHaveLength(1);
+    });
+
+    test('fully-populated range renders startEdge on startDate boundary day', () => {
+      const day = new Date(2025, 5, 10);
+      render(
+        <DayCell
+          {...rangeBaseProps}
+          day={day}
+          ranges={[
+            {
+              startDate: new Date(2025, 5, 10),
+              endDate: new Date(2025, 5, 20),
+              key: 'selection',
+            },
+          ]}
+        />
+      );
+      const button = screen.getByRole('gridcell');
+      expect(button.querySelectorAll('.rdrStartEdge')).toHaveLength(1);
+      expect(button.querySelectorAll('.rdrInRange')).toHaveLength(0);
+    });
+
+    test('fully-populated range renders endEdge on endDate boundary day', () => {
+      const day = new Date(2025, 5, 20);
+      render(
+        <DayCell
+          {...rangeBaseProps}
+          day={day}
+          ranges={[
+            {
+              startDate: new Date(2025, 5, 10),
+              endDate: new Date(2025, 5, 20),
+              key: 'selection',
+            },
+          ]}
+        />
+      );
+      const button = screen.getByRole('gridcell');
+      expect(button.querySelectorAll('.rdrEndEdge')).toHaveLength(1);
+      expect(button.querySelectorAll('.rdrInRange')).toHaveLength(0);
+    });
+
+    test('only startDate set renders startEdge only on the matching day', () => {
+      const startDate = new Date(2025, 5, 10);
+      const matchingDay = new Date(2025, 5, 10);
+      const otherDay = new Date(2025, 5, 15);
+
+      // Matching day
+      const { container: matchingContainer } = render(
+        <DayCell
+          {...rangeBaseProps}
+          day={matchingDay}
+          ranges={[{ startDate, endDate: null, key: 'selection' }]}
+        />
+      );
+      expect(matchingContainer.querySelectorAll('.rdrStartEdge')).toHaveLength(1);
+      expect(matchingContainer.querySelectorAll('.rdrInRange')).toHaveLength(0);
+      expect(matchingContainer.querySelectorAll('.rdrEndEdge')).toHaveLength(0);
+
+      // Other day
+      const { container: otherContainer } = render(
+        <DayCell
+          {...rangeBaseProps}
+          day={otherDay}
+          ranges={[{ startDate, endDate: null, key: 'selection' }]}
+        />
+      );
+      expect(otherContainer.querySelectorAll('.rdrStartEdge')).toHaveLength(0);
+      expect(otherContainer.querySelectorAll('.rdrInRange')).toHaveLength(0);
+      expect(otherContainer.querySelectorAll('.rdrEndEdge')).toHaveLength(0);
+    });
+
+    test('only endDate set renders endEdge only on the matching day', () => {
+      const endDate = new Date(2025, 5, 20);
+      const matchingDay = new Date(2025, 5, 20);
+      const otherDay = new Date(2025, 5, 15);
+
+      // Matching day
+      const { container: matchingContainer } = render(
+        <DayCell
+          {...rangeBaseProps}
+          day={matchingDay}
+          ranges={[{ startDate: null, endDate, key: 'selection' }]}
+        />
+      );
+      expect(matchingContainer.querySelectorAll('.rdrEndEdge')).toHaveLength(1);
+      expect(matchingContainer.querySelectorAll('.rdrInRange')).toHaveLength(0);
+      expect(matchingContainer.querySelectorAll('.rdrStartEdge')).toHaveLength(0);
+
+      // Other day
+      const { container: otherContainer } = render(
+        <DayCell
+          {...rangeBaseProps}
+          day={otherDay}
+          ranges={[{ startDate: null, endDate, key: 'selection' }]}
+        />
+      );
+      expect(otherContainer.querySelectorAll('.rdrEndEdge')).toHaveLength(0);
+      expect(otherContainer.querySelectorAll('.rdrInRange')).toHaveLength(0);
+      expect(otherContainer.querySelectorAll('.rdrStartEdge')).toHaveLength(0);
+    });
+  });
 });
