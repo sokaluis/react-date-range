@@ -10,6 +10,14 @@ For upstream release history (up to `2.0.1`), see [`CHANGELOG.upstream.md`](CHAN
 
 ---
 
+## [Unreleased]
+
+### Fixed
+
+- `disabledDates` prop: added runtime array guard at the `<DateRange>` component boundary to prevent crashes when consumers pass `null`, a single `Date`, or other non-array values directly to `<DateRange>` (upstream #607). Mirrors the existing Calendar boundary guard using a frozen empty-array constant for `useMemo`/`useCallback` referential stability. Direct `<DateRange disabledDates={null} />` is now safe without wrapping in `<Calendar>`.
+
+---
+
 ## [1.0.1] — 2026-07-05
 
 Patch release for the first post-1.0 maintenance fix.

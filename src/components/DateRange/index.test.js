@@ -166,6 +166,55 @@ describe('DateRange', () => {
     expect(latestCalendarProps.preview).toBe(null);
   });
 
+  describe('REQ-DDDG-001..003 / #607: direct <DateRange disabledDates> boundary guard', () => {
+    test('disabledDates={null} does not throw and yields full range', () => {
+      // REQ-DDDG-001: null is treated as empty array; no dates excluded.
+      const methodResult = calcSelection({ disabledDates: null })(new Date(2025, 5, 10), true);
+      expect(methodResult.wasValid).toBe(true);
+      compareRanges(methodResult.range, {
+        startDate: new Date(2025, 5, 10),
+        endDate: new Date(2025, 5, 10),
+      });
+    });
+
+    test('disabledDates={new Date(...)} single Date does not throw and yields full range', () => {
+      // REQ-DDDG-002: a bare Date is not treated as one disabled date;
+      // it is treated as empty (non-iterable for .filter).
+      const methodResult = calcSelection({ disabledDates: new Date(2025, 5, 18) })(new Date(2025, 5, 10), true);
+      expect(methodResult.wasValid).toBe(true);
+      compareRanges(methodResult.range, {
+        startDate: new Date(2025, 5, 10),
+        endDate: new Date(2025, 5, 10),
+      });
+    });
+
+    test('disabledDates={[dateA, dateB]} still splits selection around disabled dates (regression)', () => {
+      // REQ-DDDG-003: valid array behavior is unchanged.
+      // Mirrors the existing "around disabled dates" pattern from the main suite.
+      const firstDisabled = subDays(endDate, 5);
+      const secondDisabled = subDays(endDate, 3);
+      const disabledDates = [firstDisabled, secondDisabled];
+      const fromStart = calcSelection({ disabledDates, retainEndDateOnFirstSelection: true })(subDays(endDate, 10), true);
+      const fromEnd = calcSelection({ focusedRange: [0, 1], disabledDates })(addDays(endDate, 2), true);
+
+      expect(fromStart.wasValid).toBe(false);
+      compareRanges(fromStart.range, { startDate: addDays(secondDisabled, 1), endDate });
+      expect(fromEnd.wasValid).toBe(false);
+      compareRanges(fromEnd.range, { startDate, endDate: subDays(firstDisabled, 1) });
+    });
+
+    test('disabledDates={[]} and omitted prop both yield full range (regression)', () => {
+      // REQ-DDDG-003: empty array and undefined/omitted behave identically.
+      const explicitEmpty = calcSelection({ disabledDates: [] })(new Date(2025, 5, 10), true);
+      expect(explicitEmpty.wasValid).toBe(true);
+      compareRanges(explicitEmpty.range, { startDate: new Date(2025, 5, 10), endDate: new Date(2025, 5, 10) });
+
+      const omitted = calcSelection()(new Date(2025, 5, 10), true);
+      expect(omitted.wasValid).toBe(true);
+      compareRanges(omitted.range, { startDate: new Date(2025, 5, 10), endDate: new Date(2025, 5, 10) });
+    });
+  });
+
   describe('REQ-UBF-001 / #658: updatePreview color fallback chain (regression lock-in)', () => {
     test('falls back to rangeColors[i] when range has no color', () => {
       const { ref } = renderDateRange({

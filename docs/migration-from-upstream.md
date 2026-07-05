@@ -37,9 +37,7 @@ These upstream bugs were fixed in this fork. They are "silent" fixes because exi
 |----------------|---------------|--------------|
 | [#658](https://github.com/hypeserver/react-date-range/issues/658) — `DateRange.updatePreview` temporal dead zone | Upstream could crash with `ReferenceError: Cannot access 'color' before initialization` when `color` prop was undefined. | Hooks migration in Slice 11 organically fixed this. Regression lock-in test at commit `eaf0bf3`. |
 | [#664](https://github.com/hypeserver/react-date-range/issues/664) / [#663](https://github.com/hypeserver/react-date-range/issues/663) — `addYears is not a function` | date-fns v4 changed default export syntax. Fork ships `date-fns: ^3.0.0` and all internal imports use named-export syntax. | Lock-in audit test at commit `b9ee316`. |
-| [#607](https://github.com/hypeserver/react-date-range/issues/607) — `disabledDates` crash on non-array | Passing `disabledDates={null}` or a single `Date` to `<Calendar>` could crash. | Runtime array guard added at Calendar `ForwardedCalendar.resolvedProps` boundary at commit `82736b0`. Guard uses a frozen empty-array constant for `useMemo`/`useCallback` referential stability. |
-
-> **⚠️ Calendar-boundary guard limitation**: The `disabledDates` null-array guard added in Slice 15 lives at `Calendar`'s `ForwardedCalendar.resolvedProps` boundary. **Direct usage** of `<DateRange disabledDates={null} />` without wrapping in `<Calendar>` still crashes — adopters must wrap with `<Calendar>` if they want the guard to apply, OR provide a non-null array (e.g. `[]`).
+| [#607](https://github.com/hypeserver/react-date-range/issues/607) — `disabledDates` crash on non-array | Passing `disabledDates={null}` or a single `Date` to `<Calendar>` or directly to `<DateRange>` could crash. | Runtime array guard added at both Calendar `ForwardedCalendar.resolvedProps` boundary (commit `82736b0`) and DateRange component boundary. Both guards use a frozen empty-array constant for `useMemo`/`useCallback` referential stability. |
 
 ### API additions (type-only)
 
@@ -79,7 +77,7 @@ For the full list of changes, see the [CHANGELOG](../CHANGELOG.md) `[1.0.0]` ent
 | Limitation | Status | Notes |
 |------------|--------|-------|
 | `strict: true` in `tsconfig.json` | ✅ Enabled (Slice 16) | `checkJs: true` is deferred to `1.0.x`. Source-level JSDoc typed-comments enforcement also deferred. |
-| Calendar-boundary guard for `disabledDates` | ⚠️ Partial | The `disabledDates` array guard only applies when `<DateRange>` is wrapped in `<Calendar>`. Direct `<DateRange disabledDates={null} />` still crashes. Always wrap `DateRange` in `Calendar`, or pass a non-null array. |
+| Calendar-boundary guard for `disabledDates` | ✅ Resolved | Both `<Calendar>` and `<DateRange>` boundaries normalize `disabledDates` via a frozen empty-array guard. Direct `<DateRange disabledDates={null} />` no longer crashes (upstream #607). |
 | Source JSDoc typed-comments | Deferred | Enforcing TSDoc on all source symbols is a `1.0.y` concern. |
 
 ---

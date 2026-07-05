@@ -5,6 +5,10 @@ import { isBefore, differenceInCalendarDays, addDays, min, isWithinInterval, max
 import classnames from 'classnames';
 import coreStyles from '../../styles';
 
+// REQ-UBF-003 / #607: frozen empty array preserves referential equality across renders
+// so downstream useMemo/useCallback deps remain stable when disabledDates is non-array.
+const EMPTY_DATES = Object.freeze([]);
+
 const dateRangeDefaultProps = {
   classNames: {},
   ranges: [],
@@ -26,6 +30,11 @@ const DateRange = forwardRef(function DateRange(
   },
   ref
 ) {
+  // REQ-UBF-003 / #607: normalize disabledDates to a guaranteed non-null array.
+  // The frozen EMPTY_DATES constant preserves referential stability for downstream
+  // useMemo/useCallback deps. This mirrors the Calendar/ForwardedCalendar pattern.
+  const safeDisabledDates = Array.isArray(disabledDates) ? disabledDates : EMPTY_DATES;
+
   const props = useMemo(
     () => ({
       classNames,
@@ -33,10 +42,10 @@ const DateRange = forwardRef(function DateRange(
       moveRangeOnFirstSelection,
       retainEndDateOnFirstSelection,
       rangeColors,
-      disabledDates,
+      disabledDates: safeDisabledDates,
       ...rest,
     }),
-    [classNames, ranges, moveRangeOnFirstSelection, retainEndDateOnFirstSelection, rangeColors, disabledDates, rest]
+    [classNames, ranges, moveRangeOnFirstSelection, retainEndDateOnFirstSelection, rangeColors, safeDisabledDates, rest]
   );
   const calendarRef = useRef(null);
   const [focusedRangeState, setFocusedRangeState] = useState(
