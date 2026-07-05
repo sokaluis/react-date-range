@@ -115,6 +115,95 @@ describe('DayCell', () => {
     });
   });
 
+  describe('mouse and focus interactions', () => {
+    test('mouseEnter triggers hover, mouse callbacks, and preview update', () => {
+      const onMouseEnter = jest.fn();
+      const onPreviewChange = jest.fn();
+
+      render(
+        <DayCell
+          {...baseProps}
+          onMouseEnter={onMouseEnter}
+          onPreviewChange={onPreviewChange}
+        />
+      );
+      const button = screen.getByRole('gridcell');
+
+      fireEvent.mouseEnter(button);
+
+      expect(onMouseEnter).toHaveBeenCalledWith(baseProps.day);
+      expect(onPreviewChange).toHaveBeenCalledWith(baseProps.day);
+      expect(button).toHaveClass('rdrDayHovered');
+    });
+
+    test('mouseLeave and blur clear hover state', () => {
+      render(<DayCell {...baseProps} />);
+      const button = screen.getByRole('gridcell');
+
+      fireEvent.mouseEnter(button);
+      expect(button).toHaveClass('rdrDayHovered');
+
+      fireEvent.mouseLeave(button);
+      expect(button).not.toHaveClass('rdrDayHovered');
+
+      fireEvent.mouseEnter(button);
+      expect(button).toHaveClass('rdrDayHovered');
+
+      fireEvent.blur(button);
+      expect(button).not.toHaveClass('rdrDayHovered');
+    });
+
+    test('mouseDown and mouseUp toggle active state and invoke callbacks', () => {
+      const onMouseDown = jest.fn();
+      const onMouseUp = jest.fn();
+
+      render(
+        <DayCell {...baseProps} onMouseDown={onMouseDown} onMouseUp={onMouseUp} />
+      );
+      const button = screen.getByRole('gridcell');
+
+      fireEvent.mouseDown(button);
+      expect(onMouseDown).toHaveBeenCalledWith(baseProps.day);
+      expect(button).toHaveClass('rdrDayActive');
+
+      fireEvent.mouseUp(button);
+      expect(onMouseUp).toHaveBeenCalledWith(baseProps.day);
+      expect(button).not.toHaveClass('rdrDayActive');
+    });
+
+    test('focus triggers preview update for the focused day', () => {
+      const onPreviewChange = jest.fn();
+
+      render(<DayCell {...baseProps} onPreviewChange={onPreviewChange} />);
+      const button = screen.getByRole('gridcell');
+
+      fireEvent.focus(button);
+
+      expect(onPreviewChange).toHaveBeenCalledWith(baseProps.day);
+    });
+
+    test('disabled cell clears preview and ignores mouseEnter callback', () => {
+      const onMouseEnter = jest.fn();
+      const onPreviewChange = jest.fn();
+
+      render(
+        <DayCell
+          {...baseProps}
+          disabled={true}
+          onMouseEnter={onMouseEnter}
+          onPreviewChange={onPreviewChange}
+        />
+      );
+      const button = screen.getByRole('gridcell');
+
+      fireEvent.mouseEnter(button);
+
+      expect(onPreviewChange).toHaveBeenCalledWith();
+      expect(onMouseEnter).not.toHaveBeenCalled();
+      expect(button).not.toHaveClass('rdrDayHovered');
+    });
+  });
+
   describe('preview placeholder', () => {
     test('renders preview startEdge, inRange, and endEdge classes', () => {
       const day = new Date(2025, 5, 15);
@@ -171,6 +260,161 @@ describe('DayCell', () => {
       );
       const button = screen.getByRole('gridcell');
       expect(button.innerHTML).not.toContain('rdrSelected');
+    });
+  });
+
+  describe('aria-selected null endpoint guards', () => {
+    const rangeBaseProps = {
+      ...baseProps,
+      displayMode: 'range',
+      date: undefined,
+    };
+
+    test('both-null range produces no aria-selected="true" on any day', () => {
+      const day = new Date(2025, 5, 15);
+      render(
+        <DayCell
+          {...rangeBaseProps}
+          day={day}
+          ranges={[{ startDate: null, endDate: null, key: 'selection' }]}
+        />
+      );
+      const button = screen.getByRole('gridcell');
+      expect(button.getAttribute('aria-selected')).not.toBe('true');
+    });
+
+    test('empty ranges produces no aria-selected="true"', () => {
+      const day = new Date(2025, 5, 15);
+      render(<DayCell {...rangeBaseProps} day={day} ranges={[]} />);
+      const button = screen.getByRole('gridcell');
+      expect(button.getAttribute('aria-selected')).not.toBe('true');
+    });
+
+    test('only startDate set — day strictly after startDate has no aria-selected="true"', () => {
+      const startDate = new Date(2025, 5, 10);
+      const dayAfter = new Date(2025, 5, 15);
+      render(
+        <DayCell
+          {...rangeBaseProps}
+          day={dayAfter}
+          ranges={[{ startDate, endDate: null, key: 'selection' }]}
+        />
+      );
+      const button = screen.getByRole('gridcell');
+      // The in-range path must not produce aria-selected — startEdge is only on the exact day
+      expect(button.getAttribute('aria-selected')).not.toBe('true');
+    });
+
+    test('only startDate set — the startDate day itself retains aria-selected="true" via boundary', () => {
+      const startDate = new Date(2025, 5, 10);
+      render(
+        <DayCell
+          {...rangeBaseProps}
+          day={startDate}
+          ranges={[{ startDate, endDate: null, key: 'selection' }]}
+        />
+      );
+      const button = screen.getByRole('gridcell');
+      expect(button.getAttribute('aria-selected')).toBe('true');
+    });
+
+    test('only endDate set — day strictly before endDate has no aria-selected="true"', () => {
+      const endDate = new Date(2025, 5, 20);
+      const dayBefore = new Date(2025, 5, 15);
+      render(
+        <DayCell
+          {...rangeBaseProps}
+          day={dayBefore}
+          ranges={[{ startDate: null, endDate, key: 'selection' }]}
+        />
+      );
+      const button = screen.getByRole('gridcell');
+      expect(button.getAttribute('aria-selected')).not.toBe('true');
+    });
+
+    test('only endDate set — the endDate day itself retains aria-selected="true" via boundary', () => {
+      const endDate = new Date(2025, 5, 20);
+      render(
+        <DayCell
+          {...rangeBaseProps}
+          day={endDate}
+          ranges={[{ startDate: null, endDate, key: 'selection' }]}
+        />
+      );
+      const button = screen.getByRole('gridcell');
+      expect(button.getAttribute('aria-selected')).toBe('true');
+    });
+
+    test('fully-populated range — startDate day has aria-selected="true"', () => {
+      const startDate = new Date(2025, 5, 10);
+      const endDate = new Date(2025, 5, 20);
+      render(
+        <DayCell
+          {...rangeBaseProps}
+          day={startDate}
+          ranges={[{ startDate, endDate, key: 'selection' }]}
+        />
+      );
+      const button = screen.getByRole('gridcell');
+      expect(button.getAttribute('aria-selected')).toBe('true');
+    });
+
+    test('fully-populated range — intermediate day has aria-selected="true"', () => {
+      const startDate = new Date(2025, 5, 10);
+      const endDate = new Date(2025, 5, 20);
+      const intermediate = new Date(2025, 5, 15);
+      render(
+        <DayCell
+          {...rangeBaseProps}
+          day={intermediate}
+          ranges={[{ startDate, endDate, key: 'selection' }]}
+        />
+      );
+      const button = screen.getByRole('gridcell');
+      expect(button.getAttribute('aria-selected')).toBe('true');
+    });
+
+    test('fully-populated range — endDate day has aria-selected="true"', () => {
+      const startDate = new Date(2025, 5, 10);
+      const endDate = new Date(2025, 5, 20);
+      render(
+        <DayCell
+          {...rangeBaseProps}
+          day={endDate}
+          ranges={[{ startDate, endDate, key: 'selection' }]}
+        />
+      );
+      const button = screen.getByRole('gridcell');
+      expect(button.getAttribute('aria-selected')).toBe('true');
+    });
+
+    test('fully-populated range — day outside range has no aria-selected="true"', () => {
+      const startDate = new Date(2025, 5, 10);
+      const endDate = new Date(2025, 5, 20);
+      const outside = new Date(2025, 5, 25);
+      render(
+        <DayCell
+          {...rangeBaseProps}
+          day={outside}
+          ranges={[{ startDate, endDate, key: 'selection' }]}
+        />
+      );
+      const button = screen.getByRole('gridcell');
+      expect(button.getAttribute('aria-selected')).not.toBe('true');
+    });
+
+    test('displayMode date, date={null} — no aria-selected="true"', () => {
+      const day = new Date(2025, 5, 15);
+      render(<DayCell {...baseProps} day={day} displayMode="date" date={null} />);
+      const button = screen.getByRole('gridcell');
+      expect(button.getAttribute('aria-selected')).not.toBe('true');
+    });
+
+    test('displayMode date, date=matching day — aria-selected="true"', () => {
+      const day = new Date(2025, 5, 15);
+      render(<DayCell {...baseProps} day={day} displayMode="date" date={day} />);
+      const button = screen.getByRole('gridcell');
+      expect(button.getAttribute('aria-selected')).toBe('true');
     });
   });
 
@@ -262,6 +506,44 @@ describe('DayCell', () => {
       const button = screen.getByRole('gridcell');
       expect(button.querySelectorAll('.rdrEndEdge')).toHaveLength(1);
       expect(button.querySelectorAll('.rdrInRange')).toHaveLength(0);
+    });
+
+    test('inverted range renders inRange span after normalizing endpoints', () => {
+      const day = new Date(2025, 5, 15);
+      render(
+        <DayCell
+          {...rangeBaseProps}
+          day={day}
+          ranges={[
+            {
+              startDate: new Date(2025, 5, 20),
+              endDate: new Date(2025, 5, 10),
+              key: 'selection',
+            },
+          ]}
+        />
+      );
+      const button = screen.getByRole('gridcell');
+      expect(button.querySelectorAll('.rdrInRange')).toHaveLength(1);
+    });
+
+    test('inverted range still marks intermediate day aria-selected', () => {
+      const day = new Date(2025, 5, 15);
+      render(
+        <DayCell
+          {...rangeBaseProps}
+          day={day}
+          ranges={[
+            {
+              startDate: new Date(2025, 5, 20),
+              endDate: new Date(2025, 5, 10),
+              key: 'selection',
+            },
+          ]}
+        />
+      );
+      const button = screen.getByRole('gridcell');
+      expect(button.getAttribute('aria-selected')).toBe('true');
     });
 
     test('only startDate set renders startEdge only on the matching day', () => {

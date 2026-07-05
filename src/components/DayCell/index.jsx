@@ -166,7 +166,7 @@ function DayCell(props) {
       }
       s = s ? endOfDay(s) : null;
       e = e ? startOfDay(e) : null;
-      const inRng = (!s || isAfter(day, s)) && (!e || isBefore(day, e));
+      const inRng = s && e ? isAfter(day, s) && isBefore(day, e) : false;
       const startEdge = !inRng && isSameDay(day, s);
       const endEdge = !inRng && isSameDay(day, e);
       return inRng || startEdge || endEdge;
