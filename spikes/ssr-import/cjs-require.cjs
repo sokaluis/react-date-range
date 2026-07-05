@@ -1,16 +1,16 @@
 /**
  * SSR/import safety check — CJS (require).
  *
- * Verifies that requiring the CJS build of react-date-range-modern in Node.js
+ * Verifies that requiring the CJS build of @cyberlz/react-date-range in Node.js
  * does NOT throw due to module-scope `window`/`document`/`navigator` access.
  *
  * Run: node cjs-require.cjs
  */
 
-console.log("Attempting CJS require of react-date-range-modern…");
+console.log("Attempting CJS require of @cyberlz/react-date-range…");
 
 try {
-  const mod = require("react-date-range-modern");
+  const mod = require("@cyberlz/react-date-range");
 
   const exportedKeys = Object.keys(mod).sort();
   console.log(`✅ CJS require succeeded.`);

@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { Calendar } from 'react-date-range-modern';
-import 'react-date-range-modern/styles.css';
+import { Calendar } from '@cyberlz/react-date-range';
+import '@cyberlz/react-date-range/styles.css';
 
 function App() {
   return (

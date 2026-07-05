@@ -11,7 +11,7 @@
   "dependencies": {
     "date-fns": "^3.6.0",
     "react": "^19.2.7",
-    "react-date-range-modern": "file:../..",
+    "@cyberlz/react-date-range": "file:../..",
     "react-dom": "^19.2.7"
   },
   "devDependencies": {

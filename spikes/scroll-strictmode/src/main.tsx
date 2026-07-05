@@ -10,11 +10,11 @@
  */
 import { StrictMode, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { DateRange, DateRangePicker } from 'react-date-range-modern';
-import type { Range, RangeKeyDict } from 'react-date-range-modern';
+import { DateRange, DateRangePicker } from '@cyberlz/react-date-range';
+import type { Range, RangeKeyDict } from '@cyberlz/react-date-range';
 
-import 'react-date-range-modern/styles.css';
-import 'react-date-range-modern/theme/default.css';
+import '@cyberlz/react-date-range/styles.css';
+import '@cyberlz/react-date-range/theme/default.css';
 
 // =============================================================================
 // Scroll config — vertical infinite scroll with fixed calendar height
@@ -149,7 +149,7 @@ if (noStrictRoot) {
 // =============================================================================
 if (!strictRoot && !noStrictRoot) {
   console.warn(
-    'react-date-range-modern scroll-strictmode spike: no root elements found. ' +
+    '@cyberlz/react-date-range scroll-strictmode spike: no root elements found. ' +
       'This spike requires a browser DOM with #root-strict and #root-nostrict elements.',
   );
 }

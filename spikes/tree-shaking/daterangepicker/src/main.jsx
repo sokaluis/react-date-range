@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
-import { DateRangePicker } from 'react-date-range-modern';
-import 'react-date-range-modern/styles.css';
+import { DateRangePicker } from '@cyberlz/react-date-range';
+import '@cyberlz/react-date-range/styles.css';
 
 function App() {
   const [range, setRange] = useState([

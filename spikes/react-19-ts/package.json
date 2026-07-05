@@ -13,7 +13,7 @@
     "classnames": "^2.2.6",
     "date-fns": "^3.0.6",
     "react": "^19.0.0",
-    "react-date-range-modern": "file:../..",
+    "@cyberlz/react-date-range": "file:../..",
     "react-dom": "^19.0.0",
     "shallow-equal": "^1.2.1"
   },

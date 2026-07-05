@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      'react-date-range-modern': LIB_DIST,
+      '@cyberlz/react-date-range': LIB_DIST,
     },
   },
   // The built dist/ contains compiled JS (no JSX), so no esbuild override needed.

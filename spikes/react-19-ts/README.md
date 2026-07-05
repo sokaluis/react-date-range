@@ -1,6 +1,6 @@
 # Spike: React 19 + TypeScript Compatibility
 
-> Minimal Vite + React 19 + TypeScript fixture that imports `react-date-range-modern`
+> Minimal Vite + React 19 + TypeScript fixture that imports `@cyberlz/react-date-range`
 > source directly and runs `tsc --noEmit` to reproduce/verify upstream issues #661/#662.
 
 ## Purpose
@@ -70,7 +70,7 @@ spike-only type shim. Types are resolved from the package's `types` field via
 
 ### What changed from Phase 1 to Phase 2
 
-- **Removed** `spikes/react-19-ts/src/types/react-date-range-modern.d.ts` (spike-only shim)
+- **Removed** spike-only type shim from `spikes/react-19-ts/src/types/`
 - **Removed** `@types/react-date-range` from spike `devDependencies`
 - **Added** `src/index.d.ts` to the library — first-party type declarations based on community types shape
 - **Added** `"types": "src/index.d.ts"` to root `package.json`
@@ -115,11 +115,11 @@ loader to include `.js`, `.jsx`, `.ts`, and `.tsx` with `loader: 'tsx'`.
 This is acceptable for the spike, but the published package should ship compiled
 output so consumers do not need custom Vite config.
 
-### 5. Vite production build fails (expected, not a block)
+### 5. Vite production build passes
 
-`npm run build` fails because Vite's `build-import-analysis` plugin doesn't
-respect esbuild `.js` → `jsx` loaders the same way the dev server does.
-This is a Vite config concern, not a library issue.
+`npm run build` now passes with the current fixture configuration. Earlier
+iterations exposed a Vite `build-import-analysis` limitation around `.js` files
+containing JSX, but the current alias/include setup covers the production build.
 
 ## Fixture structure
 

@@ -1,6 +1,6 @@
 # Spike: Scroll + StrictMode
 
-> Reproduce/verify upstream issues [#577] and [#653] in `react-date-range-modern`.
+> Reproduce/verify upstream issues [#577] and [#653] in `@cyberlz/react-date-range`.
 
 ## Purpose
 
@@ -31,7 +31,7 @@ npm run dev       # start dev server (http://localhost:5173)
 | @types/react | 19.2.17 |
 | TypeScript | 5.8.x |
 | Vite | 6.x |
-| react-date-range-modern | `file:../..` (built dist/) |
+| @cyberlz/react-date-range | `file:../..` (built dist/) |
 
 ## What to observe
 

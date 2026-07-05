@@ -1,12 +1,12 @@
 # Spike: React 18 + TypeScript Compatibility
 
-> Minimal Vite + React 18 + TypeScript fixture that imports `react-date-range-modern`
+> Minimal Vite + React 18 + TypeScript fixture that imports `@cyberlz/react-date-range`
 > source directly and runs `tsc --noEmit` to validate first-party type declarations
 > work with `@types/react@18`.
 
 ## Purpose
 
-Prove that `react-date-range-modern`'s first-party TypeScript declarations
+Prove that `@cyberlz/react-date-range`'s first-party TypeScript declarations
 (`src/index.d.ts`) are compatible with React 18 types — not just React 19.
 This is critical for the supported React range `^18.0.0 || ^19.0.0` in
 the library's peer dependencies.

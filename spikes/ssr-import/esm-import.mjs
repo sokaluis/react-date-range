@@ -1,7 +1,7 @@
 /**
  * SSR/import safety check — ESM (import).
  *
- * Verifies that importing the ESM build of react-date-range-modern in Node.js
+ * Verifies that importing the ESM build of @cyberlz/react-date-range in Node.js
  * does NOT throw due to module-scope `window`/`document`/`navigator` access.
  *
  * The `createRequire` path resolves via package.json `"main"` field (CJS bundle).
@@ -19,7 +19,7 @@ const require = createRequire(import.meta.url);
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 // Resolve the package root to get dist/index.mjs
-const pkgCjsPath = require.resolve("react-date-range-modern");
+const pkgCjsPath = require.resolve("@cyberlz/react-date-range");
 // pkgCjsPath is e.g. .../dist/index.js
 // Go up to dist/, then up once more to package root
 const pkgRoot = resolve(pkgCjsPath, "..", "..");

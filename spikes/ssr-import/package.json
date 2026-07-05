@@ -2,13 +2,13 @@
   "name": "spike-ssr-import",
   "private": true,
   "version": "0.0.0",
-  "description": "SSR/import safety spike — verifies importing react-date-range-modern does not crash in Node.js",
+  "description": "SSR/import safety spike — verifies importing @cyberlz/react-date-range does not crash in Node.js",
   "scripts": {
     "test:esm": "node esm-import.mjs",
     "test:cjs": "node cjs-require.cjs",
     "test": "node cjs-require.cjs && node esm-import.mjs"
   },
   "dependencies": {
-    "react-date-range-modern": "file:../.."
+    "@cyberlz/react-date-range": "file:../.."
   }
 }

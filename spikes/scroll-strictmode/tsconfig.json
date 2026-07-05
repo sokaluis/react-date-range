@@ -14,8 +14,8 @@
     "allowImportingTsExtensions": true,
     "baseUrl": ".",
     "paths": {
-      "react-date-range-modern": ["../../dist"],
-      "react-date-range-modern/*": ["../../dist/*"]
+      "@cyberlz/react-date-range": ["../../dist"],
+      "@cyberlz/react-date-range/*": ["../../dist/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],

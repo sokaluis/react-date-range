@@ -4,18 +4,18 @@ import {
   DateRangePicker,
   DateRange,
   Calendar,
-} from 'react-date-range-modern';
+} from '@cyberlz/react-date-range';
 import type {
   DateRangePickerProps,
   DateRangeProps,
   CalendarProps,
   RangeKeyDict,
   Range,
-} from 'react-date-range-modern';
+} from '@cyberlz/react-date-range';
 
 // ---- Style imports (Vite handles SCSS via sass) ----
-import 'react-date-range-modern/theme/default.scss';
-import 'react-date-range-modern/styles.scss';
+import '@cyberlz/react-date-range/theme/default.scss';
+import '@cyberlz/react-date-range/styles.scss';
 
 // =============================================================================
 // Fixture: DateRangePicker (primary integration test)
@@ -113,7 +113,7 @@ function CalendarFixture() {
 function App() {
   return (
     <div style={{ padding: '2rem', maxWidth: '960px', margin: '0 auto' }}>
-      <h1>React 18 TypeScript Spike — react-date-range-modern</h1>
+      <h1>React 18 TypeScript Spike — @cyberlz/react-date-range</h1>
       <p>
         This fixture verifies whether the first-party type declarations
         (<code>src/index.d.ts</code>) work with React 18 types

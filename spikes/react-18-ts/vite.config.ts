@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      'react-date-range-modern': LIB_SRC,
+      '@cyberlz/react-date-range': LIB_SRC,
     },
   },
   // Tell esbuild to transform both the spike TSX entry and the library's .js JSX.
@@ -19,7 +19,7 @@ export default defineConfig({
     loader: 'tsx',
   },
   optimizeDeps: {
-    include: ['react-date-range-modern'],
+    include: ['@cyberlz/react-date-range'],
     esbuildOptions: {
       loader: {
         '.js': 'jsx',

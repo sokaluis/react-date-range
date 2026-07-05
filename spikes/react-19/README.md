@@ -1,6 +1,6 @@
 # Spike: React 19 Compatibility
 
-> Minimal Vite + React 19 test app that imports `react-date-range-modern` source directly.
+> Minimal Vite + React 19 test app that imports `@cyberlz/react-date-range` source directly.
 
 ## Purpose
 
@@ -56,7 +56,7 @@ esbuild: {
 },
 
 optimizeDeps: {
-  include: ['react-date-range-modern'],
+  include: ['@cyberlz/react-date-range'],
   esbuildOptions: {
     loader: {
       '.js': 'jsx',

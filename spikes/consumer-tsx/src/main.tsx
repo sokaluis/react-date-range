@@ -6,9 +6,9 @@ import {
   type Range,
   type DateRangePickerProps,
   type RangeKeyDict,
-} from 'react-date-range-modern';
+} from '@cyberlz/react-date-range';
 // Import compiled CSS from the built package output
-import 'react-date-range-modern/styles.css';
+import '@cyberlz/react-date-range/styles.css';
 
 // Type-check: ensure Range type is usable
 const initialRange: Range = {
@@ -29,7 +29,7 @@ function App(_props: AppProps) {
 
   return (
     <div style={{ padding: 40 }}>
-      <h1>Consumer TSX — react-date-range-modern Smoke Test</h1>
+      <h1>Consumer TSX — @cyberlz/react-date-range Smoke Test</h1>
       <DateRangePicker
         onChange={handleChange}
         ranges={ranges}

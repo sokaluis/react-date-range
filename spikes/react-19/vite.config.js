@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      'react-date-range-modern': LIB_SRC,
+      '@cyberlz/react-date-range': LIB_SRC,
     },
   },
   // Tell esbuild to treat .js files from the library as JSX
@@ -18,7 +18,7 @@ export default defineConfig({
     loader: 'jsx',
   },
   optimizeDeps: {
-    include: ['react-date-range-modern'],
+    include: ['@cyberlz/react-date-range'],
     esbuildOptions: {
       loader: {
         '.js': 'jsx',

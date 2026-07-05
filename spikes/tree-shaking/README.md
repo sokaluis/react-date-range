@@ -61,7 +61,7 @@ cd spikes/tree-shaking/calendar-only && npm install && npm run build
 cd spikes/tree-shaking/daterangepicker && npm install && npm run build
 ```
 
-Ambas fixtures ahora resuelven `@cyberlz/react-date-range` desde npm (no `react-date-range-modern`); ver `package.json` de cada fixture.
+Ambas fixtures resuelven `@cyberlz/react-date-range` desde el filesystem local (`file:../../..`); ver `package.json` de cada fixture.
 
 ## Cambios aplicados (Slice 6, commit `e141852`)
 
