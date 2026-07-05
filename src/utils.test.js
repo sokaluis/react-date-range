@@ -108,6 +108,18 @@ describe('findNextRangeIndex', () => {
     ];
     expect(findNextRangeIndex(ranges)).toBe(-1);
   });
+
+  test('returns -1 for undefined ranges without throwing', () => {
+    expect(findNextRangeIndex(undefined)).toBe(-1);
+  });
+
+  test('returns -1 for null ranges without throwing', () => {
+    expect(findNextRangeIndex(null)).toBe(-1);
+  });
+
+  test('returns -1 for plain object without throwing', () => {
+    expect(findNextRangeIndex({})).toBe(-1);
+  });
 });
 
 describe('getMonthDisplayRange', () => {
