@@ -10,6 +10,19 @@ For upstream release history (up to `2.0.1`), see [`CHANGELOG.upstream.md`](CHAN
 
 ---
 
+## [1.0.1] — 2026-07-05
+
+Patch release for the first post-1.0 maintenance fix.
+
+### Fixed
+
+- `DefinedRange` static weekly ranges now honor `weekStartsOn` for `This Week`
+  and `Last Week`, including selected-state detection. This fixes the case where
+  consumers using Monday/Saturday week starts still saw Sunday-based static range
+  math.
+
+---
+
 ## [1.0.0-rc.0] — 2026-06-29
 
 First release candidate. All internal refactor slices (13–22) completed; public API stable since `0.1.0-beta.0`. Consumer validation window open before promoting to `1.0.0` stable.
