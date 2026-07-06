@@ -76,6 +76,7 @@ const calendarDefaultProps = {
   calendarFocus: 'forwards',
   preventSnapRefocus: false,
   ariaLabels: {},
+  selectablePassive: false,
 };
 
 const uninitializedTargetProp = Symbol('uninitializedTargetProp');
@@ -745,6 +746,7 @@ const ForwardedCalendar = React.forwardRef(function Calendar(
     calendarFocus = calendarDefaultProps.calendarFocus,
     preventSnapRefocus = calendarDefaultProps.preventSnapRefocus,
     ariaLabels = calendarDefaultProps.ariaLabels,
+    selectablePassive = calendarDefaultProps.selectablePassive,
     ...rest
   },
   ref
@@ -754,6 +756,10 @@ const ForwardedCalendar = React.forwardRef(function Calendar(
   // downstream useMemo / useCallback deps. This guard covers Month:93,
   // DateRange:98, DateInput:59, and DateDisplay via resolvedProps.
   const safeDisabledDates = Array.isArray(disabledDates) ? disabledDates : EMPTY_DATES;
+
+  // Scroll-enabled mode suppresses selectablePassive — passive cells must stay
+  // visually passive and keyboard-inert when virtual scrolling is active.
+  const effectiveSelectablePassive = !!selectablePassive && !scroll.enabled;
 
   const resolvedProps = {
     showMonthArrow,
@@ -774,6 +780,7 @@ const ForwardedCalendar = React.forwardRef(function Calendar(
     months,
     color,
     scroll,
+    selectablePassive: effectiveSelectablePassive,
     direction,
     maxDate,
     minDate,

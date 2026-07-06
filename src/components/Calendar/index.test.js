@@ -443,6 +443,85 @@ describe('Calendar', () => {
       expect(onChange).not.toHaveBeenCalled();
       expect(updateRange).not.toHaveBeenCalled();
     });
+
+    test('cross-month mouse drag with selectablePassive spans both months', () => {
+      const updateRange = jest.fn();
+      const { container } = renderCalendar({
+        selectablePassive: true,
+        months: 2,
+        shownDate: new Date(2025, 5, 1),
+        displayMode: 'dateRange',
+        ranges: [{ startDate: null, endDate: null, key: 'selection' }],
+        updateRange,
+      });
+
+      // Scoped to month containers — first month shows June, second shows July
+      const months = container.querySelectorAll('.rdrMonth');
+      expect(months.length).toBeGreaterThanOrEqual(2);
+
+      const month1Cells = months[0].querySelectorAll('[role="gridcell"]');
+      const month2Cells = months[1].querySelectorAll('[role="gridcell"]');
+
+      // Outside-month cells in the 6-week grid: month1 has May fill days at start
+      const passiveDayM1 = month1Cells[0]; // first cell = May fill day
+      // month2 has August fill days at end
+      const passiveDayM2 = month2Cells[month2Cells.length - 1]; // last cell = August fill day
+
+      fireEvent.mouseDown(passiveDayM1);
+      fireEvent.mouseEnter(passiveDayM2);
+      fireEvent.mouseUp(passiveDayM2);
+
+      expect(updateRange).toHaveBeenCalledTimes(1);
+      // startDate from month-1 passive cell, endDate from month-2 passive cell
+      const { startDate, endDate } = updateRange.mock.calls[0][0];
+      expect(startDate.getMonth()).toBeLessThan(endDate.getMonth());
+    });
+
+    test('selectablePassive gives passive cell tabIndex 0 and keyboard selection', () => {
+      const onChange = jest.fn();
+      renderCalendar({
+        selectablePassive: true,
+        shownDate: new Date(2025, 7, 15), // August 2025: Aug 1 = Friday → July 27–31 filler
+        minDate: new Date(2025, 6, 1),
+        maxDate: new Date(2025, 8, 31),
+        displayMode: 'date',
+        date: new Date(2025, 7, 15),
+        onChange,
+      });
+
+      // Day 27: first grid cell = July 27 (passive), second = Aug 27 (in-month).
+      // findCalendarDayButton returns the first match → July passive cell.
+      const passiveCell = findCalendarDayButton(27);
+      expect(passiveCell).toBeDefined();
+      expect(passiveCell.tabIndex).toBe(0);
+
+      fireEvent.keyDown(passiveCell, { key: 'Enter', keyCode: 13 });
+      fireEvent.keyUp(passiveCell, { key: 'Enter', keyCode: 13 });
+
+      expect(onChange).toHaveBeenCalledTimes(1);
+      expect(onChange.mock.calls[0][0].getDate()).toBe(27);
+    });
+
+    test('scroll mode suppresses selectablePassive keeping tabIndex -1 and passive class', () => {
+      const { container } = renderCalendar({
+        selectablePassive: true,
+        scroll: { enabled: true },
+        shownDate: new Date(2025, 7, 15),
+        minDate: new Date(2025, 6, 1),
+        maxDate: new Date(2025, 8, 31),
+        showMonthAndYearPickers: false,
+      });
+
+      // In scroll mode, the first month is July. July 1 = Tuesday → grid
+      // starts Sunday June 29 (2 filler cells). The first gridcell is a
+      // passive cell and must retain tabIndex -1 + rdrDayPassive class.
+      const months = container.querySelectorAll('.rdrMonth');
+      expect(months.length).toBeGreaterThan(0);
+      const firstMonthCells = months[0].querySelectorAll('[role="gridcell"]');
+      const passiveCell = firstMonthCells[0];
+      expect(passiveCell.tabIndex).toBe(-1);
+      expect(passiveCell.className).toContain('rdrDayPassive');
+    });
   });
 
   describe('locale and week start recalculation', () => {

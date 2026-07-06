@@ -223,6 +223,8 @@ export interface CalendarProps {
   ranges?: Range[] | undefined;
   /** Custom scroll options — default: `{ enabled: false }` */
   scroll?: ScrollOptions | undefined;
+  /** Opt-in flag that makes passive (neighbour-month) cells selectable when scroll is disabled — default: `false` */
+  selectablePassive?: boolean | undefined;
   /** default: true */
   showDateDisplay?: boolean | undefined;
   /** default: true */

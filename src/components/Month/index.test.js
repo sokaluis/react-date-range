@@ -14,6 +14,7 @@ jest.mock('../DayCell/index.jsx', () => {
       data-isstartofweek={props.isStartOfWeek ? 'true' : 'false'}
       data-isendofweek={props.isEndOfWeek ? 'true' : 'false'}
       data-ranges={JSON.stringify(props.ranges)}
+      data-ispassive={props.isPassive ? 'true' : 'false'}
       tabIndex={props.disabled || props.isPassive ? -1 : 0}
     />
   );
@@ -146,6 +147,37 @@ describe('Month', () => {
       // At least one of each in a month
       expect(startOfWeekCells.length).toBeGreaterThan(0);
       expect(endOfWeekCells.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('selectablePassive suppression', () => {
+    test('selectablePassive=true sets isPassive=false for outside-month days', () => {
+      render(<Month {...defaultProps} selectablePassive={true} />);
+      const cells = screen.getAllByTestId('day-cell');
+      // Outside-month days (before June 1 or after June 30, 2025)
+      const outsideMonth = cells.filter(cell => {
+        const d = new Date(cell.dataset.day);
+        return d.getMonth() !== 5;
+      });
+      expect(outsideMonth.length).toBeGreaterThan(0);
+      // All outside-month cells should NOT be passive when selectablePassive=true
+      outsideMonth.forEach(cell => {
+        expect(cell.dataset.ispassive).toBe('false');
+      });
+    });
+
+    test('default (selectablePassive unset) keeps isPassive for outside-month days', () => {
+      render(<Month {...defaultProps} />);
+      const cells = screen.getAllByTestId('day-cell');
+      const outsideMonth = cells.filter(cell => {
+        const d = new Date(cell.dataset.day);
+        return d.getMonth() !== 5;
+      });
+      expect(outsideMonth.length).toBeGreaterThan(0);
+      // Without selectablePassive, outside-month cells ARE passive
+      outsideMonth.forEach(cell => {
+        expect(cell.dataset.ispassive).toBe('true');
+      });
     });
   });
 

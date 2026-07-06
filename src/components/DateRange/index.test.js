@@ -422,6 +422,18 @@ describe('DateRange', () => {
     });
   });
 
+  describe('selectablePassive guard', () => {
+    test('scroll.enabled=true suppresses selectablePassive (effective false)', () => {
+      renderDateRange({ scroll: { enabled: true }, selectablePassive: true });
+      expect(latestCalendarProps.selectablePassive).toBe(false);
+    });
+
+    test('no scroll prop + selectablePassive=true propagates effective true', () => {
+      renderDateRange({ selectablePassive: true });
+      expect(latestCalendarProps.selectablePassive).toBe(true);
+    });
+  });
+
   describe('REQ-UBF-002 / #664 #663: date-fns ESM named-import audit (regression lock-in)', () => {
     const srcDir = path.resolve(__dirname, '..', '..');
 

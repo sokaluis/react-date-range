@@ -109,6 +109,7 @@ function Month(props) {
                 key={index}
                 disabled={isOutsideMinMax || isDisabledSpecifically || isDisabledDay}
                 isPassive={
+                  !props.selectablePassive &&
                   !isWithinInterval(day, {
                     start: monthDisplay.startDateOfMonth,
                     end: monthDisplay.endDateOfMonth,

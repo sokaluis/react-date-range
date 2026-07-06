@@ -97,6 +97,34 @@ describe('DayCell', () => {
     });
   });
 
+  describe('isPassive visual classes', () => {
+    test('isPassive=true renders dayPassive class', () => {
+      render(<DayCell {...baseProps} isPassive={true} />);
+      const cell = screen.getByRole('gridcell');
+      expect(cell.className).toContain('rdrDayPassive');
+    });
+
+    test('isPassive=false does not render dayPassive class', () => {
+      render(<DayCell {...baseProps} isPassive={false} />);
+      const cell = screen.getByRole('gridcell');
+      expect(cell.className).not.toContain('rdrDayPassive');
+    });
+
+    test('dayStartOfMonth and dayEndOfMonth are controlled by their own props, not isPassive', () => {
+      render(
+        <DayCell
+          {...baseProps}
+          isPassive={false}
+          isStartOfMonth={true}
+          isEndOfMonth={true}
+        />
+      );
+      const cell = screen.getByRole('gridcell');
+      expect(cell.className).toContain('rdrDayStartOfMonth');
+      expect(cell.className).toContain('rdrDayEndOfMonth');
+    });
+  });
+
   describe('dayContentRenderer', () => {
     test('uses dayContentRenderer output instead of default number', () => {
       const day = new Date(2025, 5, 15);

@@ -47,6 +47,9 @@ const DateRange = forwardRef(function DateRange(
     }),
     [classNames, ranges, moveRangeOnFirstSelection, retainEndDateOnFirstSelection, rangeColors, safeDisabledDates, rest]
   );
+
+  const effectiveSelectablePassive = !!rest.selectablePassive && !rest.scroll?.enabled;
+
   const calendarRef = useRef(null);
   const [focusedRangeState, setFocusedRangeState] = useState(
     () => props.initialFocusedRange || [findNextRangeIndex(props.ranges), 0]
@@ -206,6 +209,7 @@ const DateRange = forwardRef(function DateRange(
           updatePreview(value ? calcNewSelection(value) : null);
         }}
         {...props}
+        selectablePassive={effectiveSelectablePassive}
         displayMode="dateRange"
         className={classnames(styles.dateRangeWrapper, props.className)}
         onChange={setSelection}
