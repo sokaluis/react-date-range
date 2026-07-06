@@ -522,6 +522,25 @@ describe('Calendar', () => {
       expect(passiveCell.tabIndex).toBe(-1);
       expect(passiveCell.className).toContain('rdrDayPassive');
     });
+
+    test('REGRESSION: default (no selectablePassive prop) leaves outside-month cells passive', () => {
+      // June 2025: June 1 = Sunday, so the 6-week grid ends on Saturday July 4.
+      // No filler cells appear at the start, but there ARE outside-month fill days
+      // at the end (July 1-4) that must remain passive by default.
+      const { container } = renderCalendar({
+        shownDate: new Date(2025, 5, 15),
+        displayMode: 'dateRange',
+        ranges: [{ startDate: null, endDate: null, key: 'selection' }],
+      });
+
+      const months = container.querySelectorAll('.rdrMonth');
+      const lastMonthCells = months[months.length - 1].querySelectorAll('[role="gridcell"]');
+      const lastCell = lastMonthCells[lastMonthCells.length - 1];
+      // Last gridcell is a filler day (outside the month) and must stay passive
+      expect(lastCell.className).toContain('rdrDayPassive');
+      expect(lastCell.className).not.toContain('rdrDayStartOfMonth');
+      expect(lastCell.className).not.toContain('rdrDayEndOfMonth');
+    });
   });
 
   describe('locale and week start recalculation', () => {

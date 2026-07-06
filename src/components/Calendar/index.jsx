@@ -76,6 +76,7 @@ const calendarDefaultProps = {
   calendarFocus: 'forwards',
   preventSnapRefocus: false,
   ariaLabels: {},
+  /** Opt-in: neighbour-month filler cells become selectable when scroll is disabled. */
   selectablePassive: false,
 };
 
@@ -759,6 +760,7 @@ const ForwardedCalendar = React.forwardRef(function Calendar(
 
   // Scroll-enabled mode suppresses selectablePassive — passive cells must stay
   // visually passive and keyboard-inert when virtual scrolling is active.
+  /** Holds the resolved value: true only when prop=true AND scroll is disabled. */
   const effectiveSelectablePassive = !!selectablePassive && !scroll.enabled;
 
   const resolvedProps = {

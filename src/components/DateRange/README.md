@@ -7,6 +7,9 @@ This component extends all the props of **[Calendar](#calendar)** component. In 
 |  **onRangeFocusChange** |  function |
 |  **rangeColors**  |  array |
 |  **ranges**  |  array |
+|  **selectablePassive**  |  boolean |
+
+`selectablePassive` (inherited from `Calendar`): opt-in flag that makes neighbour-month filler cells selectable. Automatically suppressed when `scroll.enabled` is true — virtual scrolling makes those cells unreachable.
 
 #### Accessibility: Selection Live Region
 

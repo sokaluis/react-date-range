@@ -48,6 +48,11 @@ const DateRange = forwardRef(function DateRange(
     [classNames, ranges, moveRangeOnFirstSelection, retainEndDateOnFirstSelection, rangeColors, safeDisabledDates, rest]
   );
 
+  /**
+   * Scroll guard: virtual scrolling makes neighbour-month cells unreachable via
+   * standard scroll; suppressing selectablePassive keeps them visually/physically
+   * passive and keyboard-inert while scroll is active.
+   */
   const effectiveSelectablePassive = !!rest.selectablePassive && !rest.scroll?.enabled;
 
   const calendarRef = useRef(null);
