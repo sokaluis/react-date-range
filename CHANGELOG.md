@@ -29,6 +29,10 @@ For upstream release history (up to `2.0.1`), see [`CHANGELOG.upstream.md`](CHAN
   focus ring while keeping mouse-click focus visually clean.
 - `.rdrInputRangeInput` start/end inputs now show a visible `:focus-visible`
   keyboard focus ring while keeping mouse-click focus visually clean.
+- **Calendar live region**: a stable `aria-live="polite"` region outside the virtualized
+  scroll container announces committed month and year navigation changes (month picker,
+  year picker, prev/next arrows). Hover, drag movement, drag end, date selection, and
+  scroll do **not** announce. Selection live announcements are deferred to a future slice.
 
 ### Fixed
 
