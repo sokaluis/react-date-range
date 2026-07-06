@@ -22,7 +22,7 @@ but the upstream repository is read-only and no longer maintained. Open issues i
 - React 19 compatibility (#661, #662)
 - date-fns v3/v4 compatibility (#649, #663, #667)
 - TypeScript improvements (#260, #439, #513)
-- Accessibility (#373, #415, #416)
+- Accessibility (#373, #415 — core labels/states resolved; #416 — core labels/states resolved)
 - React 18 StrictMode scroll bugs (#577, #653)
 
 There are community forks, but **none clearly active in 2026** with a published React 19 fix.
@@ -41,6 +41,20 @@ import '@cyberlz/react-date-range/theme/default.css';
 ```
 
 > **Migrating from `react-date-range` upstream?** See [`docs/migration-from-upstream.md`](docs/migration-from-upstream.md).
+
+## Accessibility baseline
+
+The fork now covers the core ARIA labels and states tracked by upstream #415/#416:
+
+| Area | Behavior |
+|------|----------|
+| Calendar grid | Named with `ariaLabels.calendar` and described with `ariaLabels.calendarRoleDescription`. |
+| Defined ranges | Static range buttons expose `aria-pressed` for the active preset. |
+| Input ranges | Number-of-days inputs are named by their rendered labels via `aria-labelledby`. |
+| Date display | The start/end date inputs are grouped with `role="group"` and `ariaLabels.dateDisplay`. |
+| DateRangePicker | Wrapper renders as `role="region"` named by `ariaLabels.dateRangePicker`; set `ariaLabels.dateRangePicker = false` to opt out. |
+
+`aria-live` announcements are intentionally tracked as a separate follow-up so selection and hover updates do not over-announce.
 
 ## Goal
 

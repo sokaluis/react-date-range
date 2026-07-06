@@ -14,6 +14,11 @@ For upstream release history (up to `2.0.1`), see [`CHANGELOG.upstream.md`](CHAN
 
 ### Accessibility
 
+- **Calendar grid**: `role="grid"` root now has `aria-label="Calendar"` and `aria-roledescription="month grid"` by default. Both are customizable via `ariaLabels.calendar` and `ariaLabels.calendarRoleDescription`.
+- **DefinedRange static ranges**: preset buttons now expose `aria-pressed="true|false"` reflecting the active selection state.
+- **InputRangeField**: number-of-days inputs are now programmatically named via `aria-labelledby`, sourced from the rendered label text. Customizable via `ariaLabels.inputRangeField`.
+- **DateDisplay**: wrapper now has `role="group"` with `aria-label="Selected date range"` (customizable via `ariaLabels.dateDisplay`). Per-input start/end labels are preserved.
+- **DateRangePicker**: wrapper now has `role="region"` with `aria-label="Date range picker"` by default. Opt out by setting `ariaLabels.dateRangePicker === false`.
 - `.rdrDay` day buttons now expose a visible `:focus-visible` keyboard focus
   ring while keeping mouse-click focus visually clean.
 - `.rdrNextPrevButton` nav arrow buttons now show a visible `:focus-visible`

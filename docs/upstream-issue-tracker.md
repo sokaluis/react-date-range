@@ -29,6 +29,8 @@ Issues/PRs that required code changes and have been implemented + verified in th
 | [#663](https://github.com/hypeserver/react-date-range/issues/663) | date-fns v4 import changes (CRA/Webpack smoke) | ✅ Resolved | Same root fix as #664 — peer dep narrowed to `date-fns: ^3.0.0` prevents v4 import hazard. | Alpha 0.1 | Covered by Slice 15; see also #664. |
 | [#607](https://github.com/hypeserver/react-date-range/issues/607) | `disabledDates` prop crash on non-array | ✅ Resolved | Runtime array guard added at Calendar `ForwardedCalendar.resolvedProps` boundary (commit `82736b0`) AND at DateRange component boundary. Both guards use frozen empty-array constant for referential stability. Fix at commit `82736b0` (Calendar) + follow-up guard at DateRange boundary. | Alpha 0.1 | Covered by Slice 15 WU-1 + direct-DateRange follow-up. |
 | [#373](https://github.com/hypeserver/react-date-range/issues/373) | Accessibility / keyboard navigation | ✅ Resolved (focus-visible pass) | Visible keyboard focus indicators added for day cells (commit `fd17f9a`) and the remaining tracked controls in this pass: nav arrows, month/year selects, static ranges, and input-range inputs. | Post-1.0 maintenance | DateInput and custom `renderStaticRange` controls are not part of the upstream #373 tracker row and remain separate future audit candidates if needed. |
+| [#415](https://github.com/hypeserver/react-date-range/issues/415) | Accessibility improvements | ✅ Resolved (core labels) | Calendar grid `aria-label` + `aria-roledescription`, InputRangeField `aria-labelledby`, DateDisplay `role="group"` + group label, DateRangePicker `role="region"` + label + `false` opt-out. Covered by PR `707cdd1` (`feat(a11y): add core labels and states`). | Post-1.0 maintenance | `aria-live` announcements are intentionally deferred to a separate follow-up. |
+| [#416](https://github.com/hypeserver/react-date-range/issues/416) | ARIA roles and labels | ✅ Resolved (core labels) | DefinedRange static range `aria-pressed`, Calendar grid `aria-roledescription`, DateRangePicker region semantics, and additive `ariaLabels` type keys. Covered by PR `707cdd1` (`feat(a11y): add core labels and states`). | Post-1.0 maintenance | Remaining live announcements are tracked separately from core labels/states. |
 
 ---
 
@@ -48,8 +50,6 @@ Issues acknowledged for the fork roadmap but not yet implemented. Scheduled for 
 
 | # | Upstream Topic | Planned Phase | Reason / Approach |
 |---|----------------|---------------|-------------------|
-| [#415](https://github.com/hypeserver/react-date-range/issues/415) | Accessibility improvements | Future accessibility pass | Same as #373 — batch with accessibility audit. |
-| [#416](https://github.com/hypeserver/react-date-range/issues/416) | ARIA roles and labels | Future accessibility pass | Same as #373 — batch with accessibility audit. |
 | [#669](https://github.com/hypeserver/react-date-range/pull/669) | RTL styles | Future visual proposal | RTL support is a visual/styling concern and needs its own scoped proposal before implementation. |
 | [#495](https://github.com/hypeserver/react-date-range/pull/495) | Cross-month range selection UX | Future UX proposal | Edge-case UX improvement. Low priority compared to core compatibility. |
 
@@ -71,8 +71,8 @@ Issues that are explicitly not planned for this fork, either because they expand
 
 | Category | Count |
 |----------|-------|
-| Resolved in fork | 17 |
+| Resolved in fork | 19 |
 | Verified (no code change) | 1 |
-| Pending future phases | 4 |
+| Pending future phases | 2 |
 | Deferred / Out of scope | 2 |
 | **Total tracked** | **24** |

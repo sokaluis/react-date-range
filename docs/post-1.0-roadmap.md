@@ -27,7 +27,7 @@
   - `weekStartsOn` propagation into `DefinedRange` static ranges
   - `findNextRangeIndex` guard for non-array `ranges`
   - null `startDate` / `endDate` handling so empty ranges do not mark every day in range
-- Small accessibility improvements (ARIA, keyboard, focus)
+- Small accessibility improvements (ARIA, keyboard, focus) — core labels/states completed in PR `707cdd1`: Calendar grid `aria-label` + `aria-roledescription`, DefinedRange `aria-pressed`, InputRangeField `aria-labelledby`, DateDisplay `role="group"`, DateRangePicker `role="region"` + `false` opt-out. Remaining: `aria-live` announcements, RTL, cross-month UX.
 - Nice-to-have findings from issue #2, only after bugfixes:
   - visible focus indicators for nav arrows, selects, and day buttons
   - selected range label UX exploration
