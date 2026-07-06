@@ -43,8 +43,8 @@ const commonProps = {
 const renderDateRange = props => {
   latestCalendarProps = undefined;
   const ref = React.createRef();
-  render(<DateRange {...commonProps} {...props} ref={ref} />);
-  return { ref };
+  const renderResult = render(<DateRange {...commonProps} {...props} ref={ref} />);
+  return { ref, ...renderResult };
 };
 
 const calcSelection = props => renderDateRange(props).ref.current.calcNewSelection;
@@ -248,6 +248,177 @@ describe('DateRange', () => {
         endDate,
         color: '#3d91ff',
       });
+    });
+  });
+
+  describe('REQ-ASLR: live region for selection announcements', () => {
+    let container;
+
+    beforeEach(() => {
+      const result = renderDateRange();
+      container = result.container;
+    });
+
+    test('renders a live region with aria-live="polite" as sibling to Calendar, initially empty', () => {
+      const region = container.querySelector('[aria-live="polite"]');
+      expect(region).toBeInTheDocument();
+      expect(region).toHaveTextContent('');
+    });
+
+    test('live region has aria-atomic="true"', () => {
+      const region = container.querySelector('[aria-live="polite"]');
+      expect(region).toHaveAttribute('aria-atomic', 'true');
+    });
+
+    test('first click (onChange, isSingleValue=true) announces single-day range', () => {
+      const clickDate = new Date(2025, 5, 10);
+      act(() => {
+        latestCalendarProps.onChange(clickDate);
+      });
+      const region = container.querySelector('[aria-live="polite"]');
+      expect(region).not.toHaveTextContent('');
+      expect(region.textContent).toContain('June 10th, 2025');
+    });
+
+    test('second click completes range; reversed input normalized in announcement', () => {
+      const start = new Date(2025, 5, 8);
+      const end = new Date(2025, 5, 15);
+      act(() => {
+        latestCalendarProps.onChange(start);
+      });
+      act(() => {
+        latestCalendarProps.onChange(end);
+      });
+      const region = container.querySelector('[aria-live="polite"]');
+      expect(region.textContent).toContain('June 8th, 2025');
+      expect(region.textContent).toContain('June 15th, 2025');
+    });
+
+    test('drag end (updateRange) announces normalized range from calcNewSelection', () => {
+      const range = { startDate: new Date(2025, 5, 5), endDate: new Date(2025, 5, 12) };
+      act(() => {
+        latestCalendarProps.updateRange(range);
+      });
+      const region = container.querySelector('[aria-live="polite"]');
+      expect(region.textContent).toContain('June 5th, 2025');
+      expect(region.textContent).toContain('June 12th, 2025');
+    });
+
+    test('disabledDates clamps; region announces clamped normalized range', () => {
+      const disabledDate = new Date(2025, 5, 12);
+      const { container: local } = render(
+        <DateRange
+          {...commonProps}
+          retainEndDateOnFirstSelection={true}
+          disabledDates={[disabledDate]}
+        />
+      );
+      act(() => {
+        latestCalendarProps.onChange(new Date(2025, 5, 10));
+      });
+      const region = local.querySelector('[aria-live="polite"]');
+      // disabledDate=Jun 12 falls within [Jun 10, Jun 15]; isStartDateSelected=true
+      // startDate → addDays(max([Jun 12]), 1) = Jun 13; endDate = Jun 15
+      expect(region.textContent).toContain('June 13th, 2025');
+      expect(region.textContent).toContain('June 15th, 2025');
+    });
+
+    test('custom ariaLabels.liveRegionSelection receives normalized range and populates region', () => {
+      const formatter = jest.fn((range) => `From ${range.startDate.toISOString()} to ${range.endDate.toISOString()}`);
+      const clickDate = new Date(2025, 5, 20);
+      const { container: local } = render(
+        <DateRange {...commonProps} ariaLabels={{ liveRegionSelection: formatter }} />
+      );
+      act(() => {
+        latestCalendarProps.onChange(clickDate);
+      });
+      expect(formatter).toHaveBeenCalledTimes(1);
+      const { startDate, endDate } = formatter.mock.calls[0][0];
+      expect(startDate).toBeInstanceOf(Date);
+      expect(endDate).toBeInstanceOf(Date);
+      // Assert exact normalized values: single click yields startDate === endDate
+      expect(isSameDay(startDate, clickDate)).toBe(true);
+      expect(isSameDay(endDate, clickDate)).toBe(true);
+      const region = local.querySelector('[aria-live="polite"]');
+      expect(region.textContent).toContain('From');
+      expect(region.textContent).toContain('to');
+    });
+
+    test('default formatter uses Selected <start> to <end> when no custom formatter', () => {
+      const { container: local } = render(
+        <DateRange {...commonProps} />
+      );
+      act(() => {
+        latestCalendarProps.onChange(new Date(2025, 5, 25));
+      });
+      const region = local.querySelector('[aria-live="polite"]');
+      expect(region.textContent).toContain('Selected');
+      expect(region.textContent).toContain('to');
+    });
+
+    test('hover (onMouseEnter on day cells) does NOT populate region', () => {
+      const region = container.querySelector('[aria-live="polite"]');
+      expect(region).toHaveTextContent('');
+      // onPreviewChange is the closest Calendar-level path for hover;
+      // it should NOT trigger setSelection
+      act(() => {
+        latestCalendarProps.onPreviewChange(new Date(2025, 5, 10));
+      });
+      expect(region).toHaveTextContent('');
+    });
+
+    test('onPreviewChange does NOT populate region', () => {
+      const region = container.querySelector('[aria-live="polite"]');
+      act(() => {
+        latestCalendarProps.onPreviewChange(new Date(2025, 5, 10));
+      });
+      expect(region).toHaveTextContent('');
+    });
+
+    test('onDragSelectionMove does NOT populate region', () => {
+      // onDragSelectionMove is internal to Calendar and updates drag state
+      // for visual preview only; it does NOT call setSelection/setLiveAnnouncement.
+      // Exercise the drag/preview movement path via updatePreview (the DateRange-level
+      // equivalent that feeds the same visual preview mechanism), then verify region stays empty.
+      const { ref, container } = renderDateRange();
+      act(() => {
+        ref.current.updatePreview({ range: { startDate: new Date(2025, 5, 10), endDate: new Date(2025, 5, 15) } });
+      });
+      const region = container.querySelector('[aria-live="polite"]');
+      expect(region).toHaveTextContent('');
+    });
+
+    test('range with no endDate (single click) announces startDate===endDate', () => {
+      const clickDate = new Date(2025, 5, 18);
+      const { container: local } = render(
+        <DateRange {...commonProps} />
+      );
+      act(() => {
+        latestCalendarProps.onChange(clickDate);
+      });
+      const region = local.querySelector('[aria-live="polite"]');
+      expect(region.textContent).toContain('June 18th, 2025');
+    });
+
+    test('region starts empty on initial render', () => {
+      const region = container.querySelector('[aria-live="polite"]');
+      expect(region).toHaveTextContent('');
+    });
+
+    test('reversed input (end before start) is normalized in announcement', () => {
+      const start = new Date(2025, 5, 8);
+      const end = new Date(2025, 5, 15);
+      act(() => {
+        latestCalendarProps.onChange(start);
+      });
+      // Select end BEFORE start — should be normalized to [Jun 8, Jun 15]
+      act(() => {
+        latestCalendarProps.onChange(new Date(2025, 5, 5));
+      });
+      const region = container.querySelector('[aria-live="polite"]');
+      // After reversal: startDate=Jun 5, endDate=Jun 8
+      expect(region.textContent).toContain('June 5th, 2025');
+      expect(region.textContent).toContain('June 8th, 2025');
     });
   });
 

@@ -68,6 +68,7 @@ export interface AriaLabelsShape {
   dateDisplay?: string | undefined;
   dateRangePicker?: string | false | undefined;
   liveRegionMonthYear?: ((date: Date) => string) | undefined;
+  liveRegionSelection?: ((range: { startDate: Date; endDate: Date }) => string) | undefined;
 }
 
 export interface ScrollOptions {
