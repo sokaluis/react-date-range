@@ -181,6 +181,9 @@ describe('Calendar', () => {
       expect(calendarRoot).not.toHaveAttribute('dir');
       expect(calendarRoot).not.toHaveClass('rdrRtl');
       expect(calendarRoot.closest('[dir="rtl"]')).toBe(container.firstChild);
+      // Backward-compat: default no-prop render preserves the pre-RTL class set
+      expect(calendarRoot.classList.contains('rdrCalendarWrapper')).toBe(true);
+      expect(calendarRoot.classList.length).toBe(1);
     });
 
     test('custom rtl className replaces the default rdrRtl hook', () => {
@@ -223,7 +226,13 @@ describe('Calendar', () => {
       const scss = fs.readFileSync(path.resolve(__dirname, './index.scss'), 'utf8');
 
       expect(monthsContainer).toBeInTheDocument();
+      // JSDOM does not compute CSS layout so getBoundingClientRect() cannot prove
+      // the first Month is visually rightmost.  We assert the strongest
+      // runtime-observable contracts: the RTL class/dir DOM shape *and* the
+      // source-level row-reverse rule.
       expect(monthsContainer.closest('[dir="rtl"]')).toBe(container.firstChild);
+      expect(monthsContainer.closest('.rdrRtl')).toBe(container.firstChild);
+      expect(container.firstChild).toHaveClass('rdrRtl');
       expect(scss).toMatch(/\.rdrRtl\s+\.rdrMonthsHorizontal\s*\{[^}]*flex-direction:\s*row-reverse/s);
     });
   });
@@ -234,6 +243,61 @@ describe('Calendar', () => {
 
       expect(declarations).toMatch(/rtl\?:\s*string\s*\|\s*undefined/);
       expect(declarations).toMatch(/dir\?:\s*['"]ltr['"]\s*\|\s*['"]rtl['"]\s*\|\s*undefined/);
+    });
+  });
+
+  describe('RTL navigatorRenderer contract', () => {
+    test('custom navigatorRenderer receives raw props and renders unwrapped under RTL', () => {
+      const renderer = jest.fn((date, changeDate, props) => (
+        <div data-testid="custom-nav">
+          {props.dir === 'rtl' ? 'RTL' : 'LTR'}
+        </div>
+      ));
+      const { container } = renderCalendar({ navigatorRenderer: renderer, dir: 'rtl', months: 2 });
+
+      expect(screen.getByTestId('custom-nav')).toHaveTextContent('RTL');
+      expect(renderer).toHaveBeenCalledTimes(1);
+      expect(renderer.mock.calls[0][0]).toBeInstanceOf(Date);
+      expect(renderer.mock.calls[0][1]).toEqual(expect.any(Function));
+      expect(renderer.mock.calls[0][2].dir).toBe('rtl');
+      // Renderer output is inserted directly without a wrapper element
+      expect(container.querySelector('[data-testid="custom-nav"]').parentElement).toBe(
+        container.firstChild
+      );
+    });
+  });
+
+  describe('RTL vertical direction contract', () => {
+    test('vertical calendars with dir=rtl preserve vertical month stacking', () => {
+      const { container } = renderCalendar({ direction: 'vertical', dir: 'rtl', months: 2 });
+
+      expect(container.querySelector('.rdrMonthsVertical')).toBeInTheDocument();
+      expect(container.querySelector('.rdrMonthsHorizontal')).not.toBeInTheDocument();
+      expect(container.firstChild).toHaveClass('rdrRtl');
+      expect(container.firstChild).toHaveAttribute('dir', 'rtl');
+    });
+  });
+
+  describe('RTL keyboard regression guard', () => {
+    test('ArrowLeft and ArrowRight navigate physically regardless of RTL direction', () => {
+      renderCalendar({
+        shownDate: new Date(2025, 5, 15),
+        minDate: new Date(2025, 5, 1),
+        maxDate: new Date(2025, 5, 30),
+        direction: 'vertical',
+        showMonthAndYearPickers: false,
+        showDateDisplay: false,
+        dir: 'rtl',
+      });
+
+      const day15 = findDayButton(15);
+      day15.focus();
+
+      fireEvent.keyDown(day15, { key: 'ArrowLeft' });
+      expect(document.activeElement.textContent).toBe('14');
+
+      fireEvent.keyDown(document.activeElement, { key: 'ArrowRight' });
+      expect(document.activeElement.textContent).toBe('15');
     });
   });
 
