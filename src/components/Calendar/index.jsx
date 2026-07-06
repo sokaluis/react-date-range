@@ -122,6 +122,7 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
     disablePreview: false,
   });
   const [previewState, setPreviewState] = useState(null);
+  const [liveAnnouncement, setLiveAnnouncement] = useState('');
   const focusedDateRef = useRef(focusedDate);
   const scrollContainerRef = useRef(null);
   const listRef = useRef(null);
@@ -257,6 +258,18 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
     isFirstRenderRef.current = false;
   }, [props]);
 
+  const announceShownDate = useCallback(
+    date => {
+      const formatter = ariaLabels.liveRegionMonthYear;
+      setLiveAnnouncement(
+        formatter
+          ? formatter(date)
+          : `Now showing ${format(date, 'MMMM yyyy', dateOptions)}`
+      );
+    },
+    [ariaLabels.liveRegionMonthYear, dateOptions]
+  );
+
   useEffect(() => {
     const propMapper = {
       dateRange: 'ranges',
@@ -287,8 +300,11 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
       const newDate = min([max([modeMapper[mode](), minDate]), maxDate]);
       focusToDate(newDate, props, false);
       onShownDateChange && onShownDateChange(newDate);
+      if (mode === 'setMonth' || mode === 'setYear' || mode === 'monthOffset') {
+        announceShownDate(newDate);
+      }
     },
-    [focusToDate, props]
+    [announceShownDate, focusToDate, props]
   );
 
   const handleRangeFocusChange = useCallback(
@@ -578,6 +594,9 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
       }}>
       {showDateDisplay && renderDateDisplay()}
       {monthAndYearRenderer(focusedDate, changeShownDate, props)}
+      <div aria-live="polite" aria-atomic="true" className={styles.liveRegion}>
+        {liveAnnouncement}
+      </div>
       {scroll.enabled ? (
         <div>
           {isVertical && (

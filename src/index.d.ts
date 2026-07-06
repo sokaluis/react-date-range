@@ -67,6 +67,7 @@ export interface AriaLabelsShape {
   calendarRoleDescription?: string | undefined;
   dateDisplay?: string | undefined;
   dateRangePicker?: string | false | undefined;
+  liveRegionMonthYear?: ((date: Date) => string) | undefined;
 }
 
 export interface ScrollOptions {
@@ -86,6 +87,7 @@ export interface ClassNames {
   dateDisplayItemActive?: string | undefined;
   monthAndYearWrapper?: string | undefined;
   monthAndYearPickers?: string | undefined;
+  liveRegion?: string | undefined;
   nextPrevButton?: string | undefined;
   month?: string | undefined;
   weekDays?: string | undefined;

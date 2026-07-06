@@ -6,6 +6,7 @@ export default {
   dateDisplayItemActive: 'rdrDateDisplayItemActive',
   monthAndYearWrapper: 'rdrMonthAndYearWrapper',
   monthAndYearPickers: 'rdrMonthAndYearPickers',
+  liveRegion: 'rdrLiveRegion',
   nextPrevButton: 'rdrNextPrevButton',
   month: 'rdrMonth',
   weekDays: 'rdrWeekDays',

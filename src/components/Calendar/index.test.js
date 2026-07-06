@@ -134,6 +134,8 @@ const findDayButton = dayNumber => dayButtons().find(button => button.textConten
 const findCalendarDayButton = dayNumber =>
   calendarDayButtons().find(button => button.textContent === String(dayNumber));
 
+const findLiveRegion = container => container.querySelector('.rdrLiveRegion');
+
 const expectSameDay = (actual, expected) => {
   expect(isSameDay(actual, expected)).toBe(true);
 };
@@ -177,6 +179,23 @@ describe('Calendar', () => {
   });
 
   describe('rendered navigation and shown-date behavior', () => {
+    test('renders one polite atomic live region outside rendered month content', () => {
+      const { container } = renderCalendar({
+        scroll: { enabled: true, monthHeight: 240, longMonthHeight: 280, calendarHeight: 420 },
+        minDate: new Date(2025, 0, 1),
+        maxDate: new Date(2025, 11, 31),
+        shownDate: new Date(2025, 5, 15),
+      });
+
+      const liveRegions = container.querySelectorAll('.rdrLiveRegion');
+
+      expect(liveRegions).toHaveLength(1);
+      expect(liveRegions[0]).toHaveAttribute('aria-live', 'polite');
+      expect(liveRegions[0]).toHaveAttribute('aria-atomic', 'true');
+      expect(liveRegions[0].closest('.rdrMonth')).toBeNull();
+      expect(liveRegions[0].closest('.rdrInfiniteMonths')).toBeNull();
+    });
+
     test('previous and next arrows update visible month and report clamped shown dates', () => {
       const onShownDateChange = jest.fn();
       renderCalendar({
@@ -197,6 +216,22 @@ describe('Calendar', () => {
       expectSameDay(onShownDateChange.mock.calls[1][0], new Date(2025, 6, 1));
     });
 
+    test('navigation arrows announce committed shown month and year', () => {
+      const { container } = renderCalendar({
+        shownDate: new Date(2025, 5, 15),
+        minDate: new Date(2025, 5, 1),
+        maxDate: new Date(2025, 6, 31),
+      });
+
+      fireEvent.click(findButtonByLabel('Previous month'));
+
+      expect(findLiveRegion(container)).toHaveTextContent('Now showing June 2025');
+
+      fireEvent.click(findButtonByLabel('Next month'));
+
+      expect(findLiveRegion(container)).toHaveTextContent('Now showing July 2025');
+    });
+
     test('month and year pickers update visible values and report selected dates', () => {
       const onShownDateChange = jest.fn();
       renderCalendar({
@@ -215,6 +250,40 @@ describe('Calendar', () => {
 
       expect(findSelectByLabel('Year')).toHaveValue('2026');
       expectSameDay(onShownDateChange.mock.calls[1][0], new Date(2026, 8, 15));
+    });
+
+    test('month and year pickers announce committed shown month and year', () => {
+      const { container } = renderCalendar({
+        shownDate: new Date(2025, 5, 15),
+        minDate: new Date(2024, 0, 1),
+        maxDate: new Date(2026, 11, 31),
+      });
+
+      fireEvent.change(findSelectByLabel('Month'), { target: { value: '8' } });
+
+      expect(findLiveRegion(container)).toHaveTextContent('Now showing September 2025');
+
+      fireEvent.change(findSelectByLabel('Year'), { target: { value: '2026' } });
+
+      expect(findLiveRegion(container)).toHaveTextContent('Now showing September 2026');
+    });
+
+    test('custom live region month/year formatter receives the committed date', () => {
+      const liveRegionMonthYear = jest.fn(date => `Showing ${date.getFullYear()}-${date.getMonth() + 1}`);
+      const { container } = renderCalendar({
+        shownDate: new Date(2025, 5, 15),
+        minDate: new Date(2024, 0, 1),
+        maxDate: new Date(2026, 11, 31),
+        ariaLabels: {
+          ...baseProps.ariaLabels,
+          liveRegionMonthYear,
+        },
+      });
+
+      fireEvent.change(findSelectByLabel('Month'), { target: { value: '8' } });
+
+      expect(liveRegionMonthYear).toHaveBeenCalledWith(new Date(2025, 8, 15));
+      expect(findLiveRegion(container)).toHaveTextContent('Showing 2025-9');
     });
 
     test('non-scroll rendered months derive from updated focused date without virtualizer refs', () => {
@@ -256,6 +325,41 @@ describe('Calendar', () => {
   });
 
   describe('rendered selection interactions', () => {
+    test('hover and drag preview movement leave live region text unchanged', () => {
+      const { container } = renderCalendar({
+        shownDate: new Date(2025, 5, 1),
+        minDate: new Date(2025, 5, 1),
+        maxDate: new Date(2025, 5, 30),
+        displayMode: 'dateRange',
+        ranges: [{ startDate: null, endDate: null, key: 'selection' }],
+      });
+
+      fireEvent.mouseEnter(findDayButton(10));
+      fireEvent.mouseDown(findDayButton(10));
+      fireEvent.mouseEnter(findDayButton(12));
+
+      expect(findLiveRegion(container)).toHaveTextContent('');
+    });
+
+    test('drag selection end does not announce selection in the month/year-only slice', () => {
+      const updateRange = jest.fn();
+      const { container } = renderCalendar({
+        shownDate: new Date(2025, 5, 1),
+        minDate: new Date(2025, 5, 1),
+        maxDate: new Date(2025, 5, 30),
+        displayMode: 'dateRange',
+        ranges: [{ startDate: null, endDate: null, key: 'selection' }],
+        updateRange,
+      });
+
+      fireEvent.mouseDown(findDayButton(10));
+      fireEvent.mouseEnter(findDayButton(12));
+      fireEvent.mouseUp(findDayButton(12));
+
+      expect(updateRange).toHaveBeenCalledTimes(1);
+      expect(findLiveRegion(container)).toHaveTextContent('');
+    });
+
     test('dragging a date range calls updateRange with start and end dates without using onChange', () => {
       const updateRange = jest.fn();
       const onChange = jest.fn();
@@ -470,6 +574,23 @@ describe('Calendar', () => {
       );
       expect(onShownDateChange).toHaveBeenCalledTimes(1);
       expectSameDay(onShownDateChange.mock.calls[0][0], new Date(2025, 6, 1));
+    });
+
+    test('scroll-driven shown date changes do not announce transient movement', () => {
+      const onShownDateChange = jest.fn();
+      const { view } = renderScrollCalendar({ onShownDateChange });
+      const virtualizer = mockVirtualizerInstance;
+      jest
+        .spyOn(virtualizer, 'getVirtualItems')
+        .mockReturnValueOnce([{ index: 65 }, { index: 66 }])
+        .mockReturnValueOnce([{ index: 66 }, { index: 67 }]);
+      const scrollContainer = findScrollContainer(view.container);
+
+      fireEvent.scroll(scrollContainer);
+      fireEvent.scroll(scrollContainer);
+
+      expect(onShownDateChange).toHaveBeenCalledTimes(1);
+      expect(findLiveRegion(view.container)).toHaveTextContent('');
     });
 
     test('handleScroll is safe when visible range is empty or measure is missing', () => {
