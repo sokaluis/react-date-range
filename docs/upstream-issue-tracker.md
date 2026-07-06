@@ -47,7 +47,7 @@ Issues acknowledged for the fork roadmap but not yet implemented. Scheduled for 
 
 | # | Upstream Topic | Planned Phase | Reason / Approach |
 |---|----------------|---------------|-------------------|
-| [#373](https://github.com/hypeserver/react-date-range/issues/373) | Accessibility / keyboard navigation | Future accessibility pass | Requires ARIA audit and keyboard navigation fixes beyond the internal refactor. |
+| [#373](https://github.com/hypeserver/react-date-range/issues/373) | Accessibility / keyboard navigation | Partially addressed | Day-cell keyboard focus now has a visible `:focus-visible` indicator. Nav arrows, selects, static ranges, and input ranges still need scoped follow-up passes. |
 | [#415](https://github.com/hypeserver/react-date-range/issues/415) | Accessibility improvements | Future accessibility pass | Same as #373 — batch with accessibility audit. |
 | [#416](https://github.com/hypeserver/react-date-range/issues/416) | ARIA roles and labels | Future accessibility pass | Same as #373 — batch with accessibility audit. |
 | [#669](https://github.com/hypeserver/react-date-range/pull/669) | RTL styles | Future visual proposal | RTL support is a visual/styling concern and needs its own scoped proposal before implementation. |

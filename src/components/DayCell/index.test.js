@@ -242,6 +242,37 @@ describe('DayCell', () => {
     });
   });
 
+  describe('focus-visible keyboard indicator', () => {
+    const fs = require('fs');
+    const path = require('path');
+
+    test('rdrDay block in default.scss suppresses outline on :focus and later restores it on :focus-visible', () => {
+      const scssSource = fs.readFileSync(
+        path.resolve(__dirname, '../../theme/default.scss'),
+        'utf8'
+      );
+
+      // Extract the .rdrDay block — find its opening and the start of the next top-level rule
+      const dayBlockMatch = scssSource.match(/\.rdrDay\s*\{[^}]+\boutline:\s*0[^}]*\}/s);
+      expect(dayBlockMatch).not.toBeNull();
+      const focusRule = dayBlockMatch[0];
+      // The :focus rule must be present (mouse click = no ring)
+      expect(focusRule).toMatch(/&\s*:\s*focus\s*\{[^}]*outline:\s*0/s);
+
+      // After the :focus block, :focus-visible must appear with a visible ring
+      const afterFocusRule = scssSource.substring(scssSource.indexOf(focusRule) + focusRule.length);
+      expect(afterFocusRule).toMatch(/&\s*:\s*focus-visible\s*\{[^}]*outline:\s*2px\s*solid\s*#[0-9a-fA-F]{6}/);
+      expect(afterFocusRule).toMatch(/outline-offset:\s*2px/);
+    });
+
+    test('rendered day button remains focusable with gridcell role and tabIndex 0', () => {
+      render(<DayCell {...baseProps} />);
+      const button = screen.getByRole('gridcell');
+      expect(button).toHaveClass('rdrDay');
+      expect(button.tabIndex).toBe(0);
+    });
+  });
+
   describe('displayMode date selection', () => {
     test('selected date shows selected class in date mode', () => {
       const day = new Date(2025, 5, 15);

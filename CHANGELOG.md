@@ -12,6 +12,11 @@ For upstream release history (up to `2.0.1`), see [`CHANGELOG.upstream.md`](CHAN
 
 ## [Unreleased]
 
+### Accessibility
+
+- `.rdrDay` day buttons now expose a visible `:focus-visible` keyboard focus
+  ring while keeping mouse-click focus visually clean.
+
 ### Fixed
 
 - `disabledDates` prop: added runtime array guard at the `<DateRange>` component boundary to prevent crashes when consumers pass `null`, a single `Date`, or other non-array values directly to `<DateRange>` (upstream #607). Mirrors the existing Calendar boundary guard using a frozen empty-array constant for `useMemo`/`useCallback` referential stability. Direct `<DateRange disabledDates={null} />` is now safe without wrapping in `<Calendar>`.
