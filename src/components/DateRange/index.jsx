@@ -1,7 +1,7 @@
 import React, { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import Calendar from '../Calendar';
 import { findNextRangeIndex, generateStyles } from '../../utils';
-import { isBefore, differenceInCalendarDays, addDays, min, isWithinInterval, max } from 'date-fns';
+import { format, isBefore, differenceInCalendarDays, addDays, min, isWithinInterval, max } from 'date-fns';
 import classnames from 'classnames';
 import coreStyles from '../../styles';
 
@@ -52,6 +52,7 @@ const DateRange = forwardRef(function DateRange(
     () => props.initialFocusedRange || [findNextRangeIndex(props.ranges), 0]
   );
   const [preview, setPreview] = useState(null);
+  const [liveAnnouncement, setLiveAnnouncement] = useState('');
   const styles = useMemo(() => generateStyles([coreStyles, props.classNames]), [props.classNames]);
 
   const calcNewSelection = useCallback(
@@ -140,6 +141,13 @@ const DateRange = forwardRef(function DateRange(
       const selectedRange = ranges[focusedRangeIndex];
       if (!selectedRange) return;
       const newSelection = calcNewSelection(value, isSingleValue);
+      const { startDate, endDate } = newSelection.range;
+      const liveFormatter = props.ariaLabels?.liveRegionSelection;
+      setLiveAnnouncement(
+        liveFormatter
+          ? liveFormatter({ startDate, endDate })
+          : `Selected ${format(startDate, 'PPP')} to ${format(endDate, 'PPP')}`
+      );
       onChange({
         [selectedRange.key || `range${focusedRangeIndex + 1}`]: {
           ...selectedRange,
@@ -189,20 +197,25 @@ const DateRange = forwardRef(function DateRange(
   );
 
   return (
-    <Calendar
-      focusedRange={focusedRangeState}
-      onRangeFocusChange={handleRangeFocusChange}
-      preview={preview}
-      onPreviewChange={value => {
-        updatePreview(value ? calcNewSelection(value) : null);
-      }}
-      {...props}
-      displayMode="dateRange"
-      className={classnames(styles.dateRangeWrapper, props.className)}
-      onChange={setSelection}
-      updateRange={val => setSelection(val, false)}
-      ref={calendarRef}
-    />
+    <>
+      <Calendar
+        focusedRange={focusedRangeState}
+        onRangeFocusChange={handleRangeFocusChange}
+        preview={preview}
+        onPreviewChange={value => {
+          updatePreview(value ? calcNewSelection(value) : null);
+        }}
+        {...props}
+        displayMode="dateRange"
+        className={classnames(styles.dateRangeWrapper, props.className)}
+        onChange={setSelection}
+        updateRange={val => setSelection(val, false)}
+        ref={calendarRef}
+      />
+      <div aria-live="polite" aria-atomic="true" className={classnames(styles.liveRegion)}>
+        {liveAnnouncement}
+      </div>
+    </>
   );
 });
 

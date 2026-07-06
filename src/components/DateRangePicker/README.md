@@ -146,9 +146,13 @@ const [state, setState] = useState({
     yearPicker: "year picker",
     prevButton: "previous month button",
     nextButton: "next month button",
+    liveRegionSelection: ({ startDate, endDate }) =>
+      `Selected from ${startDate.toLocaleDateString()} to ${endDate.toLocaleDateString()}`,
   }}
 />;
 ```
+
+`liveRegionSelection` customizes the polite selection announcement inherited from `DateRange`. It runs only for committed selections, not hover, preview, or drag-move updates.
 
 #### Example: Custom Day Cell Content
 Show orange dot only for weekend

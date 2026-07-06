@@ -139,4 +139,11 @@ describe('DateRangePicker hooks parity', () => {
 
     expect(mockDateRangeApi.updatePreview).toHaveBeenLastCalledWith(null);
   });
+
+  test('forwards ariaLabels.liveRegionSelection to DateRange', () => {
+    const formatter = () => 'Custom announcement';
+    renderDateRangePicker({ ariaLabels: { liveRegionSelection: formatter } });
+
+    expect(mockLatestDateRangeProps.ariaLabels.liveRegionSelection).toBe(formatter);
+  });
 });
