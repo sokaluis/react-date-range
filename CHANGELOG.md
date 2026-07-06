@@ -16,6 +16,14 @@ For upstream release history (up to `2.0.1`), see [`CHANGELOG.upstream.md`](CHAN
 
 - `.rdrDay` day buttons now expose a visible `:focus-visible` keyboard focus
   ring while keeping mouse-click focus visually clean.
+- `.rdrNextPrevButton` nav arrow buttons now show a visible `:focus-visible`
+  keyboard focus ring while keeping mouse-click focus visually clean.
+- `.rdrMonthAndYearPickers select` dropdowns now show a visible `:focus-visible`
+  keyboard focus ring while keeping mouse-click focus visually clean.
+- `.rdrStaticRange` preset buttons now show a visible `:focus-visible` keyboard
+  focus ring while keeping mouse-click focus visually clean.
+- `.rdrInputRangeInput` start/end inputs now show a visible `:focus-visible`
+  keyboard focus ring while keeping mouse-click focus visually clean.
 
 ### Fixed
 

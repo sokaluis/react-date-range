@@ -28,6 +28,7 @@ Issues/PRs that required code changes and have been implemented + verified in th
 | [#664](https://github.com/hypeserver/react-date-range/issues/664) | date-fns v4 `addYears is not a function` ( CRA/Webpack) | ✅ Resolved | All source-tree imports use named-export syntax; zero `_dateFns` wrapper references. Build config externalizes `date-fns`. Lock-in audit test at commit `b9ee316`. | Alpha 0.1 | Covered by Slice 15. |
 | [#663](https://github.com/hypeserver/react-date-range/issues/663) | date-fns v4 import changes (CRA/Webpack smoke) | ✅ Resolved | Same root fix as #664 — peer dep narrowed to `date-fns: ^3.0.0` prevents v4 import hazard. | Alpha 0.1 | Covered by Slice 15; see also #664. |
 | [#607](https://github.com/hypeserver/react-date-range/issues/607) | `disabledDates` prop crash on non-array | ✅ Resolved | Runtime array guard added at Calendar `ForwardedCalendar.resolvedProps` boundary (commit `82736b0`) AND at DateRange component boundary. Both guards use frozen empty-array constant for referential stability. Fix at commit `82736b0` (Calendar) + follow-up guard at DateRange boundary. | Alpha 0.1 | Covered by Slice 15 WU-1 + direct-DateRange follow-up. |
+| [#373](https://github.com/hypeserver/react-date-range/issues/373) | Accessibility / keyboard navigation | ✅ Resolved (focus-visible pass) | Visible keyboard focus indicators added for day cells (commit `fd17f9a`) and the remaining tracked controls in this pass: nav arrows, month/year selects, static ranges, and input-range inputs. | Post-1.0 maintenance | DateInput and custom `renderStaticRange` controls are not part of the upstream #373 tracker row and remain separate future audit candidates if needed. |
 
 ---
 
@@ -47,7 +48,6 @@ Issues acknowledged for the fork roadmap but not yet implemented. Scheduled for 
 
 | # | Upstream Topic | Planned Phase | Reason / Approach |
 |---|----------------|---------------|-------------------|
-| [#373](https://github.com/hypeserver/react-date-range/issues/373) | Accessibility / keyboard navigation | Partially addressed | Day-cell keyboard focus now has a visible `:focus-visible` indicator. Nav arrows, selects, static ranges, and input ranges still need scoped follow-up passes. |
 | [#415](https://github.com/hypeserver/react-date-range/issues/415) | Accessibility improvements | Future accessibility pass | Same as #373 — batch with accessibility audit. |
 | [#416](https://github.com/hypeserver/react-date-range/issues/416) | ARIA roles and labels | Future accessibility pass | Same as #373 — batch with accessibility audit. |
 | [#669](https://github.com/hypeserver/react-date-range/pull/669) | RTL styles | Future visual proposal | RTL support is a visual/styling concern and needs its own scoped proposal before implementation. |
@@ -71,8 +71,8 @@ Issues that are explicitly not planned for this fork, either because they expand
 
 | Category | Count |
 |----------|-------|
-| Resolved in fork | 16 (+4) |
+| Resolved in fork | 17 |
 | Verified (no code change) | 1 |
-| Pending future phases | 5 |
-| Deferred / Out of scope | 2 (-1) |
-| **Total tracked** | **24 (+3)** |
+| Pending future phases | 4 |
+| Deferred / Out of scope | 2 |
+| **Total tracked** | **24** |

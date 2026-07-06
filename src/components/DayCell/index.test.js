@@ -271,6 +271,98 @@ describe('DayCell', () => {
       expect(button).toHaveClass('rdrDay');
       expect(button.tabIndex).toBe(0);
     });
+
+    // --- Additional focus-visible controls ---
+
+    test('rdrNextPrevButton block has &:focus { outline: 0 } then &:focus-visible ring', () => {
+      const scssSource = fs.readFileSync(
+        path.resolve(__dirname, '../../theme/default.scss'),
+        'utf8'
+      );
+      // Find the start of .rdrNextPrevButton block
+      const startIdx = scssSource.indexOf('.rdrNextPrevButton');
+      expect(startIdx).toBeGreaterThan(-1);
+      // Find the start of the next top-level class after it
+      const nextRuleIdx = scssSource.indexOf('\n.rdrP', startIdx + 1);
+      const nextRule2Idx = scssSource.indexOf('\n.rdrWeekDays', startIdx + 1);
+      const nextRule3Idx = scssSource.indexOf('\n.rdrMonth', startIdx + 1);
+      const endIdx = [nextRuleIdx, nextRule2Idx, nextRule3Idx]
+        .filter(idx => idx !== -1)
+        .reduce((min, idx) => Math.min(min, idx), Infinity);
+      const block = scssSource.substring(startIdx, endIdx);
+      // &:focus { outline: 0 } must be present
+      expect(block).toMatch(/&\s*:\s*focus\s*\{\s*outline:\s*0\s*;?\s*\}/);
+      // &:focus-visible ring must appear after &:focus
+      const focusIdx = block.search(/&\s*:\s*focus\s*\{/);
+      const afterFocus = block.substring(focusIdx);
+      expect(afterFocus).toMatch(/&\s*:\s*focus-visible\s*\{\s*outline:\s*2px\s*solid\s*#3d91ff\s*;?\s*outline-offset:\s*2px\s*;?\s*\}/);
+    });
+
+    test('rdrMonthAndYearPickers select has &:focus-visible ring after base outline:0', () => {
+      const scssSource = fs.readFileSync(
+        path.resolve(__dirname, '../../theme/default.scss'),
+        'utf8'
+      );
+      // Find the select block inside .rdrMonthAndYearPickers
+      const startIdx = scssSource.indexOf('.rdrMonthAndYearPickers');
+      expect(startIdx).toBeGreaterThan(-1);
+      // select starts after the .rdrMonthAndYearPickers opening
+      const selectStartIdx = scssSource.indexOf('select{', startIdx);
+      expect(selectStartIdx).toBeGreaterThan(-1);
+      const selectEndIdx = scssSource.indexOf('\n  }', selectStartIdx);
+      const block = scssSource.substring(selectStartIdx, selectEndIdx + 4);
+      // Base outline:0 must be present
+      expect(block).toMatch(/outline:\s*0/);
+      // &:focus-visible ring must appear after the base outline
+      const outline0Idx = block.search(/outline:\s*0/);
+      const afterOutline0 = block.substring(outline0Idx);
+      expect(afterOutline0).toMatch(/&\s*:\s*focus-visible\s*\{\s*outline:\s*2px\s*solid\s*#3d91ff\s*;?\s*outline-offset:\s*2px\s*;?\s*\}/);
+    });
+
+    test('rdrStaticRange block has &:focus-visible ring after &:hover, &:focus block', () => {
+      const scssSource = fs.readFileSync(
+        path.resolve(__dirname, '../../theme/default.scss'),
+        'utf8'
+      );
+      // Find .rdrStaticRange block
+      const startIdx = scssSource.indexOf('.rdrStaticRange{');
+      expect(startIdx).toBeGreaterThan(-1);
+      const nextRuleIdx = scssSource.indexOf('\n.rdrStaticRangeLabel', startIdx + 1);
+      const nextRule2Idx = scssSource.indexOf('\n.rdrInputRanges', startIdx + 1);
+      const endIdx = [nextRuleIdx, nextRule2Idx]
+        .filter(idx => idx !== -1)
+        .reduce((min, idx) => Math.min(min, idx), Infinity);
+      const block = scssSource.substring(startIdx, endIdx);
+      // Base outline:0 must be present
+      expect(block).toMatch(/outline:\s*0/);
+      // &:hover, &:focus block must be present
+      expect(block).toMatch(/&\s*:\s*hover\s*,\s*&\s*:\s*focus/);
+      // &:focus-visible ring after the hover/focus block
+      const hoverFocusIdx = block.search(/&\s*:\s*hover\s*,\s*&\s*:\s*focus/);
+      const afterHoverFocus = block.substring(hoverFocusIdx);
+      expect(afterHoverFocus).toMatch(/&\s*:\s*focus-visible\s*\{\s*outline:\s*2px\s*solid\s*#3d91ff\s*;?\s*outline-offset:\s*2px\s*;?\s*\}/);
+    });
+
+    test('rdrInputRangeInput splits &:focus and &:hover, preserves border-color on hover, adds &:focus-visible ring', () => {
+      const scssSource = fs.readFileSync(
+        path.resolve(__dirname, '../../theme/default.scss'),
+        'utf8'
+      );
+      // Find .rdrInputRangeInput block
+      const startIdx = scssSource.indexOf('.rdrInputRangeInput{');
+      expect(startIdx).toBeGreaterThan(-1);
+      const nextRuleIdx = scssSource.indexOf('\n.rdrCalendarWrapper', startIdx + 1);
+      const endIdx = nextRuleIdx === -1 ? scssSource.indexOf('\n.rdrDay', startIdx + 1) : nextRuleIdx;
+      const block = scssSource.substring(startIdx, endIdx);
+      // &:focus and &:hover must NOT be combined (no &:focus, &:hover pattern)
+      expect(block).not.toMatch(/&\s*:\s*focus\s*,\s*&\s*:\s*hover/);
+      // &:focus { outline: 0 } must be present
+      expect(block).toMatch(/&\s*:\s*focus\s*\{[^}]*outline:\s*0/);
+      // &:hover must preserve border-color: rgb(180, 191, 196)
+      expect(block).toMatch(/&\s*:\s*hover\s*\{[^}]*border-color:\s*rgb\(180,\s*191,\s*196\)/);
+      // &:focus-visible ring present
+      expect(block).toMatch(/&\s*:\s*focus-visible\s*\{\s*outline:\s*2px\s*solid\s*#3d91ff\s*;?\s*outline-offset:\s*2px\s*;?\s*\}/);
+    });
   });
 
   describe('displayMode date selection', () => {
