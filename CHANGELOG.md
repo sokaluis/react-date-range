@@ -32,7 +32,11 @@ For upstream release history (up to `2.0.1`), see [`CHANGELOG.upstream.md`](CHAN
 - **Calendar live region**: a stable `aria-live="polite"` region outside the virtualized
   scroll container announces committed month and year navigation changes (month picker,
   year picker, prev/next arrows). Hover, drag movement, drag end, date selection, and
-  scroll do **not** announce. Selection live announcements are deferred to a future slice.
+  scroll do **not** announce from Calendar itself.
+- **DateRange live region**: committed DateRange selections now announce through a polite,
+  atomic live region after range normalization. Customize the spoken copy with
+  `ariaLabels.liveRegionSelection`. Hover, preview, and drag-move updates do **not**
+  announce.
 
 ### Fixed
 

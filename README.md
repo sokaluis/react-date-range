@@ -53,9 +53,10 @@ The fork now covers the core ARIA labels and states tracked by upstream #415/#41
 | Input ranges | Number-of-days inputs are named by their rendered labels via `aria-labelledby`. |
 | Date display | The start/end date inputs are grouped with `role="group"` and `ariaLabels.dateDisplay`. |
 | DateRangePicker | Wrapper renders as `role="region"` named by `ariaLabels.dateRangePicker`; set `ariaLabels.dateRangePicker = false` to opt out. |
-| Calendar live region | Committed month/year navigation announced via `aria-live="polite"` region (customizable via `ariaLabels.liveRegionMonthYear`). Hover, drag movement, drag end, selection, and scroll do not announce. Selection announcements are deferred to a future slice. |
+| Calendar live region | Committed month/year navigation announced via `aria-live="polite"` region (customizable via `ariaLabels.liveRegionMonthYear`). Hover, drag movement, date selection, and scroll do not announce from Calendar itself. |
+| DateRange live region | Committed range selections announced via `aria-live="polite"` / `aria-atomic="true"` after DateRange normalizes the selected range. Customizable via `ariaLabels.liveRegionSelection`. Hover, preview, and drag movement do not announce. |
 
-`aria-live` month/year announcements are available. Selection announcements are intentionally deferred to a future slice so hover, preview, and drag updates do not over-announce.
+`aria-live` month/year and DateRange selection announcements are available. Announcements are tied to committed state changes only, so hover, preview, and drag-move updates do not over-announce.
 
 ## Goal
 
