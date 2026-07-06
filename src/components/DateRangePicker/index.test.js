@@ -64,8 +64,8 @@ const renderDateRangePicker = props => {
   mockLatestDefinedRangeProps = undefined;
   mockDateRangeApi = undefined;
   const ref = React.createRef();
-  render(<DateRangePicker {...baseProps} {...props} ref={ref} />);
-  return { ref };
+  const renderResult = render(<DateRangePicker {...baseProps} {...props} ref={ref} />);
+  return { ref, ...renderResult };
 };
 
 describe('DateRangePicker hooks parity', () => {
@@ -99,6 +99,22 @@ describe('DateRangePicker hooks parity', () => {
     expect(screen.queryByRole('region')).not.toBeInTheDocument();
     expect(container.firstChild).not.toHaveAttribute('role');
     expect(container.firstChild).not.toHaveAttribute('aria-label');
+  });
+
+  test('forwards explicit rtl direction to wrapper and DateRange child', () => {
+    const { container } = renderDateRangePicker({ dir: 'rtl' });
+
+    expect(container.firstChild).toHaveAttribute('dir', 'rtl');
+    expect(container.firstChild).toHaveClass('rdrRtl');
+    expect(mockLatestDateRangeProps.dir).toBe('rtl');
+  });
+
+  test('omits wrapper dir and rtl class when direction is not provided', () => {
+    const { container } = renderDateRangePicker();
+
+    expect(container.firstChild).not.toHaveAttribute('dir');
+    expect(container.firstChild).not.toHaveClass('rdrRtl');
+    expect(mockLatestDateRangeProps.dir).toBeUndefined();
   });
 
   test('keeps DefinedRange synchronized with DateRange focus changes', () => {

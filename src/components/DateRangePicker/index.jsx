@@ -37,7 +37,15 @@ const DateRangePicker = forwardRef(function DateRangePicker(props, ref) {
   );
 
   return (
-    <div className={classnames(styles.dateRangePickerWrapper, props.className)} {...regionProps}>
+    <div
+      dir={props.dir}
+      className={classnames(
+        styles.dateRangePickerWrapper,
+        props.dir === 'rtl' && (props.classNames?.rtl ?? styles.rtl),
+        props.className
+      )}
+      {...regionProps}
+    >
       <DefinedRange
         {...props}
         focusedRange={focusedRange}

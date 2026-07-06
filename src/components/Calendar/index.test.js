@@ -1,4 +1,6 @@
 import React from 'react';
+import fs from 'fs';
+import path from 'path';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import Calendar from '../Calendar/index.jsx';
 import DateDisplay from '../DateDisplay/index.jsx';
@@ -136,6 +138,12 @@ const findCalendarDayButton = dayNumber =>
 
 const findLiveRegion = container => container.querySelector('.rdrLiveRegion');
 
+const readDefaultTheme = () =>
+  fs.readFileSync(path.resolve(__dirname, '../../theme/default.scss'), 'utf8');
+
+const readTypeDeclarations = () =>
+  fs.readFileSync(path.resolve(__dirname, '../../index.d.ts'), 'utf8');
+
 const expectSameDay = (actual, expected) => {
   expect(isSameDay(actual, expected)).toBe(true);
 };
@@ -143,6 +151,90 @@ const expectSameDay = (actual, expected) => {
 describe('Calendar', () => {
   test('Should resolve', () => {
     expect(Calendar).toEqual(expect.anything());
+  });
+
+  describe('RTL direction wrapper contract', () => {
+    test('dir="rtl" renders an explicit RTL attribute and resolved RTL class', () => {
+      const { container } = renderCalendar({ dir: 'rtl' });
+      const calendarRoot = container.firstChild;
+
+      expect(calendarRoot).toHaveAttribute('dir', 'rtl');
+      expect(calendarRoot).toHaveClass('rdrRtl');
+    });
+
+    test('dir="ltr" renders an explicit LTR attribute without the RTL class', () => {
+      const { container } = renderCalendar({ dir: 'ltr' });
+      const calendarRoot = container.firstChild;
+
+      expect(calendarRoot).toHaveAttribute('dir', 'ltr');
+      expect(calendarRoot).not.toHaveClass('rdrRtl');
+    });
+
+    test('omitted dir keeps the calendar root inheritable without an RTL class', () => {
+      const { container } = render(
+        <div dir="rtl">
+          <Calendar {...baseProps} />
+        </div>
+      );
+      const calendarRoot = container.querySelector('.rdrCalendarWrapper');
+
+      expect(calendarRoot).not.toHaveAttribute('dir');
+      expect(calendarRoot).not.toHaveClass('rdrRtl');
+      expect(calendarRoot.closest('[dir="rtl"]')).toBe(container.firstChild);
+    });
+
+    test('custom rtl className replaces the default rdrRtl hook', () => {
+      const { container } = renderCalendar({ dir: 'rtl', classNames: { rtl: 'app-rtl' } });
+      const calendarRoot = container.firstChild;
+
+      expect(calendarRoot).toHaveClass('app-rtl');
+      expect(calendarRoot).not.toHaveClass('rdrRtl');
+    });
+  });
+
+  describe('RTL logical edge styles', () => {
+    test('date range and preview edges use logical border and inset properties', () => {
+      const scss = readDefaultTheme();
+
+      expect(scss).toContain('border-start-start-radius');
+      expect(scss).toContain('border-end-start-radius');
+      expect(scss).toContain('border-start-end-radius');
+      expect(scss).toContain('border-end-end-radius');
+      expect(scss).toContain('border-inline-start-width');
+      expect(scss).toContain('border-inline-end-width');
+      expect(scss).toContain('inset-inline-start');
+      expect(scss).toContain('inset-inline-end');
+      expect(scss).not.toMatch(/border-(top|bottom)-(left|right)-radius/);
+      expect(scss).not.toMatch(/border-(left|right)-width/);
+    });
+  });
+
+  describe('RTL visual mirroring styles', () => {
+    test('rtl wrappers mirror navigation arrow glyphs without changing ltr glyph styles', () => {
+      const scss = readDefaultTheme();
+
+      expect(scss).toMatch(/\.rdrCalendarWrapper\[dir=['"]rtl['"]\].*\.rdrNextPrevButton\s+i\s*\{[^}]*scaleX\(-1\)/s);
+      expect(scss).not.toMatch(/\.rdrCalendarWrapper\[dir=['"]ltr['"]\].*scaleX\(-1\)/s);
+    });
+
+    test('horizontal rtl calendars apply row-reverse styling to the month container', () => {
+      const { container } = renderCalendar({ direction: 'horizontal', dir: 'rtl', months: 2 });
+      const monthsContainer = container.querySelector('.rdrMonthsHorizontal');
+      const scss = fs.readFileSync(path.resolve(__dirname, './index.scss'), 'utf8');
+
+      expect(monthsContainer).toBeInTheDocument();
+      expect(monthsContainer.closest('[dir="rtl"]')).toBe(container.firstChild);
+      expect(scss).toMatch(/\.rdrRtl\s+\.rdrMonthsHorizontal\s*\{[^}]*flex-direction:\s*row-reverse/s);
+    });
+  });
+
+  describe('RTL public type surface', () => {
+    test('CalendarProps and ClassNames expose additive dir and rtl declarations', () => {
+      const declarations = readTypeDeclarations();
+
+      expect(declarations).toMatch(/rtl\?:\s*string\s*\|\s*undefined/);
+      expect(declarations).toMatch(/dir\?:\s*['"]ltr['"]\s*\|\s*['"]rtl['"]\s*\|\s*undefined/);
+    });
   });
 
   describe('forwardRef scaffold and metadata', () => {

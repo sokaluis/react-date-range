@@ -58,6 +58,24 @@ The fork now covers the core ARIA labels and states tracked by upstream #415/#41
 
 `aria-live` month/year and DateRange selection announcements are available. Announcements are tied to committed state changes only, so hover, preview, and drag-move updates do not over-announce.
 
+## RTL layout support
+
+`Calendar`, `DateRange`, and `DateRangePicker` accept an additive `dir` prop:
+
+```jsx
+<DateRangePicker dir="rtl" direction="horizontal" />
+```
+
+| `dir` value | Behavior |
+|-------------|----------|
+| `"rtl"` | Renders `dir="rtl"`, applies the `rdrRtl` class hook, mirrors navigation glyphs visually, and reverses horizontal month flow. |
+| `"ltr"` | Renders `dir="ltr"` without the RTL class hook. |
+| omitted | Leaves `dir` unset so the calendar can inherit direction from an ancestor. |
+
+The existing `direction` prop still controls layout orientation (`"vertical"` or `"horizontal"`); it is separate from text direction. Consumers can override the RTL hook with `classNames={{ rtl: 'my-rtl' }}`.
+
+Custom `navigatorRenderer` output is not wrapped or transformed by the library. If a custom renderer uses chevrons, alignment, or directional icons, it must handle RTL mirroring itself.
+
 ## Goal
 
 A **modern, maintained, production-ready** date range picker for React that:

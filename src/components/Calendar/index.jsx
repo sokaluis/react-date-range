@@ -564,6 +564,7 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
     onPreviewChange,
     scroll,
     direction,
+    dir,
     disabledDates,
     disabledDay,
     minDate,
@@ -588,7 +589,12 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
   return (
     <div
       ref={calendarWrapperRef}
-      className={classnames(styles.calendarWrapper, className)}
+      dir={dir}
+      className={classnames(
+        styles.calendarWrapper,
+        dir === 'rtl' && (props.classNames?.rtl ?? styles.rtl),
+        className
+      )}
       onKeyDown={handleCalendarKeyDown}
       onMouseUp={() => setDrag({ status: false, range: {} })}
       onMouseLeave={() => {

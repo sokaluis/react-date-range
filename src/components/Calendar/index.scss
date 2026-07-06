@@ -17,7 +17,7 @@
   text-align: center;
   color: inherit;
   & + &{
-    margin-left: 0.833em;
+    margin-inline-start: 0.833em;
   }
   input{
     text-align: inherit;
@@ -79,6 +79,10 @@
 .rdrMonthsHorizontal > div > div > div{
   display: flex;
   flex-direction: row;
+}
+
+.rdrRtl .rdrMonthsHorizontal{
+  flex-direction: row-reverse;
 }
 
 .rdrMonth{

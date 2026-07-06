@@ -166,6 +166,14 @@ describe('DateRange', () => {
     expect(latestCalendarProps.preview).toBe(null);
   });
 
+  test('forwards explicit rtl direction to Calendar without changing wrapper class composition', () => {
+    renderDateRange({ dir: 'rtl', className: 'customRange' });
+
+    expect(latestCalendarProps.dir).toBe('rtl');
+    expect(screen.getByTestId('calendar')).toHaveAttribute('data-display-mode', 'dateRange');
+    expect(screen.getByTestId('calendar')).toHaveAttribute('data-class-name', expect.stringContaining('customRange'));
+  });
+
   describe('REQ-DDDG-001..003 / #607: direct <DateRange disabledDates> boundary guard', () => {
     test('disabledDates={null} does not throw and yields full range', () => {
       // REQ-DDDG-001: null is treated as empty array; no dates excluded.

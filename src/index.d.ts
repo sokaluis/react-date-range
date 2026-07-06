@@ -133,6 +133,7 @@ export interface ClassNames {
   infiniteMonths?: string | undefined;
   monthsVertical?: string | undefined;
   monthsHorizontal?: string | undefined;
+  rtl?: string | undefined;
 }
 
 // =============================================================================
@@ -160,6 +161,8 @@ export interface CalendarProps {
   dayDisplayFormat?: string | undefined;
   /** default: `vertical` */
   direction?: 'vertical' | 'horizontal' | undefined;
+  /** Text direction. Undefined means inherit from ancestor. */
+  dir?: 'ltr' | 'rtl' | undefined;
   /** default: `[]` */
   disabledDates?: Date[] | undefined;
   /** Custom function to determine if a day should be disabled — default: `() => {}` */
