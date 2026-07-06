@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useId } from 'react';
 
 const MIN = 0;
 const MAX = 99999;
@@ -13,6 +13,7 @@ const InputRangeField = React.memo(
     onFocus,
     onChange,
   }) {
+    const labelId = useId();
     const handleChange = useCallback(e => {
       let value = parseInt(e.target.value, 10);
       value = isNaN(value) ? 0 : Math.max(Math.min(MAX, value), MIN);
@@ -23,6 +24,7 @@ const InputRangeField = React.memo(
     return (
       <div className={styles.inputRange}>
         <input
+          aria-labelledby={labelId}
           className={styles.inputRangeInput}
           placeholder={placeholder}
           value={value}
@@ -32,7 +34,7 @@ const InputRangeField = React.memo(
           onFocus={onFocus}
           onBlur={onBlur}
         />
-        <span className={styles.inputRangeLabel}>{label}</span>
+        <span id={labelId} className={styles.inputRangeLabel}>{label}</span>
       </div>
     );
   },

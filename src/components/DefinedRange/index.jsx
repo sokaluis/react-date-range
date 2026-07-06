@@ -72,6 +72,7 @@ const DefinedRange = forwardRef((props, ref) => {
           return (
             <button
               type="button"
+              aria-pressed={Boolean(selectedRange)}
               className={cx(styles.staticRange, {
                 [styles.staticRangeSelected]: Boolean(selectedRange),
               })}

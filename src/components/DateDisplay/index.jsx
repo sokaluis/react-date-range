@@ -23,7 +23,10 @@ function DateDisplay({
   const defaultColor = rangeColors[focusedRange[0]] || color;
 
   return (
-    <div className={styles.dateDisplayWrapper}>
+    <div
+      className={styles.dateDisplayWrapper}
+      role="group"
+      aria-label={ariaLabels.dateDisplay || 'Selected date range'}>
       {ranges.map((range, i) => {
         if (range.showDateDisplay === false || (range.disabled && !range.showDateDisplay)) return null;
         return (

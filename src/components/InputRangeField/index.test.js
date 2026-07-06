@@ -156,6 +156,25 @@ describe('InputRangeField tests', () => {
     expect(screen.getByText('Label')).toBeInTheDocument();
   });
 
+  test('Uses the rendered string label as the input accessible name', () => {
+    setup({ value: 12, label: 'Days before today' });
+
+    expect(screen.getByRole('textbox', { name: 'Days before today' })).toHaveValue('12');
+  });
+
+  test('Uses the rendered React-node label as the input accessible name', () => {
+    setup({
+      value: 7,
+      label: (
+        <span>
+          <strong>Days</strong> starting today
+        </span>
+      ),
+    });
+
+    expect(screen.getByRole('textbox', { name: 'Days starting today' })).toHaveValue('7');
+  });
+
   test('Should not rerender when only handler props change', () => {
     const Label = jest.fn(() => <span>Stable label</span>);
     const label = <Label />;

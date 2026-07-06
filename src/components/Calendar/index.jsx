@@ -114,6 +114,7 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
   const dateOptions = props._calendarDateOptions;
   const styles = props._calendarStyles;
   const monthNames = props._calendarMonthNames;
+  const ariaLabels = props.ariaLabels || {};
   const [focusedDate, setFocusedDate] = useState(() => calcFocusDate(null, props));
   const [drag, setDrag] = useState({
     status: false,
@@ -654,6 +655,8 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
       ) : (
         <div
           role="grid"
+          aria-label={ariaLabels.calendar || 'Calendar'}
+          aria-roledescription={ariaLabels.calendarRoleDescription || 'month grid'}
           className={classnames(
             styles.months,
             isVertical ? styles.monthsVertical : styles.monthsHorizontal

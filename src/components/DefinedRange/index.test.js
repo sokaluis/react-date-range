@@ -75,6 +75,50 @@ describe('DefinedRange tests', () => {
     expect(screen.getByText('Bold Content').tagName).toBe('B');
   });
 
+  describe('static range pressed state', () => {
+    const selectedStart = new Date(2025, 5, 10);
+    const selectedEnd = new Date(2025, 5, 12);
+    const matchingRange = selectableRange({
+      label: 'Matching range',
+      range: () => ({ startDate: selectedStart, endDate: selectedEnd }),
+    });
+    const inactiveRange = selectableRange({
+      label: 'Inactive range',
+      range: () => ({ startDate: new Date(2025, 5, 20), endDate: new Date(2025, 5, 22) }),
+    });
+
+    test('marks matching static range as pressed and inactive ranges as not pressed', () => {
+      render(
+        <DefinedRange
+          ranges={[{ startDate: selectedStart, endDate: selectedEnd }]}
+          staticRanges={[matchingRange, inactiveRange]}
+        />
+      );
+
+      expect(screen.getByRole('button', { name: 'Matching range' })).toHaveAttribute('aria-pressed', 'true');
+      expect(screen.getByRole('button', { name: 'Inactive range' })).toHaveAttribute('aria-pressed', 'false');
+    });
+
+    test('marks every static range as not pressed when there is no selection', () => {
+      render(<DefinedRange staticRanges={[matchingRange, inactiveRange]} />);
+
+      expect(screen.getByRole('button', { name: 'Matching range' })).toHaveAttribute('aria-pressed', 'false');
+      expect(screen.getByRole('button', { name: 'Inactive range' })).toHaveAttribute('aria-pressed', 'false');
+    });
+
+    test('preserves custom static range rendering with pressed state', () => {
+      render(
+        <DefinedRange
+          ranges={[{ startDate: selectedStart, endDate: selectedEnd }]}
+          staticRanges={[{ ...matchingRange, hasCustomRendering: true }]}
+          renderStaticRangeLabel={() => <strong>Custom matching range</strong>}
+        />
+      );
+
+      expect(screen.getByRole('button', { name: 'Custom matching range' })).toHaveAttribute('aria-pressed', 'true');
+    });
+  });
+
   // -------------------------------------------------------------------------
   // weekStartsOn propagation — selected styling (tasks 1.6–1.7)
   // -------------------------------------------------------------------------

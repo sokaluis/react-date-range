@@ -47,6 +47,27 @@ describe('DateDisplay', () => {
     expect(screen.queryAllByRole('textbox')).toHaveLength(0);
   });
 
+  test('renders the DateDisplay wrapper as a named group by default', () => {
+    setup({ ariaLabels: undefined });
+
+    expect(screen.getByRole('group', { name: 'Selected date range' })).toBeInTheDocument();
+  });
+
+  test('uses custom DateDisplay group label and preserves DateInput labels', () => {
+    setup({
+      ariaLabels: {
+        dateDisplay: 'Dates selected',
+        dateInput: {
+          selection: { startDate: 'Check-in date', endDate: 'Check-out date' },
+        },
+      },
+    });
+
+    expect(screen.getByRole('group', { name: 'Dates selected' })).toBeInTheDocument();
+    expect(screen.getByLabelText('Check-in date')).toBeInTheDocument();
+    expect(screen.getByLabelText('Check-out date')).toBeInTheDocument();
+  });
+
   describe('range visibility', () => {
     test('does not render a range where showDateDisplay === false', () => {
       setup({ ranges: [{ startDate: null, endDate: null, key: 'selection', showDateDisplay: false }] });

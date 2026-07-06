@@ -754,6 +754,42 @@ describe('Calendar', () => {
       expect(grid).toBeInTheDocument();
     });
 
+    test('calendar grid exposes default accessible name and role description', () => {
+      renderCalendar(ariaBaseProps);
+
+      const grid = screen.getByRole('grid', { name: 'Calendar' });
+      expect(grid).toHaveAttribute('aria-roledescription', 'month grid');
+    });
+
+    test('calendar grid uses custom accessible name and role description', () => {
+      renderCalendar({
+        ...ariaBaseProps,
+        ariaLabels: {
+          ...baseProps.ariaLabels,
+          calendar: 'Calendrier',
+          calendarRoleDescription: 'grille mensuelle',
+        },
+      });
+
+      const grid = screen.getByRole('grid', { name: 'Calendrier' });
+      expect(grid).toHaveAttribute('aria-roledescription', 'grille mensuelle');
+    });
+
+    test('calendar grid name remains distinct from DateDisplay labels', () => {
+      renderCalendar({
+        ...ariaBaseProps,
+        showDateDisplay: true,
+        ariaLabels: {
+          ...baseProps.ariaLabels,
+          dateDisplay: 'Selected dates',
+        },
+      });
+
+      expect(screen.getByRole('grid', { name: 'Calendar' })).toBeInTheDocument();
+      expect(screen.queryByRole('grid', { name: 'Selected dates' })).not.toBeInTheDocument();
+      expect(mockDateDisplayProps.ariaLabels.dateDisplay).toBe('Selected dates');
+    });
+
     test('each day cell exposes role="gridcell"', () => {
       renderCalendar(ariaBaseProps);
       const cells = calendarDayButtons();

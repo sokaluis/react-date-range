@@ -10,6 +10,10 @@ const DateRangePicker = forwardRef(function DateRangePicker(props, ref) {
   const [focusedRangeState, setFocusedRangeState] = useState(() => [findNextRangeIndex(props.ranges), 0]);
   const focusedRange = props.focusedRange || focusedRangeState;
   const styles = useMemo(() => generateStyles([coreStyles, props.classNames]), [props.classNames]);
+  const regionProps = props.ariaLabels?.dateRangePicker === false ? {} : {
+    role: 'region',
+    'aria-label': props.ariaLabels?.dateRangePicker || 'Date range picker',
+  };
 
   useImperativeHandle(ref, () => ({}), []);
 
@@ -33,7 +37,7 @@ const DateRangePicker = forwardRef(function DateRangePicker(props, ref) {
   );
 
   return (
-    <div className={classnames(styles.dateRangePickerWrapper, props.className)}>
+    <div className={classnames(styles.dateRangePickerWrapper, props.className)} {...regionProps}>
       <DefinedRange
         {...props}
         focusedRange={focusedRange}

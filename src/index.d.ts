@@ -63,6 +63,10 @@ export interface AriaLabelsShape {
   yearPicker?: string | undefined;
   prevButton?: string | undefined;
   nextButton?: string | undefined;
+  calendar?: string | undefined;
+  calendarRoleDescription?: string | undefined;
+  dateDisplay?: string | undefined;
+  dateRangePicker?: string | false | undefined;
 }
 
 export interface ScrollOptions {

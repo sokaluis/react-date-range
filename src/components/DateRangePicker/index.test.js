@@ -81,6 +81,26 @@ describe('DateRangePicker hooks parity', () => {
     expect(screen.getByTestId('date-range')).toBeInTheDocument();
   });
 
+  test('renders the wrapper as a named region by default', () => {
+    renderDateRangePicker();
+
+    expect(screen.getByRole('region', { name: 'Date range picker' })).toBeInTheDocument();
+  });
+
+  test('uses a custom DateRangePicker region label', () => {
+    renderDateRangePicker({ ariaLabels: { dateRangePicker: 'Booking date range' } });
+
+    expect(screen.getByRole('region', { name: 'Booking date range' })).toBeInTheDocument();
+  });
+
+  test('omits wrapper region semantics when ariaLabels.dateRangePicker is false', () => {
+    const { container } = render(<DateRangePicker {...baseProps} ariaLabels={{ dateRangePicker: false }} />);
+
+    expect(screen.queryByRole('region')).not.toBeInTheDocument();
+    expect(container.firstChild).not.toHaveAttribute('role');
+    expect(container.firstChild).not.toHaveAttribute('aria-label');
+  });
+
   test('keeps DefinedRange synchronized with DateRange focus changes', () => {
     renderDateRangePicker();
 
