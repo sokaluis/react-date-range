@@ -24,6 +24,20 @@ const readTypeDeclarations = () => fs.readFileSync(path.resolve(__dirname, '../.
 
 const getTrigger = (name = 'Select date range') => screen.getByRole('textbox', { name });
 
+const calendarDayButtons = () =>
+  screen
+    .getAllByRole('gridcell')
+    .filter(button => /^\d+$/.test(button.textContent) && button.tabIndex !== -1);
+
+const findDayButton = dayNumber =>
+  calendarDayButtons().find(button => button.textContent === String(dayNumber));
+
+const selectDay = dayNumber => {
+  const dayButton = findDayButton(dayNumber);
+  fireEvent.mouseDown(dayButton);
+  fireEvent.mouseUp(dayButton);
+};
+
 describe('DateRangeInput', () => {
   test('is exported from the public runtime API with types and style hooks', () => {
     const declarations = readTypeDeclarations();
@@ -82,6 +96,7 @@ describe('DateRangeInput', () => {
 
     const dialog = await screen.findByRole('dialog', { name: 'Choose trip range' });
     expect(trigger).toHaveAttribute('aria-expanded', 'true');
+    expect(trigger).toHaveAttribute('aria-controls', dialog.id);
     expect(dialog).toHaveAttribute('aria-modal', 'true');
     expect(dialog).toContainElement(document.activeElement);
     expect(dialog.querySelectorAll('[aria-live]')).toHaveLength(2);
@@ -120,5 +135,101 @@ describe('DateRangeInput', () => {
 
     expect(onOpenChange).not.toHaveBeenCalled();
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+  });
+
+  test('stays open after start selection and closes after end selection by default', async () => {
+    const onChange = jest.fn();
+    renderDateRangeInput({
+      ranges: [{ startDate, endDate: null, key: 'selection' }],
+      onChange,
+      triggerPlaceholder: 'Select both dates',
+    });
+
+    await userEvent.click(getTrigger());
+    selectDay(7);
+
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect(onChange).toHaveBeenCalledWith(
+      expect.objectContaining({ selection: expect.objectContaining({ startDate: expect.any(Date) }) })
+    );
+
+    selectDay(14);
+
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+  });
+
+  test('keeps the popover open after end selection when closeOnEndSelection is false', async () => {
+    renderDateRangeInput({
+      ranges: [{ startDate, endDate: null, key: 'selection' }],
+      closeOnEndSelection: false,
+    });
+
+    await userEvent.click(getTrigger());
+    selectDay(7);
+    selectDay(14);
+
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+  });
+
+  test('returns focus to the trigger after Escape closes the dialog', async () => {
+    renderDateRangeInput();
+    const trigger = getTrigger();
+
+    await userEvent.click(trigger);
+    expect(screen.getByRole('dialog')).toContainElement(document.activeElement);
+
+    fireEvent.keyDown(document, { key: 'Escape' });
+
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+    expect(trigger).toHaveFocus();
+  });
+
+  test('closes on outside mousedown', async () => {
+    render(
+      <>
+        <button type="button">Outside</button>
+        <DateRangeInput
+          ranges={[{ startDate, endDate, key: 'selection' }]}
+          calendarProps={{ shownDate }}
+        />
+      </>
+    );
+
+    await userEvent.click(getTrigger());
+    fireEvent.mouseDown(screen.getByRole('button', { name: 'Outside' }));
+
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+  });
+
+  test('does not close during drag selection and closes after drag completes', async () => {
+    renderDateRangeInput({ ranges: [{ startDate: null, endDate: null, key: 'selection' }] });
+
+    await userEvent.click(getTrigger());
+    fireEvent.mouseDown(findDayButton(10));
+    fireEvent.mouseEnter(findDayButton(12));
+
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+
+    fireEvent.mouseUp(findDayButton(12));
+
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+  });
+
+  test('warns in development and ignores extra ranges for the single-range MVP', async () => {
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    renderDateRangeInput({
+      ranges: [
+        { startDate, endDate, key: 'selection' },
+        { startDate: new Date(2026, 6, 20), endDate: new Date(2026, 6, 25), key: 'compare' },
+      ],
+    });
+
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining('DateRangeInput supports a single range'));
+
+    await userEvent.click(getTrigger());
+    expect(screen.queryByText('compare')).not.toBeInTheDocument();
+
+    warn.mockRestore();
   });
 });

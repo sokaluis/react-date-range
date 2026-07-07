@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useImperativeHandle, useMemo, useState } from 'react';
+import React, { forwardRef, useEffect, useId, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import classnames from 'classnames';
 import { format as formatDate, isValid } from 'date-fns';
@@ -14,12 +14,14 @@ const defaultPopoverLabel = 'Select date range';
 const canUseDocument = () => typeof document !== 'undefined';
 const canUseWindow = () => typeof window !== 'undefined';
 
+const isUsableDate = date => date instanceof Date && isValid(date);
+
 const formatRange = (range, dateFormat, formatter, dateOptions) => {
   if (formatter) {
     return formatter({ startDate: range.startDate, endDate: range.endDate });
   }
 
-  if (!range.startDate || !range.endDate || !isValid(range.startDate) || !isValid(range.endDate)) {
+  if (!isUsableDate(range.startDate) || !isUsableDate(range.endDate)) {
     return '';
   }
 
@@ -33,6 +35,7 @@ function DateRangeInput(props, ref) {
     open: controlledOpen,
     defaultOpen,
     onOpenChange,
+    closeOnEndSelection = true,
     triggerPlaceholder,
     formatter,
     format = defaultFormat,
@@ -45,6 +48,8 @@ function DateRangeInput(props, ref) {
     className,
     dir,
   } = props;
+  const popoverId = useId();
+  const focusedRangeRef = useRef([0, 0]);
   const [mounted, setMounted] = useState(false);
   const [popoverStyle, setPopoverStyle] = useState(undefined);
   const styles = useMemo(
@@ -66,6 +71,12 @@ function DateRangeInput(props, ref) {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (process.env.NODE_ENV !== 'production' && ranges && ranges.length > 1) {
+      console.warn('DateRangeInput supports a single range; extra ranges are ignored.');
+    }
+  }, [ranges]);
 
   useEffect(() => {
     if (!open || !canUseWindow()) {
@@ -110,12 +121,36 @@ function DateRangeInput(props, ref) {
   };
 
   const onRangeChange = nextRangesByKey => {
+    const selectionKey = normalizedRanges[0].key || rangeKey;
+    const nextRange = nextRangesByKey[selectionKey];
     onChange?.(nextRangesByKey);
+
+    if (!closeOnEndSelection || !nextRange) {
+      return;
+    }
+
+    const selectingEnd = focusedRangeRef.current[1] === 1;
+    const completedDragRange =
+      focusedRangeRef.current[1] === 0 &&
+      !isUsableDate(normalizedRanges[0].endDate) &&
+      isUsableDate(nextRange.startDate) &&
+      isUsableDate(nextRange.endDate) &&
+      nextRange.startDate.getTime() !== nextRange.endDate.getTime();
+
+    if (selectingEnd || completedDragRange) {
+      setOpen(false);
+    }
+  };
+
+  const onRangeFocusChange = focusedRange => {
+    focusedRangeRef.current = focusedRange;
+    calendarProps.onRangeFocusChange?.(focusedRange);
   };
 
   const popover = open ? (
     <div
       ref={popoverRef}
+      id={popoverId}
       role="dialog"
       aria-modal="true"
       aria-label={ariaLabels.popover || popoverLabel}
@@ -127,6 +162,7 @@ function DateRangeInput(props, ref) {
         {...calendarProps}
         ranges={normalizedRanges}
         onChange={onRangeChange}
+        onRangeFocusChange={onRangeFocusChange}
         classNames={styles}
         dir={dir || calendarProps.dir}
       />
@@ -145,6 +181,7 @@ function DateRangeInput(props, ref) {
         aria-label={ariaLabels.trigger || defaultTriggerLabel}
         aria-haspopup="dialog"
         aria-expanded={open ? 'true' : 'false'}
+        aria-controls={popoverId}
         className={styles.dateRangeInputTrigger}
         onClick={onTriggerClick}
         onKeyDown={onTriggerKeyDown}
