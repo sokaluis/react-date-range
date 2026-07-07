@@ -1,0 +1,30 @@
+.rdrDatePickerInputWrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.rdrDatePickerInputTrigger {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 12em;
+  padding: 7px 11px;
+  border: 1px solid #d5dce0;
+  border-radius: 4px;
+  color: #849095;
+  background: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+
+.rdrDatePickerInputTrigger:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.rdrDatePickerInputPopover {
+  position: absolute;
+  z-index: 1000;
+  margin-top: 4px;
+  background: #fff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+}

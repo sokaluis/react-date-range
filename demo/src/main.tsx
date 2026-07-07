@@ -2,6 +2,7 @@ import { StrictMode, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
   Calendar,
+  DatePickerInput,
   DateRangePicker,
   type Range,
   type RangeKeyDict,
@@ -76,6 +77,9 @@ function liveRegionSelection(range: { startDate: Date; endDate: Date }): string 
 function App() {
   const [ranges, setRanges] = useState<Range[]>([createInitialRange()]);
   const [singleDate, setSingleDate] = useState<Date | undefined>(today);
+  const [inputDate, setInputDate] = useState<Date | undefined>(today);
+  const [controlledInputDate, setControlledInputDate] = useState<Date | undefined>(nextWeek);
+  const [inputOpen, setInputOpen] = useState(false);
 
   // States for new demo panels
   const [a11yRanges, setA11yRanges] = useState<Range[]>([createInitialRange()]);
@@ -113,6 +117,13 @@ function App() {
       date: toISODate(date),
     });
     setSingleDate(date);
+  };
+
+  const handleInputDateChange = (source: string, setter: (date: Date) => void) => (date: Date) => {
+    logManualQA(`${source} onChange`, {
+      date: toISODate(date),
+    });
+    setter(date);
   };
 
   const handleShownDateChange = (source: string) => (date: Date) => {
@@ -227,6 +238,46 @@ function App() {
         />
         <p className="state-output">
           <code>date = {singleDate ? singleDate.toISOString().split('T')[0] : 'null'}</code>
+        </p>
+      </section>
+
+      <section className="demo-panel">
+        <h2>DatePickerInput — Popover Trigger</h2>
+        <p>
+          Read-only input trigger for single-date selection. Verify click-to-open, Escape,
+          outside-click dismissal, focus return, and the controlled <code>open</code> example.
+        </p>
+        <div className="state-output">
+          <label>
+            Uncontrolled:{' '}
+            <DatePickerInput
+              date={inputDate}
+              onChange={handleInputDateChange('DatePickerInput uncontrolled', setInputDate)}
+              ariaLabel="Trip date"
+              popoverLabel="Choose trip date"
+              placeholder="Select trip date"
+              calendarProps={{ shownDate: inputDate || today }}
+            />
+          </label>
+        </div>
+        <div className="state-output">
+          <label>
+            Controlled:{' '}
+            <DatePickerInput
+              date={controlledInputDate}
+              onChange={handleInputDateChange('DatePickerInput controlled', setControlledInputDate)}
+              open={inputOpen}
+              onOpenChange={setInputOpen}
+              ariaLabel="Controlled trip date"
+              popoverLabel="Choose controlled trip date"
+              calendarProps={{ shownDate: controlledInputDate || today }}
+            />
+          </label>
+        </div>
+        <p className="state-output">
+          <code>inputDate = {inputDate ? inputDate.toISOString().split('T')[0] : 'null'}</code>
+          <br />
+          <code>controlledOpen = {String(inputOpen)}</code>
         </p>
       </section>
 

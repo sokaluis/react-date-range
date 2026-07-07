@@ -38,7 +38,7 @@ npm install @cyberlz/react-date-range
 ```
 
 ```js
-import { DateRangePicker } from '@cyberlz/react-date-range';
+import { DatePickerInput, DateRangePicker } from '@cyberlz/react-date-range';
 import '@cyberlz/react-date-range/styles.css';
 import '@cyberlz/react-date-range/theme/default.css';
 ```
@@ -55,6 +55,7 @@ The fork now covers the core ARIA labels and states tracked by upstream #415/#41
 | Defined ranges | Static range buttons expose `aria-pressed` for the active preset. |
 | Input ranges | Number-of-days inputs are named by their rendered labels via `aria-labelledby`. |
 | Date display | The start/end date inputs are grouped with `role="group"` and `ariaLabels.dateDisplay`. Per-range labels are available via `Range.label` — when set, the per-range wrapper renders as a named `role="group"` with `aria-labelledby`. |
+| DatePickerInput | Read-only trigger input opens a named `role="dialog"` popover, reflects `aria-expanded`, closes on Escape/outside click/date selection, and returns focus to the trigger. |
 | DateRangePicker | Wrapper renders as `role="region"` named by `ariaLabels.dateRangePicker`; set `ariaLabels.dateRangePicker = false` to opt out. |
 | Calendar live region | Committed month/year navigation announced via `aria-live="polite"` region (customizable via `ariaLabels.liveRegionMonthYear`). Hover, drag movement, date selection, and scroll do not announce from Calendar itself. |
 | DateRange live region | Committed range selections announced via `aria-live="polite"` / `aria-atomic="true"` after DateRange normalizes the selected range. Customizable via `ariaLabels.liveRegionSelection`. Hover, preview, and drag movement do not announce. |
@@ -75,6 +76,45 @@ const [ranges, setRanges] = useState([
 ```
 
 When `label` is set, `DateDisplay` renders each range inside `role="group" aria-labelledby={id}` so screen readers announce the label as the group's accessible name. Labels are rendered as plain text and are XSS-safe by design.
+
+## Input-trigger date picker
+
+Use `DatePickerInput` when the UI needs a compact input trigger instead of an always-inline `Calendar`.
+The trigger is read-only in this first slice: users pick from the calendar popover, and manual text parsing is deferred.
+
+```jsx
+import { useState } from 'react';
+import { DatePickerInput } from '@cyberlz/react-date-range';
+
+function TripDateField() {
+  const [date, setDate] = useState(new Date());
+
+  return (
+    <DatePickerInput
+      date={date}
+      onChange={setDate}
+      ariaLabel="Trip date"
+      popoverLabel="Choose trip date"
+      placeholder="Select a date"
+      calendarProps={{ months: 1 }}
+    />
+  );
+}
+```
+
+Controlled popover state is also supported via `open`, `defaultOpen`, and `onOpenChange`:
+
+```jsx
+<DatePickerInput
+  date={date}
+  onChange={setDate}
+  open={isOpen}
+  onOpenChange={setIsOpen}
+  ariaLabel="Controlled trip date"
+/>
+```
+
+`DateRangeInput` is intentionally not part of this slice; keep using `DateRangePicker` for range selection.
 
 ## RTL layout support
 

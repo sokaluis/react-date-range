@@ -89,6 +89,9 @@ export interface ClassNames {
   dateDisplayItem?: string | undefined;
   dateDisplayItemActive?: string | undefined;
   dateDisplayLabel?: string | undefined;
+  datePickerInputWrapper?: string | undefined;
+  datePickerInputTrigger?: string | undefined;
+  datePickerInputPopover?: string | undefined;
   monthAndYearWrapper?: string | undefined;
   monthAndYearPickers?: string | undefined;
   liveRegion?: string | undefined;
@@ -252,6 +255,42 @@ export interface CalendarProps {
 }
 
 export function Calendar(props: CalendarProps): React.JSX.Element;
+
+// =============================================================================
+// DatePickerInput Component
+// =============================================================================
+
+export interface DatePickerInputProps {
+  /** Selected date — default: none */
+  date?: Date | null | undefined;
+  /** Called when the user selects a calendar day — default: none */
+  onChange?: ((date: Date) => void) | undefined;
+  /** Controlled popover open state — default: internal state */
+  open?: boolean | undefined;
+  /** Initial popover state when uncontrolled — default: false */
+  defaultOpen?: boolean | undefined;
+  /** Fires whenever the component requests an open-state change — default: none */
+  onOpenChange?: ((open: boolean) => void) | undefined;
+  /** default: `MMM d, yyyy` */
+  dateDisplayFormat?: string | undefined;
+  /** Trigger accessible name — default: `Select date` */
+  ariaLabel?: string | undefined;
+  /** Dialog accessible name — default: `Choose date` */
+  popoverLabel?: string | undefined;
+  /** Placeholder text for the read-only trigger. */
+  placeholder?: string | undefined;
+  /** default: false */
+  disabled?: boolean | undefined;
+  /** Forwarded to Calendar; date and onChange are owned by DatePickerInput. */
+  calendarProps?: Omit<CalendarProps, 'date' | 'onChange'> | undefined;
+  /** Custom class names merged with package defaults. */
+  classNames?: Partial<ClassNames> | undefined;
+  className?: string | undefined;
+  /** Text direction. Undefined means inherit from ancestor. */
+  dir?: 'ltr' | 'rtl' | undefined;
+}
+
+export function DatePickerInput(props: DatePickerInputProps): React.JSX.Element;
 
 // =============================================================================
 // DateRange Component
