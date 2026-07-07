@@ -84,6 +84,17 @@ function App() {
   const [rtlRanges, setRtlRanges] = useState<Range[]>([createInitialRange()]);
   const [rtlDate, setRtlDate] = useState<Date | undefined>(today);
 
+  const [labelledRanges, setLabelledRanges] = useState<Range[]>([
+    { startDate: today, endDate: nextWeek, key: 'trip1', label: 'Trip 1' },
+    {
+      startDate: new Date(today.getFullYear(), today.getMonth() + 1, 1),
+      endDate: new Date(today.getFullYear(), today.getMonth() + 1, 7),
+      key: 'trip2',
+      label: 'Trip 2',
+      color: '#ff6b6b',
+    },
+  ]);
+
   const currentRange = ranges[0];
   const handleChange = (rangesByKey: RangeKeyDict) => {
     const next = rangesByKey.selection;
@@ -146,6 +157,20 @@ function App() {
   const handleRtlDateChange = (date: Date) => {
     logManualQA('RTL Calendar onChange', { date: toISODate(date) });
     setRtlDate(date);
+  };
+
+  const handleLabelledChange = (rangesByKey: RangeKeyDict) => {
+    const trip1 = rangesByKey.trip1;
+    const trip2 = rangesByKey.trip2;
+    logManualQA('Labelled multi-range onChange', {
+      trip1_start: trip1 ? toISODate(trip1.startDate) : null,
+      trip1_end: trip1 ? toISODate(trip1.endDate) : null,
+      trip2_start: trip2 ? toISODate(trip2.startDate) : null,
+      trip2_end: trip2 ? toISODate(trip2.endDate) : null,
+    });
+    setLabelledRanges(
+      [trip1, trip2].filter(Boolean) as Range[],
+    );
   };
 
   // PR4: fixed constraint dates for manual verification
@@ -457,6 +482,35 @@ function App() {
         />
         <p className="state-output">
           <code>date = {rtlDate ? rtlDate.toISOString().split('T')[0] : 'null'}</code>
+        </p>
+      </section>
+
+      <section className="demo-panel">
+        <h2>DateRangePicker — Multi-range with Labels</h2>
+        <p>
+          Two labelled ranges (<code>label=&quot;Trip 1&quot;</code>,{' '}
+          <code>label=&quot;Trip 2&quot;</code>). Each range renders inside a named{' '}
+          <code>role=&quot;group&quot;</code> scoped by its label text.
+          Inspect the DateDisplay above the calendars.
+        </p>
+        <DateRangePicker
+          onChange={handleLabelledChange}
+          ranges={labelledRanges}
+          showPreview={true}
+          moveRangeOnFirstSelection={false}
+          months={2}
+          direction="horizontal"
+        />
+        <p className="state-output">
+          <strong>Trip 1:</strong>{' '}
+          {labelledRanges[0]
+            ? `${formatDate(labelledRanges[0].startDate)} → ${formatDate(labelledRanges[0].endDate)}`
+            : '(empty)'}
+          <br />
+          <strong>Trip 2:</strong>{' '}
+          {labelledRanges[1]
+            ? `${formatDate(labelledRanges[1].startDate)} → ${formatDate(labelledRanges[1].endDate)}`
+            : '(empty)'}
         </p>
       </section>
 

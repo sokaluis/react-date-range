@@ -54,12 +54,27 @@ The fork now covers the core ARIA labels and states tracked by upstream #415/#41
 | Calendar grid | Named with `ariaLabels.calendar` and described with `ariaLabels.calendarRoleDescription`. |
 | Defined ranges | Static range buttons expose `aria-pressed` for the active preset. |
 | Input ranges | Number-of-days inputs are named by their rendered labels via `aria-labelledby`. |
-| Date display | The start/end date inputs are grouped with `role="group"` and `ariaLabels.dateDisplay`. |
+| Date display | The start/end date inputs are grouped with `role="group"` and `ariaLabels.dateDisplay`. Per-range labels are available via `Range.label` — when set, the per-range wrapper renders as a named `role="group"` with `aria-labelledby`. |
 | DateRangePicker | Wrapper renders as `role="region"` named by `ariaLabels.dateRangePicker`; set `ariaLabels.dateRangePicker = false` to opt out. |
 | Calendar live region | Committed month/year navigation announced via `aria-live="polite"` region (customizable via `ariaLabels.liveRegionMonthYear`). Hover, drag movement, date selection, and scroll do not announce from Calendar itself. |
 | DateRange live region | Committed range selections announced via `aria-live="polite"` / `aria-atomic="true"` after DateRange normalizes the selected range. Customizable via `ariaLabels.liveRegionSelection`. Hover, preview, and drag movement do not announce. |
 
 `aria-live` month/year and DateRange selection announcements are available. Announcements are tied to committed state changes only, so hover, preview, and drag-move updates do not over-announce.
+
+### Multi-range with labels
+
+Assign `label` to each `Range` to name range slots for users and assistive tech:
+
+```jsx
+const [ranges, setRanges] = useState([
+  { startDate: new Date(), endDate: new Date('2026-07-14'), key: 'trip1', label: 'Trip 1' },
+  { startDate: new Date('2026-08-01'), endDate: new Date('2026-08-07'), key: 'trip2', label: 'Trip 2' },
+]);
+
+<DateRangePicker ranges={ranges} onChange={({ trip1, trip2 }) => setRanges([trip1, trip2])} />
+```
+
+When `label` is set, `DateDisplay` renders each range inside `role="group" aria-labelledby={id}` so screen readers announce the label as the group's accessible name. Labels are rendered as plain text and are XSS-safe by design.
 
 ## RTL layout support
 
