@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import { format, isValid } from 'date-fns';
 import Calendar from '../Calendar';
 import defaultStyles from '../../styles';
-import usePopover from './usePopover';
+import usePopover from '../../hooks/usePopover';
 
 const defaultDateDisplayFormat = 'MMM d, yyyy';
 const defaultAriaLabel = 'Select date';
