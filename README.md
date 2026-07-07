@@ -114,7 +114,43 @@ Controlled popover state is also supported via `open`, `defaultOpen`, and `onOpe
 />
 ```
 
-`DateRangeInput` is intentionally not part of this slice; keep using `DateRangePicker` for range selection.
+## Input-trigger date range picker
+
+Use `DateRangeInput` when the UI needs a compact input trigger for range selection instead of an always-inline `DateRangePicker`. The trigger is read-only: users pick from the calendar popover, and manual text parsing is deferred.
+
+```jsx
+import { useState } from 'react';
+import { DateRangeInput } from '@cyberlz/react-date-range';
+
+function TripRangeField() {
+  const [ranges, setRanges] = useState([
+    { startDate: new Date(), endDate: new Date('2026-07-14'), key: 'trip' },
+  ]);
+
+  return (
+    <DateRangeInput
+      ranges={ranges}
+      onChange={({ trip }) => setRanges([trip])}
+      ariaLabel="Trip date range"
+      popoverLabel="Choose trip dates"
+      triggerPlaceholder="Select trip dates"
+      calendarProps={{ months: 1 }}
+    />
+  );
+}
+```
+
+Controlled popover state is also supported via `open`, `defaultOpen`, and `onOpenChange`:
+
+```jsx
+<DateRangeInput
+  ranges={ranges}
+  onChange={({ trip }) => setRanges([trip])}
+  open={isOpen}
+  onOpenChange={setIsOpen}
+  ariaLabel="Controlled trip date range"
+/>
+```
 
 ## RTL layout support
 

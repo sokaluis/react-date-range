@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import {
   Calendar,
   DatePickerInput,
+  DateRangeInput,
   DateRangePicker,
   type Range,
   type RangeKeyDict,
@@ -80,6 +81,9 @@ function App() {
   const [inputDate, setInputDate] = useState<Date | undefined>(today);
   const [controlledInputDate, setControlledInputDate] = useState<Date | undefined>(nextWeek);
   const [inputOpen, setInputOpen] = useState(false);
+  const [inputRange, setInputRange] = useState<Range[]>([createInitialRange()]);
+  const [controlledInputRange, setControlledInputRange] = useState<Range[]>([createInitialRange()]);
+  const [inputRangeOpen, setInputRangeOpen] = useState(false);
 
   // States for new demo panels
   const [a11yRanges, setA11yRanges] = useState<Range[]>([createInitialRange()]);
@@ -124,6 +128,16 @@ function App() {
       date: toISODate(date),
     });
     setter(date);
+  };
+
+  const handleInputRangeChange = (source: string) => (rangesByKey: RangeKeyDict) => {
+    const next = rangesByKey.selection;
+    if (next) {
+      logManualQA(`${source} onChange`, {
+        startDate: toISODate(next.startDate),
+        endDate: toISODate(next.endDate),
+      });
+    }
   };
 
   const handleShownDateChange = (source: string) => (date: Date) => {
@@ -278,6 +292,48 @@ function App() {
           <code>inputDate = {inputDate ? inputDate.toISOString().split('T')[0] : 'null'}</code>
           <br />
           <code>controlledOpen = {String(inputOpen)}</code>
+        </p>
+      </section>
+
+      <section className="demo-panel">
+        <h2>DateRangeInput — Popover Trigger</h2>
+        <p>
+          Read-only input trigger for range selection. Verify click-to-open, Escape,
+          outside-click dismissal, focus return, and the controlled <code>open</code> example.
+        </p>
+        <div className="state-output">
+          <label>
+            Uncontrolled:{' '}
+            <DateRangeInput
+              ranges={inputRange}
+              onChange={handleInputRangeChange('DateRangeInput uncontrolled')}
+              ariaLabels={{ trigger: 'Trip date range' }}
+              popoverLabel="Choose trip dates"
+              triggerPlaceholder="Select trip dates"
+              calendarProps={{ shownDate: inputRange[0]?.startDate || today }}
+            />
+          </label>
+        </div>
+        <div className="state-output">
+          <label>
+            Controlled:{' '}
+            <DateRangeInput
+              ranges={controlledInputRange}
+              onChange={handleInputRangeChange('DateRangeInput controlled')}
+              open={inputRangeOpen}
+              onOpenChange={setInputRangeOpen}
+              ariaLabels={{ trigger: 'Controlled trip date range' }}
+              popoverLabel="Choose controlled trip dates"
+              calendarProps={{ shownDate: controlledInputRange[0]?.startDate || today }}
+            />
+          </label>
+        </div>
+        <p className="state-output">
+          <code>inputRange start = {inputRange[0]?.startDate ? inputRange[0].startDate.toISOString().split('T')[0] : 'null'}</code>
+          <br />
+          <code>inputRange end = {inputRange[0]?.endDate ? inputRange[0].endDate.toISOString().split('T')[0] : 'null'}</code>
+          <br />
+          <code>controlledOpen = {String(inputRangeOpen)}</code>
         </p>
       </section>
 
