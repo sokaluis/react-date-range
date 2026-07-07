@@ -1,10 +1,10 @@
 # Docs Site Plan — Landing, Demo & Full Documentation
 
-> **Status: ready to plan.** `@cyberlz/react-date-range@1.1.x` is the stable line on npm
-> `latest` (v1.1.0 published; v1.1.1 pending npm OTP). The local demo resolves to
-> local source during development so landed-but-unpublished changes can be validated.
-> The current adoption asset is a small public landing/demo site, followed by full
-> component documentation.
+> **Status: ready to plan.** `@cyberlz/react-date-range@1.2.x` is the stable line on npm
+> `latest` (v1.1.0 published; v1.2.0 prepared on `main`, npm publish pending and
+> manual). The local demo resolves to local source during development so
+> landed-but-unpublished changes can be validated. The current adoption asset is
+> a small public landing/demo site, followed by full component documentation.
 
 ---
 
@@ -23,7 +23,7 @@
 
 | Previous risk | Current state |
 |---------------|---------------|
-| Package was pre-release | `1.1.x` is stable on npm `latest` (v1.1.0 published; v1.1.1 pending OTP) |
+| Package was pre-release | `1.2.x` is stable on npm `latest` (v1.1.0 published; v1.2.0 prepared, npm publish pending and manual) |
 | Demo might drift from package source | `demo/` resolves `@cyberlz/react-date-range` to local `src/` during development and is type-checked |
 | Migration path was unclear | `docs/migration-from-upstream.md` exists |
 | Roadmap could overpromise | `docs/post-1.0-roadmap.md` marks future work as exploratory |
@@ -39,7 +39,7 @@ pretending future roadmap candidates are already committed features.
 |---------|---------|
 | Hero + install command | `npm install @cyberlz/react-date-range` |
 | Live demo | Interactive `<DateRangePicker />` from `demo/` |
-| Stable status badge | `1.1.x stable · maintained fork · React 18/19` |
+| Stable status badge | `1.2.x stable · maintained fork · React 18/19 · input-trigger pickers` |
 | Migration from upstream | Link to `docs/migration-from-upstream.md` |
 | Core docs links | README, changelog, roadmap, GitHub release |
 | npm / GitHub links | npm package, repository, issue tracker |
@@ -79,7 +79,7 @@ The demo is deployed by `.github/workflows/pages-demo.yml`.
 | Milestone | Landing status |
 |-----------|---------------|
 | `1.0.0` stable published | ✅ Done (2026-06-29) |
-| `1.1.x` stable line on npm | ✅ Done (v1.1.0 published; v1.1.1 pending OTP) |
+| `1.2.x` stable line on npm | ✅ Done (v1.1.0 published; v1.2.0 prepared, npm publish pending and manual) |
 | Local demo validates current source | ✅ Ready to reuse as baseline |
 | Landing copy + GitHub Pages workflow ready | ✅ Deploy |
 | Public demo URL live | ✅ Added to README |

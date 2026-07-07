@@ -14,11 +14,78 @@ For upstream release history (up to `2.0.1`), see [`CHANGELOG.upstream.md`](CHAN
 
 ---
 
+## [1.2.0] — 2026-07-07
+
+Minor release. Adds the two input-trigger picker components, named range
+slots, and the demo/documentation sweep required to publish them on npm
+without the previous stale-README drift. Public API remains additive —
+no breaking changes.
+
+### Added
+
+- **`DatePickerInput`** — new compact, input-trigger date picker. Read-only
+  trigger opens a calendar popover (`role="dialog"`, named via
+  `popoverLabel`), reflects `aria-expanded`, and returns focus to the
+  trigger on close. Supports controlled and uncontrolled popover state
+  (`open` / `defaultOpen` / `onOpenChange`), `disabled`, `placeholder`,
+  `dateDisplayFormat`, `calendarProps`, additive `dir` (`"ltr"` / `"rtl"` /
+  inherit), and `classNames` / `className` hooks. Closes on Escape,
+  outside click, and date selection. Exported from `src/index.js` runtime
+  barrel and typed in `src/index.d.ts` as `DatePickerInputProps`.
+- **`DateRangeInput`** — new compact, input-trigger range picker. Read-only
+  trigger opens a range popover with the same accessibility semantics as
+  `DatePickerInput`. Supports controlled and uncontrolled popover state,
+  `closeOnEndSelection` (default `true`), `triggerPlaceholder`,
+  `formatter`, `format` (default `yyyy-MM-dd`), `rangeKey` (default
+  `selection`), `popoverLabel`, `ariaLabels` (`trigger`, `popover`),
+  `disabled`, additive `dir`, and `classNames` / `className` hooks. The
+  trigger exposes a `ref` (`focus`, `getTriggerEl`). Single-range MVP;
+  multi-range is intentionally not part of `1.2.0`. Exported from
+  `src/index.js` runtime barrel and typed in `src/index.d.ts` as
+  `DateRangeInputProps` + `DateRangeInputRef`.
+- **`Range.label`** — optional human-readable slot name on each `Range`
+  entry. When set, `DateDisplay` renders the label above the per-range
+  start/end inputs and exposes it as the per-range group's accessible
+  name via `aria-labelledby` on a `role="group"` wrapper. Labels are
+  rendered as plain text and are XSS-safe by design.
+- **`ClassNames.dateDisplayLabel`** — new CSS hook for the per-range label
+  rendered by `DateDisplay`. Styled by `.rdrDateDisplayLabel` in the
+  default theme.
+- **Shared `usePopover` hook** — promoted from `DatePickerInput` to a
+  shared internal hook (`src/hooks/usePopover.js`) so `DateRangeInput`
+  reuses the same open-state, focus-return, Escape, and outside-click
+  semantics without divergence.
+- **Demo coverage** — the Vite demo now includes manual QA panels for
+  `DatePickerInput`, `DateRangeInput`, and labelled multi-range examples
+  alongside the existing a11y live-region, `selectablePassive`, and RTL
+  panels.
+
+### Changed
+
+- `DateRangeInput` interaction hardening: end-date selection closes the
+  popover (when `closeOnEndSelection` is enabled), Escape and outside
+  click dismiss consistently, drag completion preserves the selected
+  range, the popover is linked to its trigger via `aria-controls`, and a
+  single-range development warning fires if extra ranges are supplied.
+- Documentation sweep: README, CHANGELOG, release checklist, release
+  flow, fork/post-1.0/refactor roadmaps, npm publishing guide, migration
+  guide, and docs-site plan now reference `1.2.x` as the current
+  stable channel and `latest` dist-tag. npm publish remains a manual
+  step performed by the maintainer; the agent does not request OTP and
+  does not run `npm publish`.
+
+---
+
 ## [1.1.1] — 2026-07-07
+
+> **Historical.** The `v1.1.1` tag exists at commit `843b09b` but was
+> never promoted to the npm `latest` dist-tag. `1.1.x` features are
+> covered by `v1.1.0` on npm; `v1.2.0` supersedes both on the `latest`
+> channel.
 
 ### Documentation
 
-- Updated the npm README/release documentation to reflect the current `1.1.x`
+- Updated the npm README/release documentation to reflect the `1.1.x`
   stable channel, `latest` dist-tag, demo status, and 1.1 accessibility/RTL
   feature set.
 

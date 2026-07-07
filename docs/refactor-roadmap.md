@@ -10,7 +10,7 @@
 
 | Item | Status |
 |------|--------|
-| Current checkpoint | `1.1.x` stable line on npm `latest`; v1.1.1 tag exists at `843b09b`, npm publish pending OTP. `rc` points to `1.0.0-rc.0`. |
+| Current checkpoint | `1.1.0` published on npm `latest`; v1.1.1 tag exists at `843b09b` (historical, never promoted); `v1.2.0` prepared on `main` (npm publish pending, manual). `rc` points to `1.0.0-rc.0`. |
 | Public API | Stable for the `1.x` line; no breaking changes planned |
 | Internal refactor | ✅ Complete — Slices 1–21 done; Slice 22 docs sweep complete |
 | Tree-shaking | ✅ Verified: ~41 KB Calendar-only / ~58 KB DateRangePicker (~17 KB delta) |

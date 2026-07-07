@@ -1,50 +1,37 @@
-# Release Checklists — `v1.1.0` (published) · `v1.1.1` (tag exists; npm publish pending OTP)
+# Release Checklist — `v1.2.0` (manual npm publish)
 
-> **`v1.1.0` is published** on npm `latest`. `v1.1.1` tag exists at commit `843b09b`
-> but npm publish is pending OTP (one-time password). Do not re-tag.
-> See [`docs/npm-publishing.md`](npm-publishing.md) for the full publishing guide.
-
----
-
-## Before publishing `v1.1.1` (tag `v1.1.1` exists at `843b09b`; npm publish pending OTP)
-
-- [x] **Doc sweep complete** (for v1.1.0): all doc files reflect Slices 13–21 + RTL + cross-month UX + multi-range labels cumulative state.
-- [x] **v1.1.0 published**: `1.1.x` stable line on npm `latest`.
-- [x] **v1.1.1 tag exists**: tag `v1.1.1` at commit `843b09b`, npm publish pending OTP.
-- [ ] **npm OTP publish**: run `npm publish --tag latest --access public` with OTP if 2FA is enabled on the npm account.
-- [ ] **Verify dist-tags after publish**:
-  ```bash
-  npm view @cyberlz/react-date-range@latest version   # → 1.1.1
-  npm view @cyberlz/react-date-range@rc version       # → 1.0.0-rc.0 (unchanged)
-  ```
+> **Status.** `v1.1.0` is on npm `latest`. `v1.1.1` tag exists at commit `843b09b`
+> but was never promoted to `latest` (historical). `v1.2.0` is prepared on `main`
+> with `package.json` version bumped to `1.2.0`, `CHANGELOG.md` updated, and
+> npm-facing README/docs swept. **The npm publish is manual** — performed by the
+> maintainer. The agent does not request OTP and does not run `npm publish`.
+>
+> See [`docs/npm-publishing.md`](npm-publishing.md) for the publishing guide and
+> [`docs/release-flow.md`](release-flow.md) for the full git/tag/npm pipeline.
 
 ---
 
-## Before tagging (historical — v1.0.0 / v1.1.0 done)
+## Before tagging `v1.2.0`
 
-- [x] **Name decision**: `@cyberlz/react-date-range` (npm scoped).
-- [x] **Repository**: `package.json` `repository.url` points to `sokaluis/react-date-range`.
-- [x] **Author**: `Luis Azocar <lazocar.dev@gmail.com>`.
-- [x] **License notice**: upstream MIT license preserved; fork attribution in `NOTICE.md`.
-- [x] **CHANGELOG.md**: entry for `0.1.0-beta.0` documents the beta scope redefinition.
-- [x] **`package.json` fields prepared**:
-  - `version`: `0.1.0-beta.0`
-  - `main`: `dist/index.cjs`
-  - `module`: `dist/index.mjs`
-  - `types`: `dist/index.d.ts`
-  - `sideEffects`: `["*.css"]`
-  - `peerDependencies`: React 18/19 + date-fns 3
-- [x] **v1.0.0 stable published**.
-- [x] **v1.1.0 published**.
-
-## Before publishing (pending for stable)
-
+- [x] **`package.json` version**: `1.2.0`.
+- [x] **`package-lock.json`** root package version: `1.2.0`.
+- [x] **`demo/package.json`** dependency pin: `@cyberlz/react-date-range: "1.2.0"`.
+- [x] **`CHANGELOG.md`** has a `## [1.2.0]` section enumerating `Range.label`,
+      `DatePickerInput`, `DateRangeInput`, demo coverage, and doc sweep.
+- [x] **`README.md`** references `1.2.x` as the stable channel and documents
+      `DatePickerInput`, `DateRangeInput`, `Range.label`, and the 1.1 a11y/RTL
+      baseline.
+- [x] **Doc sweep**: `release-flow.md`, `fork-roadmap.md`, `post-1.0-roadmap.md`,
+      `refactor-roadmap.md`, `npm-publishing.md`, `migration-from-upstream.md`,
+      and `docs-site-plan.md` updated to reference `1.2.x` instead of
+      `v1.1.1 pending OTP`.
 - [ ] CI is green on the commit being tagged.
-- [ ] `npm run lint` passes.
 - [ ] `npm run type-check` passes.
+- [ ] Demo `npm run typecheck` passes.
+- [ ] `npm run lint` passes.
 - [ ] `npm run test:ci` passes.
 - [ ] `npm test` passes.
-- [ ] `npm run build` produces clean JS/CSS/types output.
+- [ ] `git diff --check` exits clean (no conflict markers / whitespace).
 - [ ] Tree-shaking analyzer still reports real delta:
   - Calendar-only: ~41 KB
   - DateRangePicker: ~58 KB
@@ -58,34 +45,71 @@
   cd spikes/ssr-import          && npm ci && npm test
   cd spikes/consumer-js         && npm ci && npm run build
   ```
-- [ ] Smoke-install from npm registry in clean React 18 and React 19 projects.
-- [ ] Demo page reviewed locally if needed.
+- [ ] Smoke-install from npm registry in clean React 18 and React 19 projects
+      (after `npm publish`).
 
-## Publishing v1.1.1 (tag exists; pending npm OTP)
+---
 
-> See [`release-flow.md`](release-flow.md) for the full git/tag/GitHub/npm flow.
+## Tagging `v1.2.0`
 
-- [ ] Ensure OTP device is available if npm account has 2FA enforcement.
-- [ ] Publish with latest tag:
+> Tagging is a separate step from npm publish. See
+> [`docs/release-flow.md`](release-flow.md) for the full git/tag/GitHub flow.
+
+```bash
+# Dry-run only — performed by the maintainer
+git tag v1.2.0
+git push origin v1.2.0
+```
+
+- [ ] **Git tag** `v1.2.0` created and pushed to `origin`.
+
+---
+
+## Publishing `v1.2.0` (manual — maintainer)
+
+> **The agent does NOT run `npm publish` and does NOT request OTP.**
+> This checklist section is for the maintainer. Use the same OTP device as
+> previous releases if 2FA is enabled on the npm account.
+
+- [ ] Maintainer runs `npm login` (or confirms `npm whoami`) locally.
+- [ ] Maintainer publishes with the `latest` tag:
   ```bash
   npm publish --tag latest --access public
   ```
-  If OTP required: `npm publish --tag latest --access public --otp=XXXXXX`
-- [ ] Verify dist-tags:
-  - `npm view @cyberlz/react-date-range@latest version` → `1.1.1`
+  If OTP is required: `npm publish --tag latest --access public --otp=XXXXXX`
+- [ ] Maintainer verifies dist-tags:
+  - `npm view @cyberlz/react-date-range@latest version` → `1.2.0`
   - `npm view @cyberlz/react-date-range@rc version` → `1.0.0-rc.0` (rc stays available)
-- [ ] Verify registry install:
+- [ ] Maintainer verifies registry install:
   ```bash
   mkdir /tmp/registry-test && cd /tmp/registry-test
   npm init -y
   npm install @cyberlz/react-date-range
   ```
+- [ ] Maintainer verifies the npm README is in sync with the repo README:
+  ```bash
+  npm view @cyberlz/react-date-range@latest readme version dist-tags --json
+  ```
+  Confirm `version` is `1.2.0`, `dist-tags.latest` is `1.2.0`, and the
+  `readme` field reflects the 1.2.0 features (`DatePickerInput`,
+  `DateRangeInput`, `Range.label`, a11y live regions, RTL,
+  `selectablePassive`).
+- [ ] Maintainer refreshes the demo `package-lock.json` integrity hashes:
+  ```bash
+  cd demo && npm install
+  ```
+  (Required because the demo's `package-lock.json` was bumped in lockstep with
+  `package.json` but the integrity hash for `1.2.0` cannot be generated until
+  the package is published.)
 
-## Post-publish (v1.1.1)
+---
 
-- [ ] GitHub Release created from `CHANGELOG.md` entry for `1.1.1`.
+## Post-publish (`v1.2.0`)
+
+- [ ] GitHub Release created from `CHANGELOG.md` entry for `1.2.0`.
 - [ ] README npm install guidance checked after dist-tags settle.
-- [ ] Monitor issues for regressions in tree-shaking, CJS import, and styling compatibility.
+- [ ] Monitor issues for regressions in tree-shaking, CJS import, styling
+      compatibility, and the new `DatePickerInput` / `DateRangeInput` triggers.
 
 ---
 

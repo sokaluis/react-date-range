@@ -87,10 +87,10 @@ Scoped packages require `--access public` (or `publishConfig.access: "public"` i
 | **Alpha checkpoint** | `0.1.0-alpha.3` | `alpha` | Refactor in progress; tree-shaking delivered. |
 | **Beta** | `0.1.0-beta.0` | `beta` | Internal refactor complete, public API stable for `0.1.x`; future visual redesign ideas were left uncommitted. |
 | **RC** | `1.0.0-rc.0` | `rc` | Historical release candidate. Final testing before stable. |
-| **Stable** | `1.1.x` | `latest` | Production-ready. Follows semver strictly. |
+| **Stable** | `1.2.x` | `latest` | Production-ready. Follows semver strictly. |
 
-For `1.1.x`: all consumers use `npm install @cyberlz/react-date-range` (no tag required).
-`latest` currently points to `1.1.0`; will be `1.1.1` after OTP publish.
+For `1.2.x`: all consumers use `npm install @cyberlz/react-date-range` (no tag required).
+`latest` currently points to `1.1.0`; will be `1.2.0` after manual npm publish.
 
 ### Stable-line rules
 
