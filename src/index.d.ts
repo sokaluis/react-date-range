@@ -38,6 +38,8 @@ export interface Range {
   autoFocus?: boolean | undefined;
   disabled?: boolean | undefined;
   showDateDisplay?: boolean | undefined;
+  /** Human-readable slot name rendered above the start/end inputs and exposed as the per-range group accessible name. */
+  label?: string | undefined;
 }
 
 export interface RangeKeyDict {
@@ -86,6 +88,7 @@ export interface ClassNames {
   dateDisplay?: string | undefined;
   dateDisplayItem?: string | undefined;
   dateDisplayItemActive?: string | undefined;
+  dateDisplayLabel?: string | undefined;
   monthAndYearWrapper?: string | undefined;
   monthAndYearPickers?: string | undefined;
   liveRegion?: string | undefined;

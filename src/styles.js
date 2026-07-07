@@ -4,6 +4,7 @@ export default {
   dateDisplay: 'rdrDateDisplay',
   dateDisplayItem: 'rdrDateDisplayItem',
   dateDisplayItemActive: 'rdrDateDisplayItemActive',
+  dateDisplayLabel: 'rdrDateDisplayLabel',
   monthAndYearWrapper: 'rdrMonthAndYearWrapper',
   monthAndYearPickers: 'rdrMonthAndYearPickers',
   liveRegion: 'rdrLiveRegion',
