@@ -1,9 +1,9 @@
-# Release Checklist — `v1.2.0` (manual npm publish)
+# Release Checklist — `v1.2.0` (completed)
 
 > **Status.** `v1.1.0` is on npm `latest`. `v1.1.1` tag exists at commit `843b09b`
-> but was never promoted to `latest` (historical). `v1.2.0` is prepared on `main`
+> but was never promoted to `latest` (historical). `v1.2.0` is published on npm `latest`
 > with `package.json` version bumped to `1.2.0`, `CHANGELOG.md` updated, and
-> npm-facing README/docs swept. **The npm publish is manual** — performed by the
+> npm-facing README/docs swept. The npm publish was performed manually by the
 > maintainer. The agent does not request OTP and does not run `npm publish`.
 >
 > See [`docs/npm-publishing.md`](npm-publishing.md) for the publishing guide and
@@ -15,7 +15,7 @@
 
 - [x] **`package.json` version**: `1.2.0`.
 - [x] **`package-lock.json`** root package version: `1.2.0`.
-- [x] **`demo/package.json`** dependency pin: `@cyberlz/react-date-range: "1.2.0"`.
+- [x] **`demo/package.json`** dependency: `@cyberlz/react-date-range: "file:.."` for local demo validation.
 - [x] **`CHANGELOG.md`** has a `## [1.2.0]` section enumerating `Range.label`,
       `DatePickerInput`, `DateRangeInput`, demo coverage, and doc sweep.
 - [x] **`README.md`** references `1.2.x` as the stable channel and documents

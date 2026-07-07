@@ -26,7 +26,7 @@ until they have a concrete spec and maintainer decision.
 | **Phase 3 — Core refactor (completed)** | Function components, tooling, tests, tree-shaking | ✅ Complete | `0.1.0-beta.0` |
 | **1.0.0 — Stable release** | Bug fixes, strict TypeScript, upstream parity, docs sweep | ✅ Complete | `1.0.0` |
 | **1.1.x — Accessibility + RTL + cross-month UX** | Core labels/states, RTL layout, cross-month `selectablePassive`, multi-range labels | ✅ Complete (v1.1.0 published; v1.1.1 tag exists, never promoted to npm) | `1.1.x` |
-| **1.2.x — Input-trigger pickers + range labels** | `DatePickerInput`, `DateRangeInput`, `Range.label`, shared `usePopover`, demo coverage | ✅ Complete on `main`; v1.2.0 npm publish pending (manual) | `1.2.x` |
+| **1.2.x — Input-trigger pickers + range labels** | `DatePickerInput`, `DateRangeInput`, `Range.label`, shared `usePopover`, demo coverage | ✅ Complete and published as `v1.2.0` on npm `latest` | `1.2.x` |
 
 ---
 

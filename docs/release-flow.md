@@ -47,11 +47,11 @@ docs: add release flow documentation
 | RC | `v{version}-rc.{n}` | `v1.0.0-rc.0` |
 | Stable | `v{version}` | `v1.2.0` |
 
-**Current stable:** `v1.1.0` (published); `v1.1.1` tag exists at commit `843b09b` (historical, never promoted to npm `latest`); `v1.2.0` is prepared on `main` and pending manual npm publish.
+**Current stable:** `v1.2.0` is published on npm `latest`; `v1.1.1` tag exists at commit `843b09b` (historical, never promoted to npm `latest`).
 
-**Stable tag (pending):** `v1.2.0`
+**Stable tag:** `v1.2.0`
 - `package.json` version: `1.2.0`
-- npm dist-tag: `latest` — will be promoted to `1.2.0` stable at npm publish time
+- npm dist-tag: `latest` — points to `1.2.0` stable
 
 The `package.json` `version` field **must match** the tag version exactly.
 
@@ -113,7 +113,7 @@ git push origin v0.1.0-alpha.1
 - `package.json` version: `1.1.1` (commit `843b09b`)
 - npm dist-tag: not promoted — superseded by `v1.2.0`
 
-**v1.2.0 prepared on `main`; npm publish pending (manual):** `v1.2.0`
+**v1.2.0 published on npm `latest`:** `v1.2.0`
 - `package.json` version: `1.2.0`
 - npm dist-tag: `latest` (at publish time)
 

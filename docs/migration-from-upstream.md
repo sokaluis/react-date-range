@@ -1,6 +1,6 @@
 # Migrating from `react-date-range` upstream
 
-> `@cyberlz/react-date-range` is the maintained drop-in fork for `react-date-range@2.0.1`. `1.2.x` is the current stable line on npm `latest` (the `latest` dist-tag will be moved to `1.2.0` after the manual npm publish). `1.0.0-rc.0` remains available on the historical `rc` tag.
+> `@cyberlz/react-date-range` is the maintained drop-in fork for `react-date-range@2.0.1`. `1.2.x` is the current stable line on npm `latest` (`v1.2.0` published). `1.0.0-rc.0` remains available on the historical `rc` tag.
 
 ## TL;DR
 

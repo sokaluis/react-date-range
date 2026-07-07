@@ -1,8 +1,7 @@
 # Docs Site Plan — Landing, Demo & Full Documentation
 
 > **Status: ready to plan.** `@cyberlz/react-date-range@1.2.x` is the stable line on npm
-> `latest` (v1.1.0 published; v1.2.0 prepared on `main`, npm publish pending and
-> manual). The local demo resolves to local source during development so
+> `latest` (`v1.2.0` published). The local demo resolves to local source during development so
 > landed-but-unpublished changes can be validated. The current adoption asset is
 > a small public landing/demo site, followed by full component documentation.
 
@@ -23,7 +22,7 @@
 
 | Previous risk | Current state |
 |---------------|---------------|
-| Package was pre-release | `1.2.x` is stable on npm `latest` (v1.1.0 published; v1.2.0 prepared, npm publish pending and manual) |
+| Package was pre-release | `1.2.x` is stable on npm `latest` (`v1.2.0` published) |
 | Demo might drift from package source | `demo/` resolves `@cyberlz/react-date-range` to local `src/` during development and is type-checked |
 | Migration path was unclear | `docs/migration-from-upstream.md` exists |
 | Roadmap could overpromise | `docs/post-1.0-roadmap.md` marks future work as exploratory |
@@ -79,7 +78,7 @@ The demo is deployed by `.github/workflows/pages-demo.yml`.
 | Milestone | Landing status |
 |-----------|---------------|
 | `1.0.0` stable published | ✅ Done (2026-06-29) |
-| `1.2.x` stable line on npm | ✅ Done (v1.1.0 published; v1.2.0 prepared, npm publish pending and manual) |
+| `1.2.x` stable line on npm | ✅ Done (`v1.2.0` published on npm `latest`) |
 | Local demo validates current source | ✅ Ready to reuse as baseline |
 | Landing copy + GitHub Pages workflow ready | ✅ Deploy |
 | Public demo URL live | ✅ Added to README |
