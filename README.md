@@ -1,7 +1,8 @@
 # @cyberlz/react-date-range
 
 > Maintained fork/rescue of [`react-date-range`](https://github.com/hypeserver/react-date-range).
-> **Current channel**: `1.0.0` is the stable release on npm `latest`. The `rc` tag remains on `1.0.0-rc.0` for historical validation. See [Dist-tag policy](#dist-tag-policy) below.
+> **Current channel**: `1.1.x` is the stable release line on npm `latest`.
+> The `rc` tag remains on `1.0.0-rc.0` for historical validation. See [Dist-tag policy](#dist-tag-policy) below.
 
 ---
 
@@ -22,7 +23,9 @@ but the upstream repository is read-only and no longer maintained. Open issues i
 - React 19 compatibility (#661, #662)
 - date-fns v3/v4 compatibility (#649, #663, #667)
 - TypeScript improvements (#260, #439, #513)
-- Accessibility (#373, #415 — core labels/states resolved; #416 — core labels/states resolved)
+- Accessibility (#373, #415/#416 — labels, roles, focus-visible states, and live-region announcements resolved)
+- RTL layout support (#669)
+- Cross-month passive-day range selection UX (#495)
 - React 18 StrictMode scroll bugs (#577, #653)
 
 There are community forks, but **none clearly active in 2026** with a published React 19 fix.
@@ -95,18 +98,19 @@ A **modern, maintained, production-ready** date range picker for React that:
 | **Phase 1** — Compatible rescue | Complete |
 | **Phase 3** — Core refactor | Complete (Slices 1–21 done) |
 
-**`@cyberlz/react-date-range@1.0.0`** is the stable release on npm `latest`.
-The first milestone is complete; future work is tracked separately. See
+**`@cyberlz/react-date-range@1.1.x`** is the stable release line on npm `latest`.
+The first stable milestone is complete; 1.1 expands accessibility, RTL layout, and cross-month selection UX without breaking the existing API. Future work is tracked separately. See
 [`docs/fork-roadmap.md`](docs/fork-roadmap.md) for the full plan and
 [`docs/refactor-roadmap.md`](docs/refactor-roadmap.md) for incremental refactor slices.
 
 ## Dist-tag policy
 
-npm has three relevant dist-tags for this package:
+npm has four relevant dist-tags for this package:
 
-- **`latest`** — points to `1.0.0` stable. Default install path: `npm install @cyberlz/react-date-range`.
+- **`latest`** — points to the current `1.1.x` stable release. Default install path: `npm install @cyberlz/react-date-range`.
 - **`rc`** — points to `1.0.0-rc.0`. Historical release candidate for pre-release validation: `npm install @cyberlz/react-date-range@rc`.
 - **`beta`** — points to `0.1.0-beta.0`. Legacy prerelease channel.
+- **`alpha`** — points to `0.1.0-alpha.3`. Legacy prerelease channel.
 
 For stable installs, consumers use `npm install @cyberlz/react-date-range` (no tag). See
 [`docs/migration-from-upstream.md`](docs/migration-from-upstream.md) for upgrade instructions.
@@ -151,7 +155,7 @@ No custom Vite/esbuild loaders required — the compiled output is plain JS/CSS.
 
 ### Tree-shaking
 
-Tree-shaking works since `0.1.0-alpha.3` and remains part of `1.0.0`. The build uses `tsdown` with `unbundle: true` and a
+Tree-shaking works since `0.1.0-alpha.3` and remains part of the stable `1.x` line. The build uses `tsdown` with `unbundle: true` and a
 multi-entry glob, so each component is emitted as its own file and bundlers can drop unused
 exports. Verified empirically with `spikes/tree-shaking/analyze.mjs`:
 
@@ -168,11 +172,11 @@ bundlers (Vite, Webpack 5, esbuild, Rollup) get the full benefit.
 
 - Breaking API changes
 - Speculative visual redesign tracks such as dual skins or Tailwind theming
-- New features
+- Breaking feature tracks without a compatibility plan
 
 ## Demo and documentation roadmap
 
-- **Local demo:** [`demo/`](demo/) is the current verified Vite consumer for `@cyberlz/react-date-range@1.0.0`.
+- **Local demo:** [`demo/`](demo/) is the current verified Vite consumer. During development it resolves package imports to local `src/` so unreleased fixes are exercised before publishing.
 - **Public demo:** <https://sokaluis.github.io/react-date-range/> is deployed with GitHub Pages from `demo/`.
 - **Full library documentation:** planned after the landing baseline, covering component props, examples, migration notes, styling, accessibility, and roadmap status.
 

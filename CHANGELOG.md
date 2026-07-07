@@ -14,6 +14,16 @@ For upstream release history (up to `2.0.1`), see [`CHANGELOG.upstream.md`](CHAN
 
 ---
 
+## [1.1.1] — 2026-07-07
+
+### Documentation
+
+- Updated the npm README/release documentation to reflect the current `1.1.x`
+  stable channel, `latest` dist-tag, demo status, and 1.1 accessibility/RTL
+  feature set.
+
+---
+
 ## [1.1.0] — 2026-07-07
 
 ### Accessibility
