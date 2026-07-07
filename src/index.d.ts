@@ -92,6 +92,9 @@ export interface ClassNames {
   datePickerInputWrapper?: string | undefined;
   datePickerInputTrigger?: string | undefined;
   datePickerInputPopover?: string | undefined;
+  dateRangeInputWrapper?: string | undefined;
+  dateRangeInputTrigger?: string | undefined;
+  dateRangeInputPopover?: string | undefined;
   monthAndYearWrapper?: string | undefined;
   monthAndYearPickers?: string | undefined;
   liveRegion?: string | undefined;
@@ -291,6 +294,70 @@ export interface DatePickerInputProps {
 }
 
 export function DatePickerInput(props: DatePickerInputProps): React.JSX.Element;
+
+// =============================================================================
+// DateRangeInput Component
+// =============================================================================
+
+export interface DateRangeInputRef {
+  focus(): void;
+  getTriggerEl(): HTMLInputElement | null;
+}
+
+export interface DateRangeInputProps {
+  /** Single selected range. Extra ranges are ignored by the single-range MVP. */
+  ranges?: Range[] | undefined;
+  /** Called when the user selects a range — default: none */
+  onChange?: ((rangesByKey: RangeKeyDict) => void) | undefined;
+  /** Controlled popover open state — default: internal state */
+  open?: boolean | undefined;
+  /** Initial popover state when uncontrolled — default: false */
+  defaultOpen?: boolean | undefined;
+  /** Fires whenever the component requests an open-state change — default: none */
+  onOpenChange?: ((open: boolean) => void) | undefined;
+  /** Close after end-date selection — default: true */
+  closeOnEndSelection?: boolean | undefined;
+  /** Placeholder text for the read-only trigger. */
+  triggerPlaceholder?: string | undefined;
+  /** Custom trigger formatter. */
+  formatter?: ((range: { startDate?: Date | undefined; endDate?: Date | undefined }) => string) | undefined;
+  /** default: `yyyy-MM-dd` */
+  format?: string | undefined;
+  /** default: `selection` */
+  rangeKey?: string | undefined;
+  /** Forwarded to DateRange; range state, wrapper styling, and owned selection policy props stay on DateRangeInput. */
+  calendarProps?:
+    | Omit<
+        DateRangeProps,
+        | 'ranges'
+        | 'onChange'
+        | 'moveRangeOnFirstSelection'
+        | 'retainEndDateOnFirstSelection'
+        | 'classNames'
+        | 'className'
+        | 'disabledDates'
+      >
+    | undefined;
+  /** Dialog accessible name — default: `Select date range` */
+  popoverLabel?: string | undefined;
+  ariaLabels?:
+    | {
+        trigger?: string | undefined;
+        popover?: string | undefined;
+      }
+    | undefined;
+  /** default: false */
+  disabled?: boolean | undefined;
+  /** Custom class names merged with package defaults. */
+  classNames?: Partial<ClassNames> | undefined;
+  className?: string | undefined;
+  /** Text direction. Undefined means inherit from ancestor. */
+  dir?: 'ltr' | 'rtl' | undefined;
+}
+
+export function DateRangeInput(
+  props: DateRangeInputProps & { ref?: React.Ref<DateRangeInputRef> },
+): React.JSX.Element;
 
 // =============================================================================
 // DateRange Component

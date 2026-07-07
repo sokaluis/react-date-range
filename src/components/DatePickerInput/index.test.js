@@ -34,12 +34,11 @@ const tabbablesIn = element =>
     .filter(node => !node.disabled && node.getAttribute('tabindex') !== '-1');
 
 describe('DatePickerInput', () => {
-  test('is exported from the public runtime API without exporting DateRangeInput', () => {
+  test('is exported from the public runtime API', () => {
     expect(PublicApi.DatePickerInput).toBe(DatePickerInput);
-    expect(PublicApi.DateRangeInput).toBeUndefined();
   });
 
-  test('declares DatePickerInput types and class hooks without declaring DateRangeInput', () => {
+  test('declares DatePickerInput types and class hooks', () => {
     const declarations = readTypeDeclarations();
 
     expect(declarations).toContain('export interface DatePickerInputProps');
@@ -47,7 +46,6 @@ describe('DatePickerInput', () => {
     expect(declarations).toContain('datePickerInputWrapper?: string | undefined;');
     expect(declarations).toContain('datePickerInputTrigger?: string | undefined;');
     expect(declarations).toContain('datePickerInputPopover?: string | undefined;');
-    expect(declarations).not.toContain('DateRangeInput');
   });
 
   test('renders formatted selected date and placeholder on a read-only trigger', () => {
