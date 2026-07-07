@@ -12,6 +12,10 @@ For upstream release history (up to `2.0.1`), see [`CHANGELOG.upstream.md`](CHAN
 
 ## [Unreleased]
 
+---
+
+## [1.1.0] — 2026-07-07
+
 ### Accessibility
 
 - **Calendar grid**: `role="grid"` root now has `aria-label="Calendar"` and `aria-roledescription="month grid"` by default. Both are customizable via `ariaLabels.calendar` and `ariaLabels.calendarRoleDescription`.
