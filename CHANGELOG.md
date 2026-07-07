@@ -37,10 +37,26 @@ For upstream release history (up to `2.0.1`), see [`CHANGELOG.upstream.md`](CHAN
   atomic live region after range normalization. Customize the spoken copy with
   `ariaLabels.liveRegionSelection`. Hover, preview, and drag-move updates do **not**
   announce.
+- **RTL support**: Calendar and DateRangePicker now support additive `dir="rtl"`
+  rendering with an `rdrRtl` class hook, mirrored navigation glyphs, horizontal month
+  row reversal, and logical range-edge styles. Keyboard arrow behavior is intentionally
+  not mirrored.
+
+### Added
+
+- **Cross-month passive-day selection**: `selectablePassive` is now available as an
+  opt-in Calendar/DateRange prop. When enabled and scroll virtualization is off,
+  adjacent-month passive cells become clickable and keyboard-reachable. Scroll-enabled
+  calendars intentionally keep the original passive-cell guard.
+- **Demo coverage**: the Vite demo now includes manual QA panels for a11y live regions,
+  labeled Calendar controls, cross-month `selectablePassive`, scroll-guard behavior,
+  and RTL Calendar/DateRangePicker examples.
 
 ### Fixed
 
 - `disabledDates` prop: added runtime array guard at the `<DateRange>` component boundary to prevent crashes when consumers pass `null`, a single `Date`, or other non-array values directly to `<DateRange>` (upstream #607). Mirrors the existing Calendar boundary guard using a frozen empty-array constant for `useMemo`/`useCallback` referential stability. Direct `<DateRange disabledDates={null} />` is now safe without wrapping in `<Calendar>`.
+- `DefinedRangeProps.weekStartsOn` TypeScript declaration now matches the strict
+  `0 | 1 | 2 | 3 | 4 | 5 | 6` weekday union used by Calendar-related props.
 
 ---
 

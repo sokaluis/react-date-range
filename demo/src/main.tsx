@@ -56,12 +56,33 @@ function logManualQA(label: string, payload: Record<string, unknown>) {
 }
 
 // ---------------------------------------------------------------------------
+// Live region helpers (pure, stable references for ariaLabels callbacks)
+// ---------------------------------------------------------------------------
+
+function liveRegionMonthYear(date: Date): string {
+  return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+}
+
+function liveRegionSelection(range: { startDate: Date; endDate: Date }): string {
+  const fmt = (d: Date) =>
+    d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  return `Selected range from ${fmt(range.startDate)} to ${fmt(range.endDate)}`;
+}
+
+// ---------------------------------------------------------------------------
 // App
 // ---------------------------------------------------------------------------
 
 function App() {
   const [ranges, setRanges] = useState<Range[]>([createInitialRange()]);
   const [singleDate, setSingleDate] = useState<Date | undefined>(today);
+
+  // States for new demo panels
+  const [a11yRanges, setA11yRanges] = useState<Range[]>([createInitialRange()]);
+  const [passiveDate, setPassiveDate] = useState<Date | undefined>(undefined);
+  const [passiveScrollDate, setPassiveScrollDate] = useState<Date | undefined>(undefined);
+  const [rtlRanges, setRtlRanges] = useState<Range[]>([createInitialRange()]);
+  const [rtlDate, setRtlDate] = useState<Date | undefined>(today);
 
   const currentRange = ranges[0];
   const handleChange = (rangesByKey: RangeKeyDict) => {
@@ -87,6 +108,44 @@ function App() {
     logManualQA(`${source} onShownDateChange`, {
       shownDate: toISODate(date),
     });
+  };
+
+  // Handlers for new demo panels
+  const handleA11yChange = (rangesByKey: RangeKeyDict) => {
+    const next = rangesByKey.selection;
+    if (next) {
+      logManualQA('A11y DateRangePicker onChange', {
+        startDate: toISODate(next.startDate),
+        endDate: toISODate(next.endDate),
+      });
+      setA11yRanges([next]);
+    }
+  };
+
+  const handlePassiveDateChange = (date: Date) => {
+    logManualQA('selectablePassive onChange', { date: toISODate(date) });
+    setPassiveDate(date);
+  };
+
+  const handlePassiveScrollDateChange = (date: Date) => {
+    logManualQA('selectablePassive+scroll onChange', { date: toISODate(date) });
+    setPassiveScrollDate(date);
+  };
+
+  const handleRtlChange = (rangesByKey: RangeKeyDict) => {
+    const next = rangesByKey.selection;
+    if (next) {
+      logManualQA('RTL DateRangePicker onChange', {
+        startDate: toISODate(next.startDate),
+        endDate: toISODate(next.endDate),
+      });
+      setRtlRanges([next]);
+    }
+  };
+
+  const handleRtlDateChange = (date: Date) => {
+    logManualQA('RTL Calendar onChange', { date: toISODate(date) });
+    setRtlDate(date);
   };
 
   // PR4: fixed constraint dates for manual verification
@@ -221,6 +280,184 @@ function App() {
         <div className="state-output">
           <code>{JSON.stringify(currentRange, null, 2)}</code>
         </div>
+      </section>
+
+      {/* A11y: DateRangePicker with custom ariaLabels and live region */}
+
+      <section className="demo-panel">
+        <h2>DateRangePicker — A11y Labels &amp; Live Region</h2>
+        <p>
+          Custom <code>ariaLabels</code> including <code>liveRegionSelection</code>{' '}
+          (committed range only — hover/preview is <em>not</em> announced) and{' '}
+          <code>liveRegionMonthYear</code> for navigation feedback.
+          Inspect the live-region element or use a screen reader to hear the announcement.
+        </p>
+        <DateRangePicker
+          onChange={handleA11yChange}
+          ranges={a11yRanges}
+          showPreview={true}
+          moveRangeOnFirstSelection={false}
+          months={2}
+          direction="horizontal"
+          ariaLabels={{
+            dateInput: {
+              selection: { startDate: 'Start date input', endDate: 'End date input' },
+            },
+            monthPicker: 'Month picker',
+            yearPicker: 'Year picker',
+            prevButton: 'Previous month',
+            nextButton: 'Next month',
+            calendar: 'Calendar',
+            calendarRoleDescription: 'Date range calendar',
+            dateDisplay: 'Date display',
+            dateRangePicker: 'Date range picker dialog',
+            liveRegionMonthYear,
+            liveRegionSelection,
+          }}
+        />
+        <p className="state-output">
+          <strong>Live region would announce:</strong>{' '}
+          {a11yRanges[0]?.startDate && a11yRanges[0]?.endDate
+            ? liveRegionSelection({
+                startDate: a11yRanges[0].startDate,
+                endDate: a11yRanges[0].endDate,
+              })
+            : '(awaiting full committed selection — hover/preview is suppressed)'}
+        </p>
+      </section>
+
+      {/* Calendar navigation live region + labeled controls */}
+
+      <section className="demo-panel">
+        <h2>Calendar — Navigation Live Region &amp; Labeled Controls</h2>
+        <p>
+          <code>liveRegionMonthYear</code> announces month/year on navigation.{' '}
+          <code>prevButton</code>/<code>nextButton</code> labels are forwarded to the arrow buttons.
+          Use a screen reader or inspect <code>aria-label</code> on the arrows.
+        </p>
+        <Calendar
+          onChange={handleSingleDateChange('Calendar nav-live-region')}
+          date={singleDate}
+          displayMode="date"
+          months={1}
+          direction="horizontal"
+          ariaLabels={{
+            prevButton: 'Go to previous month',
+            nextButton: 'Go to next month',
+            monthPicker: 'Select month',
+            yearPicker: 'Select year',
+            liveRegionMonthYear,
+          }}
+        />
+        <p className="state-output">
+          <code>date = {singleDate ? singleDate.toISOString().split('T')[0] : 'null'}</code>
+        </p>
+      </section>
+
+      {/* Cross-month selectablePassive */}
+
+      <section className="demo-panel">
+        <h2>
+          Calendar — Cross-Month Selectable Passive (<code>selectablePassive</code>)
+        </h2>
+        <p>
+          With <code>selectablePassive=true</code> and scroll virtualization off,{' '}
+          passive (greyed-out neighbour-month) days become clickable.
+          Try clicking a dimmed day from an adjacent month in this 2-month horizontal layout.
+        </p>
+        <Calendar
+          onChange={handlePassiveDateChange}
+          date={passiveDate}
+          displayMode="date"
+          months={2}
+          direction="horizontal"
+          selectablePassive={true}
+          scroll={{ enabled: false }}
+        />
+        <p className="state-output">
+          <strong>Selected date:</strong>{' '}
+          {passiveDate
+            ? `${passiveDate.toISOString().split('T')[0]} (${passiveDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })})`
+            : '(none — click a passive day to test)'}
+        </p>
+      </section>
+
+      {/* selectablePassive guarded by scroll */}
+
+      <section className="demo-panel">
+        <h2>
+          Calendar — <code>selectablePassive</code> Guarded with Scroll
+        </h2>
+        <p>
+          When <code>scroll.enabled=true</code>, <code>selectablePassive</code> stays a no-op:{' '}
+          passive days remain non-interactive regardless of the flag.
+          Try clicking a dimmed day — it should <em>not</em> register.
+        </p>
+        <Calendar
+          onChange={handlePassiveScrollDateChange}
+          date={passiveScrollDate}
+          displayMode="date"
+          months={2}
+          direction="horizontal"
+          selectablePassive={true}
+          scroll={{ enabled: true }}
+        />
+        <p className="state-output">
+          <strong>Selected date:</strong>{' '}
+          {passiveScrollDate
+            ? `${passiveScrollDate.toISOString().split('T')[0]} (this was a regular-day selection — passive clicks are correctly ignored)`
+            : '(none — passive day clicks are correctly ignored)'}
+        </p>
+      </section>
+
+      {/* RTL DateRangePicker */}
+
+      <section className="demo-panel">
+        <h2>
+          DateRangePicker — RTL (<code>dir=&quot;rtl&quot;</code>)
+        </h2>
+        <p>
+          Two-month horizontal layout with <code>dir=&quot;rtl&quot;</code>. Months render
+          right-to-left, arrows are visually mirrored. Keyboard arrows are{' '}
+          <em>not</em> mirrored (logical direction preserved).
+          The wrapper receives class <code>rdrRtl</code>.
+        </p>
+        <DateRangePicker
+          onChange={handleRtlChange}
+          ranges={rtlRanges}
+          showPreview={true}
+          moveRangeOnFirstSelection={false}
+          months={2}
+          direction="horizontal"
+          dir="rtl"
+        />
+        <p className="state-output">
+          <strong>Start:</strong> {formatDate(rtlRanges[0].startDate)}{' '}
+          <small>({toISODate(rtlRanges[0].startDate)})</small>
+          <br />
+          <strong>End:</strong> {formatDate(rtlRanges[0].endDate)}{' '}
+          <small>({toISODate(rtlRanges[0].endDate)})</small>
+        </p>
+      </section>
+
+      {/* RTL Calendar */}
+
+      <section className="demo-panel">
+        <h2>Calendar — RTL Single Date</h2>
+        <p>
+          Single-date Calendar in RTL mode. Verify arrow positions and month label reading order.
+        </p>
+        <Calendar
+          onChange={handleRtlDateChange}
+          date={rtlDate}
+          displayMode="date"
+          months={2}
+          direction="horizontal"
+          dir="rtl"
+        />
+        <p className="state-output">
+          <code>date = {rtlDate ? rtlDate.toISOString().split('T')[0] : 'null'}</code>
+        </p>
       </section>
 
       <footer>

@@ -34,6 +34,7 @@ Issues/PRs that required code changes and have been implemented + verified in th
 | `a11y-live-announce` (PR) | Month/year `aria-live` announcements | ✅ Resolved | Stable `aria-live="polite"` / `aria-atomic="true"` region outside virtualized scroll container. Announces committed month/year navigation (month picker, year picker, prev/next arrows). Hover, drag movement, drag end, selection, and scroll do not announce from Calendar. Customizable via `ariaLabels.liveRegionMonthYear`. Additive `ClassNames.liveRegion`. | Post-1.0 maintenance | Follows upstream #415/#416 core labels work. Selection announcements completed separately in DateRange via `ariaLabels.liveRegionSelection`. |
 | `a11y-selection-live-announce` (PR) | DateRange selection `aria-live` announcements | ✅ Resolved | DateRange renders a polite, atomic live region and updates it only after `calcNewSelection` returns the committed normalized range. Customizable via `ariaLabels.liveRegionSelection`; DateRangePicker forwards the key through its existing `ariaLabels` prop. | Post-1.0 maintenance | Real rendered DayCell hover path verified silent; hover, preview, and drag movement do not announce. |
 | [#669](https://github.com/hypeserver/react-date-range/pull/669) | RTL styles | ✅ Resolved | Additive `dir?: 'ltr' | 'rtl'` API, `ClassNames.rtl` / `rdrRtl` hook, logical date-range edge styles, RTL navigation glyph mirroring, and horizontal month row reversal. | Post-1.0 maintenance | `navigatorRenderer` remains consumer-owned for custom RTL chevrons/alignment. |
+| [#495](https://github.com/hypeserver/react-date-range/pull/495) | Cross-month range selection UX | ✅ Resolved | Additive `selectablePassive?: boolean` opt-in on Calendar/DateRange lets passive adjacent-month cells become clickable/keyboard-reachable when scroll virtualization is off. | Post-1.0 maintenance | Default remains `false`; scroll-enabled mode intentionally suppresses the opt-in so virtualized passive cells keep their original guard. |
 
 ---
 
@@ -49,11 +50,8 @@ Issues where investigation confirmed existing behavior is correct, or the issue 
 
 ## Pending — Future phases
 
-Issues acknowledged for the fork roadmap but not yet implemented. Scheduled for upcoming phases.
-
-| # | Upstream Topic | Planned Phase | Reason / Approach |
-|---|----------------|---------------|-------------------|
-| [#495](https://github.com/hypeserver/react-date-range/pull/495) | Cross-month range selection UX | Future UX proposal | Edge-case UX improvement. Low priority compared to core compatibility. |
+No upstream audit issue is currently scheduled as an already-scoped maintenance fix.
+Future work should start from a fresh proposal/spec rather than this tracker.
 
 ---
 
@@ -73,8 +71,8 @@ Issues that are explicitly not planned for this fork, either because they expand
 
 | Category | Count |
 |----------|-------|
-| Resolved in fork | 20 |
+| Resolved in fork | 21 |
 | Verified (no code change) | 1 |
-| Pending future phases | 1 |
+| Pending future phases | 0 |
 | Deferred / Out of scope | 2 |
 | **Total tracked** | **24** |

@@ -4,6 +4,12 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@cyberlz/react-date-range": ["../src/index.d.ts"],
+      "@cyberlz/react-date-range/styles.css": ["../src/styles.scss"],
+      "@cyberlz/react-date-range/theme/default.css": ["../src/theme/default.scss"]
+    },
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": false,

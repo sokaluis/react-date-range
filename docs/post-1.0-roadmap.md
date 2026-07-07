@@ -24,12 +24,10 @@
 
 - Reproducible upstream audit bugs from
   [issue #2](https://github.com/sokaluis/react-date-range/issues/2):
-  - `weekStartsOn` propagation into `DefinedRange` static ranges
   - `findNextRangeIndex` guard for non-array `ranges`
   - null `startDate` / `endDate` handling so empty ranges do not mark every day in range
-- Small accessibility improvements (ARIA, keyboard, focus) — core labels/states completed in PR `707cdd1`: Calendar grid `aria-label` + `aria-roledescription`, DefinedRange `aria-pressed`, InputRangeField `aria-labelledby`, DateDisplay `role="group"`, DateRangePicker `role="region"` + `false` opt-out. Live region work is split by ownership: Calendar announces committed month/year navigation via `ariaLabels.liveRegionMonthYear`; DateRange announces committed selections via `ariaLabels.liveRegionSelection`. RTL style support is complete. Remaining: cross-month UX.
+- Small accessibility improvements (ARIA, keyboard, focus) — core labels/states completed in PR `707cdd1`: Calendar grid `aria-label` + `aria-roledescription`, DefinedRange `aria-pressed`, InputRangeField `aria-labelledby`, DateDisplay `role="group"`, DateRangePicker `role="region"` + `false` opt-out. Live region work is split by ownership: Calendar announces committed month/year navigation via `ariaLabels.liveRegionMonthYear`; DateRange announces committed selections via `ariaLabels.liveRegionSelection`. RTL style support and cross-month `selectablePassive` UX are complete.
 - Nice-to-have findings from issue #2, only after bugfixes:
-  - visible focus indicators for nav arrows, selects, and day buttons
   - selected range label UX exploration
 - TypeScript strict-mode pass and JSDoc sweep
 - Documentation corrections and examples
