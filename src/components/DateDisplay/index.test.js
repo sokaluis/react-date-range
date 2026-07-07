@@ -8,6 +8,7 @@ const baseStyles = {
   dateDisplay: 'dd',
   dateDisplayItem: 'ddi',
   dateDisplayItemActive: 'ddi-active',
+  dateDisplayLabel: 'ddl',
 };
 
 const setup = props =>
@@ -243,6 +244,59 @@ describe('DateDisplay', () => {
 
       expect(container.querySelectorAll('.dd')[0]).toHaveStyle({ color: '#bbb' });
       expect(container.querySelectorAll('.dd')[1]).toHaveStyle({ color: '#bbb' });
+    });
+  });
+
+  describe('range labels', () => {
+    test('labelled range renders visible label text', () => {
+      setup({
+        ranges: [{ startDate: null, endDate: null, key: 'selection', label: 'Trip 1' }],
+      });
+
+      expect(screen.getByText('Trip 1')).toBeInTheDocument();
+    });
+
+    test('per-range group accessible name resolves to label', () => {
+      setup({
+        ranges: [{ startDate: null, endDate: null, key: 'selection', label: 'Trip 1' }],
+      });
+
+      expect(screen.getByRole('group', { name: 'Trip 1' })).toBeInTheDocument();
+    });
+
+    test('no label preserves bare wrapper with no inner role group', () => {
+      setup({
+        ranges: [{ startDate: null, endDate: null, key: 'selection' }],
+      });
+
+      const groups = screen.getAllByRole('group');
+      expect(groups).toHaveLength(1);
+      expect(groups[0]).toHaveAccessibleName('Selected date range');
+    });
+
+    test('two ranges with same label get distinct aria-labelledby ids', () => {
+      const { container } = setup({
+        ranges: [
+          { startDate: null, endDate: null, key: 'trip1', label: 'Trip' },
+          { startDate: null, endDate: null, key: 'trip2', label: 'Trip' },
+        ],
+      });
+
+      const innerGroups = container.querySelectorAll('[role="group"][aria-labelledby]');
+      expect(innerGroups).toHaveLength(2);
+      const idA = innerGroups[0].getAttribute('aria-labelledby');
+      const idB = innerGroups[1].getAttribute('aria-labelledby');
+      expect(idA).toBeTruthy();
+      expect(idB).toBeTruthy();
+      expect(idA).not.toBe(idB);
+    });
+
+    test('label renders as plain text, HTML is not interpreted', () => {
+      setup({
+        ranges: [{ startDate: null, endDate: null, key: 'selection', label: '<img src=x onerror=alert(1)>' }],
+      });
+
+      expect(screen.getByText('<img src=x onerror=alert(1)>')).toBeInTheDocument();
     });
   });
 });

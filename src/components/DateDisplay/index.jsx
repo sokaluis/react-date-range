@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useId } from 'react';
 import classnames from 'classnames';
 import DateInput from '../DateInput';
 
@@ -21,6 +21,7 @@ function DateDisplay({
   styles = {},
 }) {
   const defaultColor = rangeColors[focusedRange[0]] || color;
+  const labelBaseId = useId();
 
   return (
     <div
@@ -30,7 +31,17 @@ function DateDisplay({
       {ranges.map((range, i) => {
         if (range.showDateDisplay === false || (range.disabled && !range.showDateDisplay)) return null;
         return (
-          <div className={styles.dateDisplay} key={i} style={{ color: range.color || defaultColor }}>
+          <div
+            className={styles.dateDisplay}
+            key={i}
+            style={{ color: range.color || defaultColor }}
+            role={range.label ? 'group' : undefined}
+            aria-labelledby={range.label ? labelBaseId + '-label-' + i : undefined}>
+            {range.label && (
+              <span id={labelBaseId + '-label-' + i} className={styles.dateDisplayLabel}>
+                {range.label}
+              </span>
+            )}
             <DateInput
               className={classnames(styles.dateDisplayItem, {
                 [styles.dateDisplayItemActive]: focusedRange[0] === i && focusedRange[1] === 0,
