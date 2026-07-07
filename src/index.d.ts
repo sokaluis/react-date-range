@@ -309,7 +309,7 @@ export interface DefinedRangeProps {
   /** default: `defaultStaticRanges` */
   staticRanges?: StaticRange[] | undefined;
   /** 0=Sunday … 6=Saturday; forwarded into default weekly static ranges. */
-  weekStartsOn?: number | undefined;
+  weekStartsOn?: 0 | 1 | 2 | 3 | 4 | 5 | 6 | undefined;
 }
 
 export function DefinedRange(props: DefinedRangeProps): React.JSX.Element;
