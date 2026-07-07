@@ -86,13 +86,13 @@ Scoped packages require `--access public` (or `publishConfig.access: "public"` i
 | **Alpha** | `0.1.0-alpha.0` | `alpha` | Unstable, may break. Internal/test usage. |
 | **Alpha checkpoint** | `0.1.0-alpha.3` | `alpha` | Refactor in progress; tree-shaking delivered. |
 | **Beta** | `0.1.0-beta.0` | `beta` | Internal refactor complete, public API stable for `0.1.x`; future visual redesign ideas were left uncommitted. |
-| **RC** | `0.1.0-rc.0` | `rc` | Release candidate. Final testing before stable. |
-| **Stable** | `1.0.0` | `latest` | Production-ready. Follows semver strictly. |
+| **RC** | `1.0.0-rc.0` | `rc` | Historical release candidate. Final testing before stable. |
+| **Stable** | `1.1.x` | `latest` | Production-ready. Follows semver strictly. |
 
-For `1.0.0`: all consumers use `npm install @cyberlz/react-date-range` (no tag required).
-`latest` is intentionally pinned to `1.0.0` after promotion.
+For `1.1.x`: all consumers use `npm install @cyberlz/react-date-range` (no tag required).
+`latest` currently points to `1.1.0`; will be `1.1.1` after OTP publish.
 
-### Before `1.0.0`
+### Stable-line rules
 
 - `0.x.y` releases may contain breaking changes (semver allows this).
 - Use `alpha`/`beta`/`rc` tags so `latest` stays on the last stable release.

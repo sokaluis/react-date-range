@@ -1,7 +1,8 @@
 # Docs Site Plan — Landing, Demo & Full Documentation
 
-> **Status: ready to plan.** `@cyberlz/react-date-range@1.0.0` is live on npm
-> `latest`, the local demo consumes the stable package, and migration notes exist.
+> **Status: ready to plan.** `@cyberlz/react-date-range@1.1.x` is the stable line on npm
+> `latest` (v1.1.0 published; v1.1.1 pending npm OTP). The local demo resolves to
+> local source during development so landed-but-unpublished changes can be validated.
 > The current adoption asset is a small public landing/demo site, followed by full
 > component documentation.
 
@@ -22,8 +23,8 @@
 
 | Previous risk | Current state |
 |---------------|---------------|
-| Package was pre-release | `1.0.0` is stable on npm `latest` |
-| Demo might not install the real package | `demo/` resolves `@cyberlz/react-date-range@1.0.0` from npm and builds |
+| Package was pre-release | `1.1.x` is stable on npm `latest` (v1.1.0 published; v1.1.1 pending OTP) |
+| Demo might drift from package source | `demo/` resolves `@cyberlz/react-date-range` to local `src/` during development and is type-checked |
 | Migration path was unclear | `docs/migration-from-upstream.md` exists |
 | Roadmap could overpromise | `docs/post-1.0-roadmap.md` marks future work as exploratory |
 
@@ -38,7 +39,7 @@ pretending future roadmap candidates are already committed features.
 |---------|---------|
 | Hero + install command | `npm install @cyberlz/react-date-range` |
 | Live demo | Interactive `<DateRangePicker />` from `demo/` |
-| Stable status badge | `1.0.0 stable · maintained fork · React 18/19` |
+| Stable status badge | `1.1.x stable · maintained fork · React 18/19` |
 | Migration from upstream | Link to `docs/migration-from-upstream.md` |
 | Core docs links | README, changelog, roadmap, GitHub release |
 | npm / GitHub links | npm package, repository, issue tracker |
@@ -77,8 +78,9 @@ The demo is deployed by `.github/workflows/pages-demo.yml`.
 
 | Milestone | Landing status |
 |-----------|---------------|
-| `1.0.0` stable published | ✅ Ready to plan |
-| Local demo validates npm stable | ✅ Ready to reuse as baseline |
+| `1.0.0` stable published | ✅ Done (2026-06-29) |
+| `1.1.x` stable line on npm | ✅ Done (v1.1.0 published; v1.1.1 pending OTP) |
+| Local demo validates current source | ✅ Ready to reuse as baseline |
 | Landing copy + GitHub Pages workflow ready | ✅ Deploy |
 | Public demo URL live | ✅ Added to README |
 | Full docs expanded | Announce more broadly |
@@ -88,7 +90,7 @@ The demo is deployed by `.github/workflows/pages-demo.yml`.
 ## Checklist
 
 - [x] Consumer smoke test passes (`tsc --noEmit` + `vite build` on clean projects)
-- [x] Minimal demo built and validated — `demo/`, npm stable, typecheck ✅, build ✅
+- [x] Minimal demo validated — `demo/`, local source alias, typecheck ✅, build ✅
 - [x] Migration notes written — see `docs/migration-from-upstream.md`
 - [x] Roadmap written — see `docs/post-1.0-roadmap.md`
 - [ ] Landing copy added to `demo/`
@@ -100,4 +102,4 @@ The demo is deployed by `.github/workflows/pages-demo.yml`.
 ## Next step
 
 Full documentation can now grow from the public demo entry point without blocking
-`1.0.x` bugfix work.
+`1.x` bugfix or additive feature work.

@@ -7,7 +7,7 @@
 
 ## Current release meaning
 
-`1.0.0-rc.0` was validated (consumer spikes passed: React 18/19, SSR CJS+ESM, tree-shaking). `1.0.0` stable metadata is prepared in this commit; npm publish and `latest`-tag promotion to follow.
+`1.0.0-rc.0` was validated (consumer spikes passed: React 18/19, SSR CJS+ESM, tree-shaking). `1.0.0` stable was published; the stable line is now `1.1.x`.
 
 > **Stable = internal refactor complete, public API frozen, no breaking changes planned.**
 
@@ -24,7 +24,8 @@ until they have a concrete spec and maintainer decision.
 | Phase 0 — Audit & planning | Understand upstream, risks, publishing, and source provenance | ✅ Complete | Done before first alpha |
 | Phase 1 — Compatible rescue | Drop-in React 18/19 + TypeScript-compatible package | ✅ Complete | `0.1.0-alpha.0`–`0.1.0-alpha.2` |
 | **Phase 3 — Core refactor (completed)** | Function components, tooling, tests, tree-shaking | ✅ Complete | `0.1.0-beta.0` |
-| **1.0.0 — Stable release** | Bug fixes, strict TypeScript, upstream parity, docs sweep | ✅ This commit prepares stable | `1.0.0` |
+| **1.0.0 — Stable release** | Bug fixes, strict TypeScript, upstream parity, docs sweep | ✅ Complete | `1.0.0` |
+| **1.1.x — Accessibility + RTL + cross-month UX** | Core labels/states, RTL layout, cross-month `selectablePassive`, multi-range labels | ✅ Complete (v1.1.0 published; v1.1.1 tag exists, npm publish pending OTP) | `1.1.x` |
 
 ---
 

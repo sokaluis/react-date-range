@@ -44,14 +44,14 @@ docs: add release flow documentation
 |-------------|------------|---------|
 | Alpha | `v{version}-alpha.{n}` | `v0.1.0-alpha.1` |
 | Beta | `v{version}-beta.{n}` | `v0.1.0-beta.0` |
-| RC | `v{version}-rc.{n}` | `v0.1.0-rc.0` |
-| Stable | `v{version}` | `v1.0.0` |
+| RC | `v{version}-rc.{n}` | `v1.0.0-rc.0` |
+| Stable | `v{version}` | `v1.1.1` |
 
-**Stable tag (pending):** `v1.0.0`
-- `package.json` version: `1.0.0` (update before tagging)
-- npm dist-tag: `latest` — will be promoted to `1.0.0` stable at npm publish time
+**Current stable:** `v1.1.0` (published); `v1.1.1` tag exists at commit `843b09b`; npm publish pending OTP.
 
-> **Current state**: `1.0.0` stable metadata prepared in this commit; npm publish and `latest`-tag promotion to follow. `rc` still points to `1.0.0-rc.0`.
+**Stable tag (pending):** `v1.1.1`
+- `package.json` version: `1.1.1` (already set at commit `843b09b`)
+- npm dist-tag: `latest` — will be promoted to `1.1.1` stable at npm publish time
 
 The `package.json` `version` field **must match** the tag version exactly.
 
@@ -105,6 +105,14 @@ git push origin v0.1.0-alpha.1
 - `package.json` version: `1.0.0-rc.0`
 - npm dist-tag: `rc`
 
+**v1.1.0 published:** `v1.1.0`
+- `package.json` version: `1.1.0`
+- npm dist-tag: `latest`
+
+**v1.1.1 tag exists; npm publish pending:** `v1.1.1`
+- `package.json` version: `1.1.1` (commit `843b09b`)
+- npm dist-tag: `latest` (at publish time)
+
 ### Step 3 — GitHub Release
 
 Create a release on GitHub:
@@ -145,10 +153,10 @@ version after publishing so `@alpha` continues to mean "newest prerelease" while
 
 | Dist-tag | Points to | Audience |
 |----------|-----------|----------|
-| `latest` | Will be promoted to `1.0.0` stable at npm publish time; currently `0.1.0-alpha.0` | Default npm installs; not used for active prerelease testing |
-| `alpha` | Current prerelease channel; may point to `0.1.0-beta.0` after beta publish | Existing testers: `npm install @cyberlz/react-date-range@alpha` |
-| `beta` | `0.1.0-beta.0` and future betas | Early adopters: `npm install @cyberlz/react-date-range@beta` |
-| `rc` | `1.0.0-rc.0` (current RC) | Pre-release validation: `npm install @cyberlz/react-date-range@rc` |
+| `latest` | `1.1.0` currently; will be `1.1.1` after npm OTP publish | Default npm installs |
+| `alpha` | `0.1.0-alpha.3` (legacy) | Existing testers: `npm install @cyberlz/react-date-range@alpha` |
+| `beta` | `0.1.0-beta.0` (legacy) | Early adopters: `npm install @cyberlz/react-date-range@beta` |
+| `rc` | `1.0.0-rc.0` (stable anchor for pre-1.0 testers) | Pre-release validation: `npm install @cyberlz/react-date-range@rc` |
 
 **Managing dist-tags:**
 ```bash
@@ -158,8 +166,8 @@ npm dist-tag ls @cyberlz/react-date-range
 # Move a tag (e.g., point alpha to the first beta after publish)
 npm dist-tag add @cyberlz/react-date-range@0.1.0-beta.0 alpha
 
-# Promote stable to latest — only when stable exists (v1.0.0 launch)
-npm dist-tag add @cyberlz/react-date-range@1.0.0 latest
+# Promote a patch to latest after publish
+npm dist-tag add @cyberlz/react-date-range@1.1.1 latest
 ```
 
 ---
@@ -168,10 +176,10 @@ npm dist-tag add @cyberlz/react-date-range@1.0.0 latest
 
 | Source | Example | Must match |
 |--------|---------|------------|
-| `package.json` → `version` | `1.0.0` | Git tag |
-| Git tag | `v1.0.0` | `package.json` version (minus `v` prefix) |
-| GitHub Release tag | `v1.0.0` | Git tag |
-| npm version (registry) | `1.0.0` | `package.json` version |
+| `package.json` → `version` | `1.1.1` | Git tag |
+| Git tag | `v1.1.1` | `package.json` version (minus `v` prefix) |
+| GitHub Release tag | `v1.1.1` | Git tag |
+| npm version (registry) | `1.1.1` | `package.json` version |
 
 **Order matters:** update `package.json` version → commit → tag → push → publish.
 
