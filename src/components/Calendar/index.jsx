@@ -583,7 +583,7 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
   }));
   const virtualMonths = scroll.enabled ? monthVirtualizer.getVirtualItems() : [];
   const virtualSizeStyle = isVertical
-    ? { height: monthVirtualizer.getTotalSize(), width: '100%', position: 'relative' }
+    ? { height: monthVirtualizer.getTotalSize(), width: scrollArea.calendarWidth, position: 'relative' }
     : { width: monthVirtualizer.getTotalSize(), height: '100%', position: 'relative' };
 
   return (
@@ -628,6 +628,8 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
             style={{
               width: scrollArea.calendarWidth + 11,
               height: scrollArea.calendarHeight + 11,
+              overflowX: isVertical ? 'hidden' : undefined,
+              overflowY: isVertical ? 'auto' : undefined,
             }}
             ref={scrollContainerRef}
             onScroll={handleScroll}>
@@ -647,7 +649,7 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
                     key={virtualMonth.key ?? virtualMonth.index}
                     style={
                       isVertical
-                        ? { ...itemStyle, height: virtualMonth.size, width: '100%' }
+                        ? { ...itemStyle, height: virtualMonth.size, width: scrollArea.calendarWidth }
                         : { ...itemStyle, width: virtualMonth.size, height: '100%' }
                     }>
                   <Month

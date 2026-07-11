@@ -388,7 +388,14 @@ describe('Calendar', () => {
         shownDate: new Date(2025, 1, 15),
       });
 
-      expect(container.querySelector('.rdrInfiniteMonths')).toHaveStyle({ width: '343px' });
+      const scrollContainer = container.querySelector('.rdrInfiniteMonths');
+
+      expect(scrollContainer).toHaveStyle({
+        width: '343px',
+        overflowX: 'hidden',
+        overflowY: 'auto',
+      });
+      expect(scrollContainer.firstElementChild).toHaveStyle({ width: '332px' });
     });
 
     test('previous and next arrows update visible month and report clamped shown dates', () => {

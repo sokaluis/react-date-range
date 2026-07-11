@@ -393,7 +393,7 @@ function App() {
         </p>
       </section>
 
-      <section className="demo-panel scroll-demo-panel">
+      <section className="demo-panel">
         <h2>Calendar — Vertical Scroll (hook-based)</h2>
         <p>
           Verifies scroll/seam behavior (<code>listRef</code>, timer cleanup,{' '}
@@ -572,7 +572,7 @@ function App() {
 
       {/* selectablePassive guarded by scroll */}
 
-      <section className="demo-panel scroll-demo-panel">
+      <section className="demo-panel">
         <h2>
           Calendar — <code>selectablePassive</code> Guarded with Scroll
         </h2>
