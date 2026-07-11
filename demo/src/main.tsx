@@ -407,7 +407,7 @@ function App() {
           showDateDisplay={true}
           months={2}
           direction="vertical"
-          scroll={{ enabled: true, monthHeight: 200, calendarHeight: 440 }}
+          scroll={{ enabled: true, monthHeight: 240, longMonthHeight: 280, calendarHeight: 560 }}
           fixedHeight={true}
         />
       </section>
