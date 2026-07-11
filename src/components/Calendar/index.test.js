@@ -28,9 +28,10 @@ jest.mock('@tanstack/react-virtual', () => {
         getVirtualItems: () => buildVirtualItems(visibleRangeRef.current),
         scrollToIndex: index => setVisibleRange([index, index + 1]),
         measure: jest.fn(),
+        estimateSize: options.estimateSize,
         setVisibleRange,
       }),
-      [options.count]
+      [options.count, options.estimateSize]
     );
 
     mockVirtualizerInstance = instance;
@@ -362,6 +363,21 @@ describe('Calendar', () => {
       expect(liveRegions[0]).toHaveAttribute('aria-atomic', 'true');
       expect(liveRegions[0].closest('.rdrMonth')).toBeNull();
       expect(liveRegions[0].closest('.rdrInfiniteMonths')).toBeNull();
+    });
+
+    test('scroll month size estimation respects fixedHeight month rendering', () => {
+      renderCalendar({
+        scroll: { enabled: true, monthHeight: 240, longMonthHeight: 280, calendarHeight: 420 },
+        fixedHeight: true,
+        minDate: new Date(2025, 0, 1),
+        maxDate: new Date(2025, 11, 31),
+        shownDate: new Date(2025, 1, 15),
+      });
+
+      // February 2025 is a short month unless fixedHeight extends it to a
+      // 6-week grid. The virtualizer must reserve the long-month height that
+      // Month will actually render, otherwise months visually overlap.
+      expect(mockVirtualizerInstance.estimateSize(1)).toBe(280);
     });
 
     test('previous and next arrows update visible month and report clamped shown dates', () => {

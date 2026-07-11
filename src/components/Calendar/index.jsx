@@ -143,7 +143,7 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
       const { direction, minDate, _calendarScrollArea: scrollArea } = props;
       if (direction === 'horizontal') return scrollArea.monthWidth;
       const monthStep = addMonths(minDate, index);
-      const { start, end } = getMonthDisplayRange(monthStep, dateOptions);
+      const { start, end } = getMonthDisplayRange(monthStep, dateOptions, props.fixedHeight);
       const isLongMonth = differenceInDays(end, start, dateOptions) + 1 > 7 * 5;
       return isLongMonth ? scrollArea.longMonthHeight : scrollArea.monthHeight;
     },
