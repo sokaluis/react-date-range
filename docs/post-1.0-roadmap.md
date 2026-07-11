@@ -41,6 +41,8 @@ but it should happen before asking external users to evaluate the library.
 
 ### Public landing page / demo
 
+**In progress — see [docs-adoption change (2026-07-11)](.).**
+
 Candidate direction — docs/demo only, no runtime API change.
 
 - Promote the existing [`demo/`](../demo/) into a public landing-page baseline

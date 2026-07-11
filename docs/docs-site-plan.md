@@ -92,7 +92,7 @@ The demo is deployed by `.github/workflows/pages-demo.yml`.
 - [x] Minimal demo validated — `demo/`, local source alias, typecheck ✅, build ✅
 - [x] Migration notes written — see `docs/migration-from-upstream.md`
 - [x] Roadmap written — see `docs/post-1.0-roadmap.md`
-- [ ] Landing copy added to `demo/`
+- [x] Landing copy added to `demo/` — hero + Before/After panel in `demo/src/main.tsx`, quick-links in `README.md` (docs-adoption, 2026-07-11)
 - [x] GitHub Pages workflow added
 - [x] Landing page deployed with stable status badge — <https://sokaluis.github.io/react-date-range/>
 - [x] Public demo URL added to `README.md`
