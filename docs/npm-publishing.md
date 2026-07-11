@@ -90,7 +90,7 @@ Scoped packages require `--access public` (or `publishConfig.access: "public"` i
 | **Stable** | `1.2.x` | `latest` | Production-ready. Follows semver strictly. |
 
 For `1.2.x`: all consumers use `npm install @cyberlz/react-date-range` (no tag required).
-`latest` currently points to `1.1.0`; will be `1.2.0` after manual npm publish.
+`latest` currently points to `1.2.0`.
 
 ### Stable-line rules
 

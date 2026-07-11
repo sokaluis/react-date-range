@@ -157,7 +157,7 @@ version after publishing so `@alpha` continues to mean "newest prerelease" while
 
 | Dist-tag | Points to | Audience |
 |----------|-----------|----------|
-| `latest` | `1.1.0` currently; will be `1.2.0` after manual npm publish | Default npm installs |
+| `latest` | `1.2.0` | Default npm installs |
 | `alpha` | `0.1.0-alpha.3` (legacy) | Existing testers: `npm install @cyberlz/react-date-range@alpha` |
 | `beta` | `0.1.0-beta.0` (legacy) | Early adopters: `npm install @cyberlz/react-date-range@beta` |
 | `rc` | `1.0.0-rc.0` (stable anchor for pre-1.0 testers) | Pre-release validation: `npm install @cyberlz/react-date-range@rc` |
