@@ -6,6 +6,11 @@
 > on top of the `1.1.x` accessibility/RTL/cross-month baseline. The `rc` tag remains
 > on `1.0.0-rc.0` for historical validation. See [Dist-tag policy](#dist-tag-policy) below.
 
+## Quick links
+
+| [Install](#install) | [Migration guide](docs/migration-from-upstream.md) | [Landing demo](https://sokaluis.github.io/react-date-range/) | [Changelog](CHANGELOG.md) |
+|---|---|---|---|
+
 ---
 
 ## What is this?

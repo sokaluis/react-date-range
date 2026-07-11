@@ -108,12 +108,140 @@
         color: #64748b;
       }
 
+      /* ---------------------------------------------------------------------
+         Hero — landing top section
+         --------------------------------------------------------------------- */
+      .hero {
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        color: #f1f5f9;
+        border-radius: 10px;
+        padding: 2rem 2rem 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .hero-title {
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin: 0 0 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+      }
+
+      .hero-title .badge {
+        background: #fef3c7;
+        color: #92400e;
+        border-color: #fcd34d;
+        font-size: 0.65rem;
+      }
+
+      .hero-subtitle {
+        margin: 0.5rem 0 1rem;
+        font-size: 0.95rem;
+        color: #cbd5e1;
+        line-height: 1.5;
+      }
+
+      .hero-subtitle a {
+        color: #93c5fd;
+      }
+
+      .hero-install {
+        margin: 0;
+      }
+
+      /* ---------------------------------------------------------------------
+         Before / After panel — upstream vs fork
+         --------------------------------------------------------------------- */
+      .before-after {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+
+      .before-after-col {
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+        padding: 1.25rem;
+      }
+
+      .before-after-col h3 {
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin: 0 0 0.75rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #e2e8f0;
+      }
+
+      .before-after-col.upstream {
+        background: #fffbeb;
+        border: 1px solid #fcd34d;
+      }
+
+      .before-after-col.upstream h3 {
+        color: #92400e;
+        border-bottom-color: #fde68a;
+      }
+
+      .before-after-col.fork h3 {
+        color: #1e40af;
+      }
+
+      .upstream-callout {
+        font-size: 0.8rem;
+        color: #78350f;
+        margin: 0 0 0.75rem;
+        line-height: 1.5;
+      }
+
+      .upstream-callout a {
+        color: #b45309;
+      }
+
+      .import-diff {
+        background: #1e293b;
+        color: #e2e8f0;
+        padding: 0.5rem 0.75rem;
+        border-radius: 5px;
+        font-family: 'SF Mono', 'Fira Code', 'Fira Mono', monospace;
+        font-size: 0.75rem;
+        overflow-x: auto;
+        white-space: pre;
+        margin: 0 0 0.75rem;
+        line-height: 1.6;
+      }
+
+      .import-diff .removed {
+        color: #fca5a5;
+      }
+
+      .import-diff .added {
+        color: #86efac;
+      }
+
       @media (max-width: 600px) {
         .container {
           padding: 1rem 0.75rem;
         }
 
         h1 {
+          font-size: 1.25rem;
+        }
+
+        .before-after {
+          grid-template-columns: 1fr;
+        }
+
+        .hero {
+          padding: 1.25rem 1rem 1rem;
+        }
+
+        .hero-title {
           font-size: 1.25rem;
         }
       }

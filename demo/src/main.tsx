@@ -211,6 +211,62 @@ function App() {
 
   return (
     <div className="container">
+      {/* Landing hero — docs/adoption */}
+      <section className="hero">
+        <h1 className="hero-title">
+          @cyberlz/react-date-range
+          <span className="badge">1.2.x stable</span>
+        </h1>
+        <p className="hero-subtitle">
+          Modern maintained fork of <code>react-date-range</code>.
+          React 18/19 compatible, TypeScript-first.{' '}
+          <a href="docs/migration-from-upstream.md">Why a fork?</a>
+        </p>
+        <div className="install-block hero-install">npm install @cyberlz/react-date-range</div>
+      </section>
+
+      {/* Before / After panel — docs/adoption */}
+      {/* See docs/integrations/form-submit.md and docs/integrations/controlled-state.md */}
+      <section className="before-after">
+        <div className="before-after-col upstream">
+          <h3>Before — archived upstream</h3>
+          <p className="upstream-callout">
+            <strong>react-date-range</strong> is read-only and no longer maintained.
+            Issues include React 19 incompatibility and stale date-fns deps.
+          </p>
+          <div
+            className="import-diff"
+            dangerouslySetInnerHTML={{
+              __html:
+                '<span className="removed">- import { DateRangePicker } from \'react-date-range\';</span>\n' +
+                '<span className="added">+ import { DateRangePicker } from \'@cyberlz/react-date-range\';</span>',
+            }}
+          />
+          <p className="upstream-callout" style={{ margin: 0, fontSize: '0.75rem' }}>
+            Archived upstream · see{' '}
+            <a
+              href="https://www.npmjs.com/package/react-date-range"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              npm archived page
+            </a>
+          </p>
+        </div>
+        <div className="before-after-col fork">
+          <h3>After — @cyberlz/react-date-range</h3>
+          <p className="upstream-callout" style={{ color: '#1e40af', margin: '0 0 0.75rem', fontSize: '0.8rem' }}>
+            Live <code>DateRangePicker</code> from local source.
+          </p>
+          <DateRangePicker
+            onChange={handleChange}
+            ranges={ranges}
+            months={1}
+            direction="horizontal"
+          />
+        </div>
+      </section>
+
       <header>
         <h1>
           @cyberlz/react-date-range
