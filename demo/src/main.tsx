@@ -586,9 +586,9 @@ function App() {
           date={passiveScrollDate}
           displayMode="date"
           months={2}
-          direction="horizontal"
+          direction="vertical"
           selectablePassive={true}
-          scroll={{ enabled: true }}
+          scroll={{ enabled: true, monthHeight: 220, longMonthHeight: 260, calendarHeight: 520 }}
         />
         <p className="state-output">
           <strong>Selected date:</strong>{' '}

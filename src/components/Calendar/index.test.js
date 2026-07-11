@@ -141,6 +141,9 @@ const findLiveRegion = container => container.querySelector('.rdrLiveRegion');
 const readDefaultTheme = () =>
   fs.readFileSync(path.resolve(__dirname, '../../theme/default.scss'), 'utf8');
 
+const readCalendarComponentStyles = () =>
+  fs.readFileSync(path.resolve(__dirname, './index.scss'), 'utf8');
+
 const readTypeDeclarations = () =>
   fs.readFileSync(path.resolve(__dirname, '../../index.d.ts'), 'utf8');
 
@@ -223,7 +226,7 @@ describe('Calendar', () => {
     test('horizontal rtl calendars apply row-reverse styling to the month container', () => {
       const { container } = renderCalendar({ direction: 'horizontal', dir: 'rtl', months: 2 });
       const monthsContainer = container.querySelector('.rdrMonthsHorizontal');
-      const scss = fs.readFileSync(path.resolve(__dirname, './index.scss'), 'utf8');
+      const scss = readCalendarComponentStyles();
 
       expect(monthsContainer).toBeInTheDocument();
       // JSDOM does not compute CSS layout so getBoundingClientRect() cannot prove
@@ -234,6 +237,15 @@ describe('Calendar', () => {
       expect(monthsContainer.closest('.rdrRtl')).toBe(container.firstChild);
       expect(container.firstChild).toHaveClass('rdrRtl');
       expect(scss).toMatch(/\.rdrRtl\s+\.rdrMonthsHorizontal\s*\{[^}]*flex-direction:\s*row-reverse/s);
+    });
+  });
+
+  describe('scroll layout styles', () => {
+    test('horizontal scroll months do not inherit the non-virtualized nested row layout', () => {
+      const scss = readCalendarComponentStyles();
+
+      expect(scss).toContain('.rdrMonthsHorizontal:not(.rdrInfiniteMonths) > div > div > div');
+      expect(scss).not.toContain('.rdrMonthsHorizontal > div > div > div');
     });
   });
 

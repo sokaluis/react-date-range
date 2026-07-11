@@ -76,7 +76,7 @@
   flex-direction: column;
 }
 
-.rdrMonthsHorizontal > div > div > div{
+.rdrMonthsHorizontal:not(.rdrInfiniteMonths) > div > div > div{
   display: flex;
   flex-direction: row;
 }
