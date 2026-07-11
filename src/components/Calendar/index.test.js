@@ -380,6 +380,17 @@ describe('Calendar', () => {
       expect(mockVirtualizerInstance.estimateSize(1)).toBe(280);
     });
 
+    test('vertical scroll reserves scrollbar width instead of producing an invalid auto width', () => {
+      const { container } = renderCalendar({
+        scroll: { enabled: true, monthHeight: 240, longMonthHeight: 280, calendarHeight: 420 },
+        minDate: new Date(2025, 0, 1),
+        maxDate: new Date(2025, 11, 31),
+        shownDate: new Date(2025, 1, 15),
+      });
+
+      expect(container.querySelector('.rdrInfiniteMonths')).toHaveStyle({ width: '343px' });
+    });
+
     test('previous and next arrows update visible month and report clamped shown dates', () => {
       const onShownDateChange = jest.fn();
       renderCalendar({

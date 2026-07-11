@@ -99,7 +99,7 @@ const calcScrollArea = ({ direction, months, scroll }) => {
       enabled: true,
       monthHeight: scroll.monthHeight || 220,
       longMonthHeight: longMonthHeight || 260,
-      calendarWidth: 'auto',
+      calendarWidth: scroll.calendarWidth || scroll.monthWidth || 332,
       calendarHeight: (scroll.calendarHeight || longMonthHeight || 240) * months,
     };
   }
