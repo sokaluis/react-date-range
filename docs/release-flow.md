@@ -45,13 +45,17 @@ docs: add release flow documentation
 | Alpha | `v{version}-alpha.{n}` | `v0.1.0-alpha.1` |
 | Beta | `v{version}-beta.{n}` | `v0.1.0-beta.0` |
 | RC | `v{version}-rc.{n}` | `v1.0.0-rc.0` |
-| Stable | `v{version}` | `v1.2.0` |
+| Stable | `v{version}` | `v1.2.1` |
 
-**Current stable:** `v1.2.0` is published on npm `latest`; `v1.1.1` tag exists at commit `843b09b` (historical, never promoted to npm `latest`).
+**Current npm stable:** `v1.2.0` is published on npm `latest`; `v1.1.1` tag exists at commit `843b09b` (historical, never promoted to npm `latest`).
 
-**Stable tag:** `v1.2.0`
-- `package.json` version: `1.2.0`
-- npm dist-tag: `latest` — points to `1.2.0` stable
+**Current local release prep:** `v1.2.1` is prepared as a patch release. npm
+`latest` must remain documented as `1.2.0` until the maintainer publishes
+`1.2.1` manually.
+
+**Prepared stable tag:** `v1.2.1`
+- `package.json` version: `1.2.1`
+- npm dist-tag: `latest` — still points to `1.2.0` until manual publish
 
 The `package.json` `version` field **must match** the tag version exactly.
 
@@ -117,6 +121,10 @@ git push origin v0.1.0-alpha.1
 - `package.json` version: `1.2.0`
 - npm dist-tag: `latest` (at publish time)
 
+**v1.2.1 prepared locally:** `v1.2.1`
+- `package.json` version: `1.2.1`
+- npm dist-tag: pending maintainer publish; current registry `latest` remains `1.2.0`
+
 ### Step 3 — GitHub Release
 
 Create a release on GitHub:
@@ -170,8 +178,8 @@ npm dist-tag ls @cyberlz/react-date-range
 # Move a tag (e.g., point alpha to the first beta after publish)
 npm dist-tag add @cyberlz/react-date-range@0.1.0-beta.0 alpha
 
-# Promote a patch to latest after publish
-npm dist-tag add @cyberlz/react-date-range@1.2.0 latest
+# Promote a patch to latest after publish, if needed
+npm dist-tag add @cyberlz/react-date-range@1.2.1 latest
 ```
 
 ---
@@ -180,10 +188,10 @@ npm dist-tag add @cyberlz/react-date-range@1.2.0 latest
 
 | Source | Example | Must match |
 |--------|---------|------------|
-| `package.json` → `version` | `1.2.0` | Git tag |
-| Git tag | `v1.2.0` | `package.json` version (minus `v` prefix) |
-| GitHub Release tag | `v1.2.0` | Git tag |
-| npm version (registry) | `1.2.0` | `package.json` version |
+| `package.json` → `version` | `1.2.1` | Git tag |
+| Git tag | `v1.2.1` | `package.json` version (minus `v` prefix) |
+| GitHub Release tag | `v1.2.1` | Git tag |
+| npm version (registry) | `1.2.1` | `package.json` version after publish |
 
 **Order matters:** update `package.json` version → commit → tag → push → publish.
 

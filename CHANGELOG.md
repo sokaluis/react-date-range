@@ -14,6 +14,33 @@ For upstream release history (up to `2.0.1`), see [`CHANGELOG.upstream.md`](CHAN
 
 ---
 
+## [1.2.1] — 2026-07-11
+
+Patch release. Fixes virtualized Calendar scroll sizing and publishes the
+adoption docs/demo improvements prepared after `1.2.0`. Public API remains
+unchanged.
+
+### Fixed
+
+- Prevented horizontal scroll mode from inheriting the non-virtualized
+  horizontal month flex layout, which could make day numbers overlap in the
+  `selectablePassive` guarded scroll example.
+- Aligned virtualized month height estimation with `fixedHeight`, so short
+  months such as February reserve the same height they actually render.
+- Fixed vertical scroll width calculation so numeric calendar widths are used
+  instead of invalid `auto` arithmetic, and constrained vertical virtualized
+  internals to avoid accidental horizontal overflow.
+
+### Added
+
+- Added adoption-oriented documentation: evaluation guide, integration snippet
+  index, and snippets for form submit, controlled state, RTL, accessibility
+  labels, and static presets.
+- Promoted the demo into a landing-page baseline with hero copy, a Before/After
+  panel, and README quick links to the new adoption docs.
+
+---
+
 ## [1.2.0] — 2026-07-07
 
 Minor release. Adds the two input-trigger picker components, named range
