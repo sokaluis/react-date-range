@@ -14,7 +14,28 @@ For upstream release history (up to `2.0.1`), see [`CHANGELOG.upstream.md`](CHAN
 
 ---
 
+## [1.2.2] — 2026-07-11
+
+Patch release replacing `1.2.1` with the same Calendar scroll fixes and
+adoption docs/demo updates, but with `dist/` rebuilt before publish. Public API
+remains unchanged.
+
+> `1.2.1` was tagged and published with stale/incomplete generated artifacts.
+> Use `1.2.2` instead once the maintainer publishes it to npm.
+
+### Fixed
+
+- Regenerated the package `dist/` artifacts so the Calendar scroll fixes are
+  present in the published CommonJS, ESM, CSS, and type entrypoints.
+
+---
+
 ## [1.2.1] — 2026-07-11
+
+> **Superseded by `1.2.2`.** This version was tagged and published, but the
+> release artifacts were stale/incomplete because `npm run build` was not run
+> before publishing. The source fixes listed below are valid; consumers should
+> use `1.2.2` after it is published.
 
 Patch release. Fixes virtualized Calendar scroll sizing and publishes the
 adoption docs/demo improvements prepared after `1.2.0`. Public API remains
