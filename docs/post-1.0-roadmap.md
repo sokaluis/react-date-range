@@ -14,7 +14,7 @@
 - **No new framework wrappers before a framework-agnostic core.** Any Vue/Svelte/Solid
   wrapper is only viable after extracting `@cyberlz/date-range-core` (see 2.x/Labs).
 - **Skins require tokens/slots first.** Visual variants (classic, booking, dashboard, etc.)
-  cannot be built cleanly until the styling API and slot system from `1.3` are in place.
+  cannot be built cleanly until the styling API and slot system from `1.4` are in place.
 
 ---
 
@@ -41,7 +41,9 @@ but it should happen before asking external users to evaluate the library.
 
 ### Public landing page / demo
 
-**In progress — see [docs-adoption change (2026-07-11)](.).**
+**✅ Deployed — see [docs-adoption change (2026-07-11)](.).**
+
+Live URL: <https://sokaluis.github.io/react-date-range/>
 
 Candidate direction — docs/demo only, no runtime API change.
 
@@ -74,7 +76,22 @@ Candidate direction — requires separate spec.
 - Clear / Apply / Cancel footer with explicit gesture
 - Form-friendly API (integration patterns for React Hook Form, Formik, etc.)
 
-### 1.2 — Responsive / Mobile
+### 1.2 — Configurable UI Foundation
+
+Candidate direction — requires separate API design spec. User has expressed need
+for configurable base UI features (see `docs/roadmap-gap-analysis.md`).
+
+- Toggle header elements (month, year, navigation arrows)
+- Selected date display customization
+- Today affordance configuration
+- 1 vs 2+ calendar layouts
+- Scroll orientation (book/horizontal vs vertical)
+- Stable `className`/`style` slots per component region
+- CSS token surface for colors, spacing, radius
+
+This phase should be specced before `1.4` (styling system), which depends on it.
+
+### 1.3 — Responsive / Mobile
 
 Candidate direction — requires separate spec.
 
@@ -82,7 +99,7 @@ Candidate direction — requires separate spec.
 - Responsive layout modes for Calendar and DateRangePicker
 - Touch improvements (swipe, gesture support)
 
-### 1.3 — Styling System
+### 1.4 — Styling System
 
 Candidate direction — requires separate spec.
 
@@ -91,9 +108,9 @@ Candidate direction — requires separate spec.
 - Size variants (compact, comfortable, spacious)
 - Icon slots for nav arrows, clear button, etc.
 
-### 1.4 — Templates / Skins
+### 1.5 — Templates / Skins
 
-Candidate direction — requires `1.3` tokens/slots foundation first. Not started until
+Candidate direction — requires `1.4` tokens/slots foundation first. Not started until
 the styling API is stable.
 
 Potential directions (not exhaustive or committed):
@@ -104,7 +121,7 @@ Potential directions (not exhaustive or committed):
 - Dashboard — dense, utility-focused
 - Mobile — touch-first, full-width
 
-### 1.5 — Advanced Rules
+### 1.6 — Advanced Rules
 
 Candidate direction — requires separate spec.
 
@@ -153,3 +170,4 @@ case-by-case basis during spec for each phase.
 - Landing page and full docs need their own small docs/demo plan before deployment.
 - The 2.x/Labs track is aspirational and depends on 1.x evolution track completion.
 - Bugfixes and maintenance continue in parallel regardless of roadmap phase.
+- See `docs/roadmap-gap-analysis.md` for configurable UI foundation details and gap tracking.
