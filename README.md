@@ -8,8 +8,8 @@
 
 ## Quick links
 
-| [Install](#install) | [Evaluation guide](docs/evaluation-guide.md) | [Integration snippets](docs/integrations/README.md) | [Migration guide](docs/migration-from-upstream.md) | [Landing demo](https://sokaluis.github.io/react-date-range/) | [Changelog](CHANGELOG.md) |
-|---|---|---|---|---|---|
+| [Install](#install) | [Getting started](docs/getting-started.md) | [Component reference](docs/components/README.md) | [Accessibility](docs/accessibility.md) | [Troubleshooting](docs/troubleshooting.md) | [Integration snippets](docs/integrations/README.md) | [Migration guide](docs/migration-from-upstream.md) | [Landing demo](https://sokaluis.github.io/react-date-range/) | [Changelog](CHANGELOG.md) |
+|---|---|---|---|---|---|---|---|---|
 
 ---
 

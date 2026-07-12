@@ -10,6 +10,6 @@ Copy-pasteable snippets for patterns the demo already proves.
 | [`accessibility-setup.md`](./accessibility-setup.md) | Screen-reader labels via `ariaLabels` | `ariaLabels` |
 | [`static-presets.md`](./static-presets.md) | Fixed date ranges (Last 7 days, This month, etc.) | `ranges` |
 
-Each file is self-contained: one snippet + one gotcha. See
-[`docs/evaluation-guide.md`](../evaluation-guide.md) for the full
-install-and-evaluate journey.
+Each file is self-contained: one snippet + one gotcha.
+
+For the full install-and-evaluate journey, see [`docs/evaluation-guide.md`](../evaluation-guide.md). For component-level props tables, see the [component reference](../components/README.md).

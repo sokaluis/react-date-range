@@ -53,7 +53,7 @@ Full docs should grow after the landing baseline, not before it.
 | Area | Scope |
 |------|-------|
 | Getting started | Install, CSS imports, minimal usage |
-| Components | `Calendar`, `DateRange`, `DateRangePicker`, `DefinedRange` |
+| Components | `Calendar`, `DateRange`, `DateRangePicker`, `DefinedRange`, `DatePickerInput`, `DateRangeInput` |
 | Props reference | Props tables sourced from `src/index.d.ts` |
 | Examples | Basic range, static ranges, disabled dates, locale, controlled state |
 | Styling | CSS files, theme overrides, future tokens/slots roadmap |
@@ -97,7 +97,7 @@ The demo is deployed by `.github/workflows/pages-demo.yml`.
 - [x] GitHub Pages workflow added
 - [x] Landing page deployed with stable status badge — <https://sokaluis.github.io/react-date-range/>
 - [x] Public demo URL added to `README.md`
-- [ ] Full component docs written
+- [x] Full component docs written
 
 ## Next step
 
