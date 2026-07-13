@@ -101,6 +101,5 @@ The demo is deployed by `.github/workflows/pages-demo.yml`.
 
 ## Next step
 
-Full documentation can now grow from the public demo entry point without blocking
-`1.x` bugfix or additive feature work. For future roadmap gaps and configurable UI
-foundation details, see `docs/roadmap-gap-analysis.md`.
+Adoption track is complete. The next open work is the **Configurable UI foundation**
+track, which requires a separate API design spec. See `docs/roadmap-gap-analysis.md`.

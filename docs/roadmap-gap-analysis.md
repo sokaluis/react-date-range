@@ -13,7 +13,7 @@
 | Public landing/demo | ✅ Deployed | <https://sokaluis.github.io/react-date-range/> |
 | Public demo URL in README | ✅ Done | |
 | 1.2.x stable line | ✅ Published as `1.2.2` | Corrected after `1.2.1` shipped stale `dist/` |
-| Full component docs | 🔲 Open | Only open checklist item in `docs-site-plan.md` |
+| Full component docs | ✅ Complete | Component reference live at `docs/components/` |
 | Configurable UI foundation | 🔲 Not specced | User raised in memory #11130 |
 | Responsive/mobile (1.3) | 🔲 Not specced | |
 | Styling system (1.4) | 🔲 Not specced | Depends on configurable UI foundation |
@@ -37,12 +37,11 @@
 
 ## Immediate docs gap
 
-**Full component docs** — the only remaining open item in `docs/docs-site-plan.md`.
+~~**Full component docs** — the only remaining open item in `docs/docs-site-plan.md`.~~ ✅ Complete.
 
-Scope: `Calendar`, `DateRange`, `DateRangePicker`, `DefinedRange`, exported helpers.
-Props tables sourced from `src/index.d.ts`. Examples for common use cases.
-
-This is the next execution candidate before any product/API design work begins.
+Component reference is live at `docs/components/README.md`. The next open execution
+candidate is the **Configurable UI foundation** track, which requires a separate API design
+spec before implementation (see below).
 
 ---
 

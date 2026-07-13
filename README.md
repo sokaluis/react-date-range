@@ -279,7 +279,7 @@ bundlers (Vite, Webpack 5, esbuild, Rollup) get the full benefit.
 
 - **Local demo:** [`demo/`](demo/) is the current verified Vite consumer. During development it resolves package imports to local `src/` so unreleased fixes are exercised before publishing.
 - **Public demo:** <https://sokaluis.github.io/react-date-range/> is deployed with GitHub Pages from `demo/`.
-- **Full library documentation:** planned after the landing baseline, covering component props, examples, migration notes, styling, accessibility, and roadmap status.
+- **Full library documentation:** available — component reference at [`docs/components/`](docs/components/), covering props, examples, migration notes, styling, accessibility, and roadmap status.
 
 See [`docs/docs-site-plan.md`](docs/docs-site-plan.md) for the landing/docs plan and
 [`docs/post-1.0-roadmap.md`](docs/post-1.0-roadmap.md) for the broader post-1.0 direction.
