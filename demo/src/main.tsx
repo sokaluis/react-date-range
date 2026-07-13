@@ -79,6 +79,7 @@ function liveRegionSelection(range: { startDate: Date; endDate: Date }): string 
 function App() {
   const [ranges, setRanges] = useState<Range[]>([createInitialRange()]);
   const [singleDate, setSingleDate] = useState<Date | undefined>(today);
+  const [headerDemoDate, setHeaderDemoDate] = useState<Date | undefined>(today);
   const [inputDate, setInputDate] = useState<Date | undefined>(today);
   const [controlledInputDate, setControlledInputDate] = useState<Date | undefined>(nextWeek);
   const [inputOpen, setInputOpen] = useState(false);
@@ -338,6 +339,26 @@ function App() {
         />
         <p className="state-output">
           <code>date = {singleDate ? singleDate.toISOString().split('T')[0] : 'null'}</code>
+        </p>
+      </section>
+
+      <section className="demo-panel">
+        <h2>Calendar — Configurable Header &amp; Today Label</h2>
+        <p>
+          Hides year and previous/next header chrome while keeping keyboard date navigation.
+          Today renders as a visible label and still exposes <code>aria-current=&quot;date&quot;</code>.
+        </p>
+        <Calendar
+          onChange={handleInputDateChange('Calendar header/today demo', setHeaderDemoDate)}
+          onShownDateChange={handleShownDateChange('Calendar header/today demo')}
+          date={headerDemoDate}
+          displayMode="date"
+          showDateDisplay={false}
+          headerConfig={{ year: false, navigation: false }}
+          todayAffordance="label"
+        />
+        <p className="state-output">
+          <code>date = {headerDemoDate ? headerDemoDate.toISOString().split('T')[0] : 'null'}</code>
         </p>
       </section>
 

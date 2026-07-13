@@ -3,6 +3,16 @@ import React, { useState } from 'react';
 import classnames from 'classnames';
 import { startOfDay, format, isSameDay, isAfter, isBefore, endOfDay } from 'date-fns';
 
+const getTodayLabel = dateOptions => {
+  const localeCode = dateOptions?.locale?.code;
+  if (!localeCode || typeof Intl === 'undefined' || typeof Intl.RelativeTimeFormat !== 'function') {
+    return 'Today';
+  }
+
+  const label = new Intl.RelativeTimeFormat(localeCode, { numeric: 'auto' }).format(0, 'day');
+  return label.charAt(0).toLocaleUpperCase(localeCode) + label.slice(1);
+};
+
 function DayCell(props) {
   const [hover, setHover] = useState(false);
   const [active, setActive] = useState(false);
@@ -29,7 +39,12 @@ function DayCell(props) {
     date,
     dayContentRenderer,
     dayDisplayFormat,
+    dateOptions,
+    todayAffordance = 'highlight',
   } = props;
+  const showTodayHighlight = isToday && todayAffordance !== 'off';
+  const showTodayLabel = isToday && todayAffordance === 'label';
+  const todayLabel = showTodayLabel ? getTodayLabel(dateOptions) : null;
 
   const handleKeyEvent = event => {
     if ([13 /* space */, 32 /* enter */].includes(event.keyCode)) {
@@ -73,7 +88,7 @@ function DayCell(props) {
     return classnames(styles.day, {
       [styles.dayPassive]: isPassive,
       [styles.dayDisabled]: disabled,
-      [styles.dayToday]: isToday,
+      [styles.dayToday]: showTodayHighlight,
       [styles.dayWeekend]: isWeekend,
       [styles.dayStartOfWeek]: isStartOfWeek,
       [styles.dayEndOfWeek]: isEndOfWeek,
@@ -200,6 +215,7 @@ function DayCell(props) {
           dayContentRenderer?.(day) ||
           <span>{format(day, dayDisplayFormat)}</span>
         }
+        {todayLabel ? <span>{todayLabel}</span> : null}
       </span>
     </button>
   );

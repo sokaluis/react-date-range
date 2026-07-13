@@ -145,6 +145,17 @@ export interface ClassNames {
   rtl?: string | undefined;
 }
 
+export interface HeaderConfig {
+  /** Show the month picker or month text — default: true */
+  month?: boolean | undefined;
+  /** Show the year picker or year text — default: true */
+  year?: boolean | undefined;
+  /** Show previous/next month buttons — default: true */
+  navigation?: boolean | undefined;
+}
+
+export type TodayAffordance = 'highlight' | 'label' | 'off';
+
 // =============================================================================
 // Calendar Component
 // =============================================================================
@@ -186,6 +197,8 @@ export interface CalendarProps {
   endDatePlaceholder?: string | undefined;
   /** default: `false` */
   fixedHeight?: boolean | undefined;
+  /** Independent default header controls. Omitted keys default to true. */
+  headerConfig?: HeaderConfig | undefined;
   /**
    * Which range and step are focused. First value is index of ranges,
    * second value is which step on date range (startDate or endDate).
@@ -251,6 +264,8 @@ export interface CalendarProps {
   startDatePlaceholder?: string | undefined;
   /** default: none */
   updateRange?: ((newRange: Range) => void) | undefined;
+  /** Today visual affordance — default: `highlight`; `aria-current="date"` is preserved in every mode. */
+  todayAffordance?: TodayAffordance | undefined;
   /** default: `E` */
   weekdayDisplayFormat?: string | undefined;
   /** default: none */

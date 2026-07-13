@@ -348,6 +348,41 @@ describe('Calendar', () => {
   });
 
   describe('rendered navigation and shown-date behavior', () => {
+    test('headerConfig can hide the year while keeping month and navigation controls', () => {
+      renderCalendar({ headerConfig: { year: false } });
+
+      expect(findSelectByLabel('Month')).toBeInTheDocument();
+      expect(screen.queryByLabelText('Year')).not.toBeInTheDocument();
+      expect(findButtonByLabel('Previous month')).toBeInTheDocument();
+      expect(findButtonByLabel('Next month')).toBeInTheDocument();
+    });
+
+    test('headerConfig can hide the month while keeping year and navigation controls', () => {
+      renderCalendar({ headerConfig: { month: false } });
+
+      expect(screen.queryByLabelText('Month')).not.toBeInTheDocument();
+      expect(findSelectByLabel('Year')).toBeInTheDocument();
+      expect(findButtonByLabel('Previous month')).toBeInTheDocument();
+      expect(findButtonByLabel('Next month')).toBeInTheDocument();
+    });
+
+    test('headerConfig can hide navigation while keeping month and year controls', () => {
+      renderCalendar({ headerConfig: { navigation: false } });
+
+      expect(findSelectByLabel('Month')).toBeInTheDocument();
+      expect(findSelectByLabel('Year')).toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: 'Previous month' })).not.toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: 'Next month' })).not.toBeInTheDocument();
+    });
+
+    test('fully hidden header leaves no empty header chrome', () => {
+      const { container } = renderCalendar({
+        headerConfig: { month: false, year: false, navigation: false },
+      });
+
+      expect(container.querySelector('.rdrMonthAndYearWrapper')).toBeNull();
+    });
+
     test('renders one polite atomic live region outside rendered month content', () => {
       const { container } = renderCalendar({
         scroll: { enabled: true, monthHeight: 240, longMonthHeight: 280, calendarHeight: 420 },
@@ -1022,6 +1057,20 @@ describe('Calendar', () => {
       fireEvent.keyDown(day15, { key: 'ArrowLeft' });
       expect(document.activeElement).not.toBe(day15);
       expect(document.activeElement.textContent).toBe('14');
+    });
+
+    test('date keyboard navigation still works when all header chrome is hidden', () => {
+      const { container } = renderCalendar({
+        ...navBaseProps,
+        headerConfig: { month: false, year: false, navigation: false },
+      });
+      const day15 = findDayButton(15);
+      day15.focus();
+
+      fireEvent.keyDown(day15, { key: 'ArrowRight' });
+
+      expect(container.querySelector('.rdrMonthAndYearWrapper')).toBeNull();
+      expect(document.activeElement.textContent).toBe('16');
     });
 
     test('ArrowRight on a focused day moves focus to the next day', () => {

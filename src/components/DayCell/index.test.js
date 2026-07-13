@@ -143,6 +143,48 @@ describe('DayCell', () => {
     });
   });
 
+  describe('todayAffordance', () => {
+    test('default highlight mode marks today visually and semantically', () => {
+      render(<DayCell {...baseProps} isToday={true} />);
+
+      const button = screen.getByRole('gridcell');
+      expect(button).toHaveAttribute('aria-current', 'date');
+      expect(button).toHaveClass('rdrDayToday');
+      expect(button).not.toHaveTextContent('Today');
+    });
+
+    test('label mode adds a visible Today label while preserving the date and aria-current', () => {
+      render(<DayCell {...baseProps} isToday={true} todayAffordance="label" />);
+
+      const button = screen.getByRole('gridcell');
+      expect(button).toHaveAttribute('aria-current', 'date');
+      expect(button).toHaveTextContent('15');
+      expect(button).toHaveTextContent('Today');
+    });
+
+    test('label mode localizes the visible today label from dateOptions locale code', () => {
+      render(
+        <DayCell
+          {...baseProps}
+          isToday={true}
+          todayAffordance="label"
+          dateOptions={{ locale: { code: 'es' } }}
+        />
+      );
+
+      expect(screen.getByRole('gridcell')).toHaveTextContent('Hoy');
+    });
+
+    test('off mode removes the visible today affordance but preserves aria-current', () => {
+      render(<DayCell {...baseProps} isToday={true} todayAffordance="off" />);
+
+      const button = screen.getByRole('gridcell');
+      expect(button).toHaveAttribute('aria-current', 'date');
+      expect(button).not.toHaveClass('rdrDayToday');
+      expect(button).not.toHaveTextContent('Today');
+    });
+  });
+
   describe('mouse and focus interactions', () => {
     test('mouseEnter triggers hover, mouse callbacks, and preview update', () => {
       const onMouseEnter = jest.fn();

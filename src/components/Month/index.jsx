@@ -58,6 +58,7 @@ function Month(props) {
     onDragSelectionStart,
     onDragSelectionEnd,
     onDragSelectionMove,
+    todayAffordance,
   } = props;
 
   const minDate = rawMinDate && startOfDay(rawMinDate);
@@ -102,6 +103,7 @@ function Month(props) {
                 preview={showPreview ? preview : null}
                 isWeekend={isWeekend(day, dateOptions)}
                 isToday={isSameDay(day, now)}
+                todayAffordance={todayAffordance}
                 isStartOfWeek={isSameDay(day, startOfWeek(day, dateOptions))}
                 isEndOfWeek={isSameDay(day, endOfWeek(day, dateOptions))}
                 isStartOfMonth={isStartOfMonth}

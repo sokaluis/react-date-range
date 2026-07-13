@@ -2,7 +2,7 @@
 
 Bare calendar month view — single-date or range selection, no input chrome.
 
-**Source:** `src/index.d.ts` lines 152–258.
+**Source:** `src/index.d.ts` `CalendarProps`.
 
 ---
 
@@ -30,7 +30,7 @@ function SingleDatePicker() {
 
 ## Props
 
-> Mirrored verbatim from `src/index.d.ts` (`CalendarProps`, lines 152–258).
+> Mirrored from `src/index.d.ts` (`CalendarProps`).
 > **Required** = no default and no `?` in the type.
 
 | Prop | Type | Default | Required |
@@ -53,6 +53,7 @@ function SingleDatePicker() {
 | `editableDateInputs` | `boolean \| undefined` | `false` | no |
 | `endDatePlaceholder` | `string \| undefined` | `'Continuous'` | no |
 | `fixedHeight` | `boolean \| undefined` | `false` | no |
+| `headerConfig` | `HeaderConfig \| undefined` | `{ month: true, year: true, navigation: true }` | no |
 | `focusedRange` | `RangeFocus \| undefined` | `[0, 0]` | no |
 | `initialFocusedRange` | `RangeFocus \| undefined` | none | no |
 | `locale` | `Locale \| undefined` | `en-US` from `date-fns/locale` | no |
@@ -78,8 +79,29 @@ function SingleDatePicker() {
 | `shownDate` | `Date \| undefined` | none | no |
 | `startDatePlaceholder` | `string \| undefined` | `'Early'` | no |
 | `updateRange` | `((newRange: Range) => void) \| undefined` | none | no |
+| `todayAffordance` | `'highlight' \| 'label' \| 'off' \| undefined` | `'highlight'` | no |
 | `weekdayDisplayFormat` | `string \| undefined` | `'E'` | no |
 | `weekStartsOn` | `0 \| 1 \| 2 \| 3 \| 4 \| 5 \| 6 \| undefined` | none | no |
+
+---
+
+## Header and Today controls
+
+Use `headerConfig` to hide the default header pieces independently:
+
+```tsx
+<Calendar
+  headerConfig={{ year: false, navigation: false }}
+  todayAffordance="label"
+/>
+```
+
+- `headerConfig.month`, `headerConfig.year`, and `headerConfig.navigation` each default to `true` when omitted.
+- If all three are `false`, the Calendar removes the header wrapper instead of leaving empty chrome.
+- `navigation: false` hides the previous/next buttons only. Date cells keep their keyboard navigation behavior.
+- `todayAffordance="highlight"` keeps the default today styling.
+- `todayAffordance="label"` keeps the date number and adds visible `Today` text.
+- `todayAffordance="off"` removes the visible today styling/label but still keeps `aria-current="date"` on the current date.
 
 ---
 
@@ -97,8 +119,9 @@ Do not import `DateInput` at runtime — it is type-only for consumers who need 
 - **`ranges` + `updateRange`**: Range-mode state is represented by `ranges?: Range[]`; `updateRange?: (newRange: Range) => void` is the typed callback for range updates.
 - **`editableDateInputs`**: Enables inline text editing in the date display row. Requires `showDateDisplay`. The actual input rendering is handled by the internal `DateInput` component — see [DateInputProps](./types.md#dateinputprops).
 - **`scroll` / infinite months**: Set `scroll={{ enabled: true }}` for virtualized month loading. When disabled, set `selectablePassive={true}` to allow selecting neighbour-month cells without scrolling.
-- **`direction`**: Controls multi-month layout. `vertical` (default, line 172 in `src/index.d.ts`) stacks months top-to-bottom; `horizontal` arranges them left-to-right.
-- **`navigatorRenderer`** (line 210–219 in `src/index.d.ts`): Receives `changeShownDate` with four modes — `'set'`, `'setYear'`, `'setMonth'`, and `'monthOffset'`. Use this to replace the default prev/next arrows with custom controls.
+- **`direction`**: Controls multi-month layout. `vertical` stacks months top-to-bottom; `horizontal` arranges them left-to-right.
+- **`navigatorRenderer`**: Receives `changeShownDate` with four modes — `'set'`, `'setYear'`, `'setMonth'`, and `'monthOffset'`. Use this to replace the default prev/next arrows with custom controls.
+- **`headerConfig` with `navigatorRenderer`**: A custom `navigatorRenderer` owns its own chrome. The built-in `headerConfig` controls apply to the default header renderer.
 
 ---
 

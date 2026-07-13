@@ -78,6 +78,8 @@ const calendarDefaultProps = {
   ariaLabels: {},
   /** Opt-in: neighbour-month filler cells become selectable when scroll is disabled. */
   selectablePassive: false,
+  headerConfig: {},
+  todayAffordance: 'highlight',
 };
 
 const uninitializedTargetProp = Symbol('uninitializedTargetProp');
@@ -454,12 +456,16 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
 
   const renderMonthAndYear = useCallback(
     (date, changeDate, calendarProps) => {
-      const { showMonthArrow, minDate, maxDate, showMonthAndYearPickers, ariaLabels } = calendarProps;
+      const { showMonthArrow, minDate, maxDate, showMonthAndYearPickers, ariaLabels, headerConfig } = calendarProps;
+      const showMonth = headerConfig.month !== false;
+      const showYear = headerConfig.year !== false;
+      const showNavigation = showMonthArrow && headerConfig.navigation !== false;
+      if (!showMonth && !showYear && !showNavigation) return null;
       const upperYearLimit = maxDate.getFullYear();
       const lowerYearLimit = minDate.getFullYear();
       return (
         <div onMouseUp={e => e.stopPropagation()} className={styles.monthAndYearWrapper}>
-          {showMonthArrow ? (
+          {showNavigation ? (
             <button
               type="button"
               className={classnames(styles.nextPrevButton, styles.prevButton)}
@@ -470,43 +476,49 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
           ) : null}
           {showMonthAndYearPickers ? (
             <span className={styles.monthAndYearPickers}>
-              <span className={styles.monthPicker}>
-                <select
-                  value={date.getMonth()}
-                  onChange={e => changeDate(e.target.value, 'setMonth')}
-                  aria-label={ariaLabels.monthPicker}>
-                  {monthNames.map((monthName, i) => (
-                    <option key={i} value={i}>
-                      {monthName}
-                    </option>
-                  ))}
-                </select>
-              </span>
-              <span className={styles.monthAndYearDivider} />
-              <span className={styles.yearPicker}>
-                <select
-                  value={date.getFullYear()}
-                  onChange={e => changeDate(e.target.value, 'setYear')}
-                  aria-label={ariaLabels.yearPicker}>
-                  {new Array(upperYearLimit - lowerYearLimit + 1)
-                    .fill(upperYearLimit)
-                    .map((val, i) => {
-                      const year = val - i;
-                      return (
-                        <option key={year} value={year}>
-                          {year}
-                        </option>
-                      );
-                    })}
-                </select>
-              </span>
+              {showMonth ? (
+                <span className={styles.monthPicker}>
+                  <select
+                    value={date.getMonth()}
+                    onChange={e => changeDate(e.target.value, 'setMonth')}
+                    aria-label={ariaLabels.monthPicker}>
+                    {monthNames.map((monthName, i) => (
+                      <option key={i} value={i}>
+                        {monthName}
+                      </option>
+                    ))}
+                  </select>
+                </span>
+              ) : null}
+              {showMonth && showYear ? <span className={styles.monthAndYearDivider} /> : null}
+              {showYear ? (
+                <span className={styles.yearPicker}>
+                  <select
+                    value={date.getFullYear()}
+                    onChange={e => changeDate(e.target.value, 'setYear')}
+                    aria-label={ariaLabels.yearPicker}>
+                    {new Array(upperYearLimit - lowerYearLimit + 1)
+                      .fill(upperYearLimit)
+                      .map((val, i) => {
+                        const year = val - i;
+                        return (
+                          <option key={year} value={year}>
+                            {year}
+                          </option>
+                        );
+                      })}
+                  </select>
+                </span>
+              ) : null}
             </span>
           ) : (
             <span className={styles.monthAndYearPickers}>
-              {monthNames[date.getMonth()]} {date.getFullYear()}
+              {showMonth ? monthNames[date.getMonth()] : null}
+              {showMonth && showYear ? ' ' : null}
+              {showYear ? date.getFullYear() : null}
             </span>
           )}
-          {showMonthArrow ? (
+          {showNavigation ? (
             <button
               type="button"
               className={classnames(styles.nextPrevButton, styles.nextButton)}
@@ -756,6 +768,8 @@ const ForwardedCalendar = React.forwardRef(function Calendar(
     preventSnapRefocus = calendarDefaultProps.preventSnapRefocus,
     ariaLabels = calendarDefaultProps.ariaLabels,
     selectablePassive = calendarDefaultProps.selectablePassive,
+    headerConfig = calendarDefaultProps.headerConfig,
+    todayAffordance = calendarDefaultProps.todayAffordance,
     ...rest
   },
   ref
@@ -770,6 +784,12 @@ const ForwardedCalendar = React.forwardRef(function Calendar(
   // visually passive and keyboard-inert when virtual scrolling is active.
   /** Holds the resolved value: true only when prop=true AND scroll is disabled. */
   const effectiveSelectablePassive = !!selectablePassive && !scroll.enabled;
+  const resolvedHeaderConfig = {
+    month: true,
+    year: true,
+    navigation: true,
+    ...headerConfig,
+  };
 
   const resolvedProps = {
     showMonthArrow,
@@ -803,6 +823,8 @@ const ForwardedCalendar = React.forwardRef(function Calendar(
     calendarFocus,
     preventSnapRefocus,
     ariaLabels,
+    headerConfig: resolvedHeaderConfig,
+    todayAffordance,
     ...rest,
   };
   const dateOptions = useMemo(
