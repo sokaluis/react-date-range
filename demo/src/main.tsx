@@ -21,6 +21,7 @@ const nextWeek = new Date(today);
 nextWeek.setDate(nextWeek.getDate() + 7);
 
 const ENABLE_MANUAL_QA_LOGS = false;
+const DOCS_BASE_URL = 'https://github.com/sokaluis/react-date-range/blob/main/docs';
 
 function createInitialRange(): Range {
   return {
@@ -220,9 +221,38 @@ function App() {
         <p className="hero-subtitle">
           Modern maintained fork of <code>react-date-range</code>.
           React 18/19 compatible, TypeScript-first.{' '}
-          <a href="docs/migration-from-upstream.md">Why a fork?</a>
+          <a href={`${DOCS_BASE_URL}/migration-from-upstream.md`} target="_blank" rel="noopener noreferrer">
+            Why a fork?
+          </a>
         </p>
         <div className="install-block hero-install">npm install @cyberlz/react-date-range</div>
+      </section>
+
+      <section className="docs-panel" aria-labelledby="docs-title">
+        <div>
+          <h2 id="docs-title">Documentation</h2>
+          <p>
+            Start with the install path, then jump into the component reference,
+            accessibility notes, troubleshooting, or integration recipes.
+          </p>
+        </div>
+        <nav className="docs-links" aria-label="Documentation links">
+          <a href={`${DOCS_BASE_URL}/getting-started.md`} target="_blank" rel="noopener noreferrer">
+            Getting started
+          </a>
+          <a href={`${DOCS_BASE_URL}/components/README.md`} target="_blank" rel="noopener noreferrer">
+            Component reference
+          </a>
+          <a href={`${DOCS_BASE_URL}/accessibility.md`} target="_blank" rel="noopener noreferrer">
+            Accessibility
+          </a>
+          <a href={`${DOCS_BASE_URL}/troubleshooting.md`} target="_blank" rel="noopener noreferrer">
+            Troubleshooting
+          </a>
+          <a href={`${DOCS_BASE_URL}/integrations/README.md`} target="_blank" rel="noopener noreferrer">
+            Integrations
+          </a>
+        </nav>
       </section>
 
       {/* Before / After panel — docs/adoption */}

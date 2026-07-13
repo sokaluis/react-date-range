@@ -151,6 +151,53 @@
         margin: 0;
       }
 
+      .docs-panel {
+        background: #ffffff;
+        border: 1px solid #dbeafe;
+        border-radius: 10px;
+        padding: 1.25rem;
+        margin-bottom: 2rem;
+      }
+
+      .docs-panel h2 {
+        font-size: 1rem;
+        margin: 0 0 0.35rem;
+        color: #1e40af;
+      }
+
+      .docs-panel p {
+        max-width: 68ch;
+        margin: 0 0 1rem;
+        color: #475569;
+        font-size: 0.9rem;
+      }
+
+      .docs-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+
+      .docs-links a {
+        display: inline-flex;
+        align-items: center;
+        min-height: 2.25rem;
+        padding: 0.45rem 0.75rem;
+        border-radius: 6px;
+        background: #eff6ff;
+        color: #1d4ed8;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-decoration: none;
+      }
+
+      .docs-links a:hover,
+      .docs-links a:focus-visible {
+        background: #dbeafe;
+        outline: 2px solid #93c5fd;
+        outline-offset: 2px;
+      }
+
       /* ---------------------------------------------------------------------
          Before / After panel — upstream vs fork
          --------------------------------------------------------------------- */
