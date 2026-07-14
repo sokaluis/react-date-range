@@ -60,6 +60,17 @@ function logManualQA(label: string, payload: Record<string, unknown>) {
   console.groupEnd();
 }
 
+function DemoCode({ children }: { children: string }) {
+  return (
+    <details className="demo-code">
+      <summary className="demo-code-summary">Code</summary>
+      <pre className="demo-code-pre">
+        <code>{children}</code>
+      </pre>
+    </details>
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Live region helpers (pure, stable references for ariaLabels callbacks)
 // ---------------------------------------------------------------------------
@@ -390,6 +401,16 @@ function App() {
           months={2}
           direction="horizontal"
         />
+        <DemoCode>
+          {`<DateRangePicker
+  onChange={handleChange}
+  ranges={ranges}
+  showPreview
+  moveRangeOnFirstSelection={false}
+  months={2}
+  direction="horizontal"
+/>`}
+        </DemoCode>
       </section>
 
       {/* PR4: manual verification aids — hooks migration */}
@@ -408,6 +429,16 @@ function App() {
         <p className="state-output">
           <code>date = {singleDate ? singleDate.toISOString().split('T')[0] : 'null'}</code>
         </p>
+        <DemoCode>
+          {`<Calendar
+  onChange={handleSingleDateChange('Calendar single-date')}
+  onShownDateChange={handleShownDateChange('Calendar single-date')}
+  date={singleDate}
+  displayMode="date"
+  showDateDisplay
+  direction="horizontal"
+/>`}
+        </DemoCode>
       </section>
 
       <section className="demo-panel">
@@ -432,6 +463,18 @@ function App() {
             range = {formatDate(selectedDisplayRanges[0]?.startDate)} → {formatDate(selectedDisplayRanges[0]?.endDate)}
           </code>
         </p>
+        <DemoCode>
+          {`<DateRangePicker
+  onChange={handleSelectedDisplayChange}
+  ranges={selectedDisplayRanges}
+  editableDateInputs
+  selectedDisplay={{
+    format: 'yyyy-MM-dd',
+    placement: 'bottom',
+    separator: ' – ',
+  }}
+/>`}
+        </DemoCode>
       </section>
 
       <section className="demo-panel">
@@ -458,6 +501,16 @@ function App() {
             range = {formatDate(layoutRanges[0]?.startDate)} → {formatDate(layoutRanges[0]?.endDate)}
           </code>
         </p>
+        <DemoCode>
+          {`<DateRangePicker
+  onChange={handleLayoutChange}
+  ranges={layoutRanges}
+  showPreview
+  moveRangeOnFirstSelection={false}
+  calendarCount={2}
+  scrollOrientation="horizontal"
+/>`}
+        </DemoCode>
       </section>
 
       <section className="demo-panel">
@@ -484,6 +537,17 @@ function App() {
         <p className="state-output">
           <code>date = {headerDemoDate ? headerDemoDate.toISOString().split('T')[0] : 'null'}</code>
         </p>
+        <DemoCode>
+          {`<Calendar
+  onChange={handleHeaderDemoChange}
+  onShownDateChange={handleShownDateChange}
+  date={headerDemoDate}
+  displayMode="date"
+  showDateDisplay={false}
+  headerConfig={{ year: false, navigation: false }}
+  todayAffordance="label"
+/>`}
+        </DemoCode>
       </section>
 
       <section className="demo-panel">
@@ -509,6 +573,24 @@ function App() {
             range = {formatDate(slotRanges[0]?.startDate)} → {formatDate(slotRanges[0]?.endDate)}
           </code>
         </p>
+        <DemoCode>
+          {`const slotDemoSlots: UiSlots = {
+  root: { className: 'demo-ui-slots-root', style: { border: '1px solid #d1d5db', borderRadius: 12 } },
+  header: { style: { borderBottom: '1px solid #e5e7eb' } },
+  definedRanges: { style: { background: '#f9fafb' } },
+  day: { className: 'demo-ui-slots-day' },
+  dayToday: { style: { outline: '2px solid #111827', outlineOffset: 2 } },
+  dateDisplayItem: { style: { borderRadius: 8 } },
+};
+
+<DateRangePicker
+  onChange={handleSlotChange}
+  ranges={slotRanges}
+  showPreview
+  moveRangeOnFirstSelection={false}
+  uiSlots={slotDemoSlots}
+/>`}
+        </DemoCode>
       </section>
 
       <section className="demo-panel">
@@ -535,6 +617,24 @@ function App() {
             range = {formatDate(tokenRanges[0]?.startDate)} → {formatDate(tokenRanges[0]?.endDate)}
           </code>
         </p>
+        <DemoCode>
+          {`// import '@cyberlz/react-date-range/theme/tokens.css';
+
+const tokenDemoStyle = {
+  '--rdr-color-primary': '#7c3aed',
+  '--rdr-color-on-primary': '#ffffff',
+  '--rdr-color-today': '#f97316',
+} as CSSProperties;
+
+<div style={tokenDemoStyle}>
+  <DateRangePicker
+    onChange={handleTokenChange}
+    ranges={tokenRanges}
+    showPreview
+    moveRangeOnFirstSelection={false}
+  />
+</div>`}
+        </DemoCode>
       </section>
 
       <section className="demo-panel">
@@ -575,6 +675,28 @@ function App() {
           <br />
           <code>controlledOpen = {String(inputOpen)}</code>
         </p>
+        <DemoCode>
+          {`{/* Uncontrolled */}
+<DatePickerInput
+  date={inputDate}
+  onChange={handleInputDateChange}
+  ariaLabel="Trip date"
+  popoverLabel="Choose trip date"
+  placeholder="Select trip date"
+  calendarProps={{ shownDate: inputDate || today }}
+/>
+
+{/* Controlled */}
+<DatePickerInput
+  date={controlledInputDate}
+  onChange={handleInputDateChange}
+  open={inputOpen}
+  onOpenChange={setInputOpen}
+  ariaLabel="Controlled trip date"
+  popoverLabel="Choose controlled trip date"
+  calendarProps={{ shownDate: controlledInputDate || today }}
+/>`}
+        </DemoCode>
       </section>
 
       <section className="demo-panel">
@@ -617,6 +739,28 @@ function App() {
           <br />
           <code>controlledOpen = {String(inputRangeOpen)}</code>
         </p>
+        <DemoCode>
+          {`{/* Uncontrolled */}
+<DateRangeInput
+  ranges={inputRange}
+  onChange={handleInputRangeChange}
+  ariaLabels={{ trigger: 'Trip date range' }}
+  popoverLabel="Choose trip dates"
+  triggerPlaceholder="Select trip dates"
+  calendarProps={{ shownDate: inputRange[0]?.startDate || today }}
+/>
+
+{/* Controlled */}
+<DateRangeInput
+  ranges={controlledInputRange}
+  onChange={handleInputRangeChange}
+  open={inputRangeOpen}
+  onOpenChange={setInputRangeOpen}
+  ariaLabels={{ trigger: 'Controlled trip date range' }}
+  popoverLabel="Choose controlled trip dates"
+  calendarProps={{ shownDate: controlledInputRange[0]?.startDate || today }}
+/>`}
+        </DemoCode>
       </section>
 
       <section className="demo-panel">
@@ -636,6 +780,19 @@ function App() {
           scroll={{ enabled: true, monthHeight: 240, longMonthHeight: 280, calendarHeight: 560 }}
           fixedHeight={true}
         />
+        <DemoCode>
+          {`<Calendar
+  onChange={handleSingleDateChange('Calendar vertical-scroll')}
+  onShownDateChange={handleShownDateChange('Calendar vertical-scroll')}
+  date={singleDate}
+  displayMode="date"
+  showDateDisplay
+  months={2}
+  direction="vertical"
+  scroll={{ enabled: true, monthHeight: 240, longMonthHeight: 280, calendarHeight: 560 }}
+  fixedHeight
+/>`}
+        </DemoCode>
       </section>
 
       <section className="demo-panel">
@@ -664,6 +821,20 @@ function App() {
             disabled=<code>{minMaxDate.disabled.map((d) => d.toISOString().split('T')[0]).join(', ')}</code>
           </small>
         </p>
+        <DemoCode>
+          {`<Calendar
+  onChange={handleSingleDateChange('Calendar DateDisplay constraints')}
+  onShownDateChange={handleShownDateChange('Calendar DateDisplay constraints')}
+  date={singleDate}
+  displayMode="date"
+  showDateDisplay
+  editableDateInputs
+  minDate={minMaxDate.min}
+  maxDate={minMaxDate.max}
+  disabledDates={minMaxDate.disabled}
+  direction="horizontal"
+/>`}
+        </DemoCode>
       </section>
 
       <section className="demo-panel">
@@ -680,6 +851,18 @@ function App() {
           locale={{ ...enUS, options: { ...enUS.options, weekStartsOn: 1 } }}
           weekStartsOn={1}
         />
+        <DemoCode>
+          {`import { enUS } from 'date-fns/locale';
+
+<DateRangePicker
+  onChange={handleChange}
+  ranges={ranges}
+  months={2}
+  direction="horizontal"
+  locale={{ ...enUS, options: { ...enUS.options, weekStartsOn: 1 } }}
+  weekStartsOn={1}
+/>`}
+        </DemoCode>
       </section>
 
       <section className="demo-panel">
@@ -738,6 +921,37 @@ function App() {
               })
             : '(awaiting full committed selection — hover/preview is suppressed)'}
         </p>
+        <DemoCode>
+          {`const liveRegionMonthYear = (date: Date) =>
+  date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+const liveRegionSelection = (range: { startDate: Date; endDate: Date }) =>
+  \`Selected range from \${range.startDate.toDateString()} to \${range.endDate.toDateString()}\`;
+
+<DateRangePicker
+  onChange={handleA11yChange}
+  ranges={a11yRanges}
+  showPreview
+  moveRangeOnFirstSelection={false}
+  months={2}
+  direction="horizontal"
+  ariaLabels={{
+    dateInput: {
+      selection: { startDate: 'Start date input', endDate: 'End date input' },
+    },
+    monthPicker: 'Month picker',
+    yearPicker: 'Year picker',
+    prevButton: 'Previous month',
+    nextButton: 'Next month',
+    calendar: 'Calendar',
+    calendarRoleDescription: 'Date range calendar',
+    dateDisplay: 'Date display',
+    dateRangePicker: 'Date range picker dialog',
+    liveRegionMonthYear,
+    liveRegionSelection,
+  }}
+/>`}
+        </DemoCode>
       </section>
 
       {/* Calendar navigation live region + labeled controls */}
@@ -766,6 +980,22 @@ function App() {
         <p className="state-output">
           <code>date = {singleDate ? singleDate.toISOString().split('T')[0] : 'null'}</code>
         </p>
+        <DemoCode>
+          {`<Calendar
+  onChange={handleSingleDateChange('Calendar nav-live-region')}
+  date={singleDate}
+  displayMode="date"
+  months={1}
+  direction="horizontal"
+  ariaLabels={{
+    prevButton: 'Go to previous month',
+    nextButton: 'Go to next month',
+    monthPicker: 'Select month',
+    yearPicker: 'Select year',
+    liveRegionMonthYear,
+  }}
+/>`}
+        </DemoCode>
       </section>
 
       {/* Cross-month selectablePassive */}
@@ -794,6 +1024,17 @@ function App() {
             ? `${passiveDate.toISOString().split('T')[0]} (${passiveDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })})`
             : '(none — click a passive day to test)'}
         </p>
+        <DemoCode>
+          {`<Calendar
+  onChange={handlePassiveDateChange}
+  date={passiveDate}
+  displayMode="date"
+  months={2}
+  direction="horizontal"
+  selectablePassive
+  scroll={{ enabled: false }}
+/>`}
+        </DemoCode>
       </section>
 
       {/* selectablePassive guarded by scroll */}
