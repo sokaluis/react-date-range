@@ -32,6 +32,26 @@ import '@cyberlz/react-date-range/theme/default.css';
 
 Both are required. `styles.css` provides the structural layout; `theme/default.css` provides the default visual theme.
 
+### Optional design tokens
+
+Import `theme/tokens.css` only when you want CSS custom-property overrides. It is not imported by the default styles, so existing apps keep their current output unless they opt in.
+
+```js
+import '@cyberlz/react-date-range/styles.css';
+import '@cyberlz/react-date-range/theme/default.css';
+import '@cyberlz/react-date-range/theme/tokens.css';
+```
+
+Override tokens on any ancestor of the picker:
+
+```tsx
+<div style={{ '--rdr-color-primary': '#7c3aed' }}>
+  <DateRangePicker ranges={ranges} onChange={setNextRanges} />
+</div>
+```
+
+Available tokens are colors (`primary`, `on-primary`, `surface`, `on-surface`, `muted`, `border`, `today`), spacing (`xs`, `sm`, `md`, `lg`), and radius (`sm`, `md`) using the `--rdr-{color|space|radius}-{name}` naming pattern.
+
 ---
 
 ## Named ESM imports

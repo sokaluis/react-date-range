@@ -166,6 +166,29 @@ Use `calendarCount` and `scrollOrientation` for the composed picker layout inste
 
 ---
 
+## Opt-in design tokens
+
+Use the optional token stylesheet when a host app needs CSS-variable overrides for selected UI colors or future tokenized surfaces.
+
+```tsx
+import '@cyberlz/react-date-range/styles.css';
+import '@cyberlz/react-date-range/theme/default.css';
+import '@cyberlz/react-date-range/theme/tokens.css';
+
+<div style={{ '--rdr-color-primary': '#7c3aed' }}>
+  <DateRangePicker
+    ranges={ranges}
+    onChange={(rangesByKey) => setRanges([rangesByKey.selection])}
+  />
+</div>
+```
+
+- The token stylesheet is opt-in; no default or structural CSS file imports it.
+- `--rdr-color-primary` controls selected range UI when `theme/tokens.css` is loaded.
+- Required token names follow `--rdr-{color|space|radius}-{name}` for colors `primary`, `on-primary`, `surface`, `on-surface`, `muted`, `border`, `today`; spaces `xs`, `sm`, `md`, `lg`; and radii `sm`, `md`.
+
+---
+
 ## Gotchas
 
 - **No trigger wrapper**: `DateRangePicker` renders the picker surface directly. Use `DateRangeInput` when you need a trigger + popover wrapper.
@@ -176,6 +199,7 @@ Use `calendarCount` and `scrollOrientation` for the composed picker layout inste
 - **`uiSlots.root` isolation**: `DateRangePicker` applies `root` to the outer picker only, so the same root class does not leak onto the nested `DateRange` calendar.
 - **Bottom selected display**: With `selectedDisplay.placement: 'bottom'`, the display follows the calendar grid inside the range calendar; the preset sidebar stays in its existing position.
 - **Layout prop boundary**: `calendarCount`/`scrollOrientation` are the picker-level layout contract. Existing `months`/`direction` still pass through when the picker layout props are omitted, and scroll-enabled calendars keep their existing scroll layout semantics.
+- **Tokens are opt-in**: Import `theme/tokens.css` explicitly before relying on `--rdr-*` overrides; existing apps that import only `styles.css` and `theme/default.css` remain unchanged.
 
 ---
 

@@ -1,4 +1,4 @@
-import { StrictMode, useState } from 'react';
+import { StrictMode, useState, type CSSProperties } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
   Calendar,
@@ -12,6 +12,7 @@ import {
 import { enUS } from 'date-fns/locale';
 import '@cyberlz/react-date-range/styles.css';
 import '@cyberlz/react-date-range/theme/default.css';
+import '@cyberlz/react-date-range/theme/tokens.css';
 
 // ---------------------------------------------------------------------------
 // Initial state
@@ -90,6 +91,7 @@ function App() {
   const [slotRanges, setSlotRanges] = useState<Range[]>([createInitialRange()]);
   const [selectedDisplayRanges, setSelectedDisplayRanges] = useState<Range[]>([createInitialRange()]);
   const [layoutRanges, setLayoutRanges] = useState<Range[]>([createInitialRange()]);
+  const [tokenRanges, setTokenRanges] = useState<Range[]>([createInitialRange()]);
 
   // States for new demo panels
   const [a11yRanges, setA11yRanges] = useState<Range[]>([createInitialRange()]);
@@ -223,6 +225,17 @@ function App() {
     }
   };
 
+  const handleTokenChange = (rangesByKey: RangeKeyDict) => {
+    const next = rangesByKey.selection;
+    if (next) {
+      logManualQA('Opt-in tokens DateRangePicker onChange', {
+        startDate: toISODate(next.startDate),
+        endDate: toISODate(next.endDate),
+      });
+      setTokenRanges([next]);
+    }
+  };
+
   const handleLabelledChange = (rangesByKey: RangeKeyDict) => {
     const trip1 = rangesByKey.trip1;
     const trip2 = rangesByKey.trip2;
@@ -259,6 +272,12 @@ function App() {
     dayToday: { style: { outline: '2px solid #111827', outlineOffset: 2 } },
     dateDisplayItem: { style: { borderRadius: 8 } },
   };
+
+  const tokenDemoStyle = {
+    '--rdr-color-primary': '#7c3aed',
+    '--rdr-color-on-primary': '#ffffff',
+    '--rdr-color-today': '#f97316',
+  } as CSSProperties;
 
   return (
     <div className="container">
@@ -467,6 +486,27 @@ function App() {
         <p className="state-output">
           <code>
             range = {formatDate(slotRanges[0]?.startDate)} → {formatDate(slotRanges[0]?.endDate)}
+          </code>
+        </p>
+      </section>
+
+      <section className="demo-panel">
+        <h2>DateRangePicker — Opt-in Tokens</h2>
+        <p>
+          Imports <code>theme/tokens.css</code> only for this demo app and overrides token values
+          on this wrapper, so existing consumers keep their default theme unless they opt in.
+        </p>
+        <div style={tokenDemoStyle}>
+          <DateRangePicker
+            onChange={handleTokenChange}
+            ranges={tokenRanges}
+            showPreview={true}
+            moveRangeOnFirstSelection={false}
+          />
+        </div>
+        <p className="state-output">
+          <code>
+            range = {formatDate(tokenRanges[0]?.startDate)} → {formatDate(tokenRanges[0]?.endDate)}
           </code>
         </p>
       </section>
