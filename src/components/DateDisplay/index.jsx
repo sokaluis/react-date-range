@@ -21,9 +21,12 @@ function DateDisplay({
   dateOptions,
   styles = {},
   uiSlots,
+  selectedDisplay,
 }) {
   const defaultColor = rangeColors[focusedRange[0]] || color;
   const labelBaseId = useId();
+  const resolvedDateDisplayFormat = selectedDisplay?.format || dateDisplayFormat;
+  const separator = selectedDisplay?.separator ?? '';
 
   return (
     <div
@@ -54,7 +57,7 @@ function DateDisplay({
               value={range.startDate}
               placeholder={startDatePlaceholder}
               dateOptions={dateOptions}
-              dateDisplayFormat={dateDisplayFormat}
+              dateDisplayFormat={resolvedDateDisplayFormat}
               ariaLabel={
                 ariaLabels.dateInput &&
                 ariaLabels.dateInput[range.key] &&
@@ -66,6 +69,7 @@ function DateDisplay({
               maxDate={maxDate}
               disabledDates={disabledDates}
             />
+            {separator ? <span>{separator}</span> : null}
             <DateInput
               className={classnames(styles.dateDisplayItem, {
                 [styles.dateDisplayItemActive]: focusedRange[0] === i && focusedRange[1] === 1,
@@ -76,7 +80,7 @@ function DateDisplay({
               value={range.endDate}
               placeholder={endDatePlaceholder}
               dateOptions={dateOptions}
-              dateDisplayFormat={dateDisplayFormat}
+              dateDisplayFormat={resolvedDateDisplayFormat}
               ariaLabel={
                 ariaLabels.dateInput &&
                 ariaLabels.dateInput[range.key] &&

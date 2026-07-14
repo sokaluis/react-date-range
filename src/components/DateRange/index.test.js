@@ -174,6 +174,16 @@ describe('DateRange', () => {
     expect(screen.getByTestId('calendar')).toHaveAttribute('data-class-name', expect.stringContaining('customRange'));
   });
 
+  test('resolves selectedDisplay defaults before forwarding to Calendar', () => {
+    renderDateRange({ dateDisplayFormat: 'yyyy-MM-dd', selectedDisplay: { placement: 'bottom' } });
+
+    expect(latestCalendarProps.selectedDisplay).toEqual({
+      format: 'yyyy-MM-dd',
+      placement: 'bottom',
+      separator: '',
+    });
+  });
+
   describe('REQ-DDDG-001..003 / #607: direct <DateRange disabledDates> boundary guard', () => {
     test('disabledDates={null} does not throw and yields full range', () => {
       // REQ-DDDG-001: null is treated as empty array; no dates excluded.

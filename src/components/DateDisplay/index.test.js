@@ -168,6 +168,40 @@ describe('DateDisplay', () => {
     expect(screen.getByLabelText('Check-out date')).toHaveAttribute('placeholder', 'To');
   });
 
+  describe('selectedDisplay', () => {
+    test('inherits dateDisplayFormat by default and preserves editable inputs', () => {
+      setup({
+        ranges: [{ startDate: new Date(2025, 3, 10), endDate: new Date(2025, 3, 12), key: 'selection' }],
+        dateDisplayFormat: 'yyyy-MM-dd',
+        editableDateInputs: true,
+        selectedDisplay: {},
+      });
+
+      expect(screen.getByLabelText('Check-in date')).toHaveValue('2025-04-10');
+      expect(screen.getByLabelText('Check-out date')).toHaveValue('2025-04-12');
+      expect(screen.getByLabelText('Check-in date')).not.toHaveAttribute('readonly');
+      expect(screen.getByLabelText('Check-out date')).not.toHaveAttribute('readonly');
+    });
+
+    test('uses selectedDisplay.format and renders separator only between dates', () => {
+      const { container } = setup({
+        ranges: [{ startDate: new Date(2025, 3, 10), endDate: new Date(2025, 3, 12), key: 'selection' }],
+        dateDisplayFormat: 'MMM d, yyyy',
+        selectedDisplay: { format: 'yyyy-MM-dd', separator: ' – ' },
+      });
+
+      const inputs = screen.getAllByRole('textbox');
+      const separator = screen.getByText('–');
+      const display = container.querySelector('.dd');
+
+      expect(inputs[0]).toHaveValue('2025-04-10');
+      expect(inputs[1]).toHaveValue('2025-04-12');
+      expect(display).toContainElement(separator);
+      expect(separator.compareDocumentPosition(inputs[0])).toBe(Node.DOCUMENT_POSITION_PRECEDING);
+      expect(separator.compareDocumentPosition(inputs[1])).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    });
+  });
+
   test('ariaLabels.dateInput is forwarded to start and end DateInput elements', () => {
     setup({
       ranges: [

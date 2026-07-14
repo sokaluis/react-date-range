@@ -88,6 +88,7 @@ function App() {
   const [controlledInputRange, setControlledInputRange] = useState<Range[]>([createInitialRange()]);
   const [inputRangeOpen, setInputRangeOpen] = useState(false);
   const [slotRanges, setSlotRanges] = useState<Range[]>([createInitialRange()]);
+  const [selectedDisplayRanges, setSelectedDisplayRanges] = useState<Range[]>([createInitialRange()]);
 
   // States for new demo panels
   const [a11yRanges, setA11yRanges] = useState<Range[]>([createInitialRange()]);
@@ -196,6 +197,17 @@ function App() {
         endDate: toISODate(next.endDate),
       });
       setSlotRanges([next]);
+    }
+  };
+
+  const handleSelectedDisplayChange = (rangesByKey: RangeKeyDict) => {
+    const next = rangesByKey.selection;
+    if (next) {
+      logManualQA('Selected display DateRangePicker onChange', {
+        startDate: toISODate(next.startDate),
+        endDate: toISODate(next.endDate),
+      });
+      setSelectedDisplayRanges([next]);
     }
   };
 
@@ -364,6 +376,25 @@ function App() {
         />
         <p className="state-output">
           <code>date = {singleDate ? singleDate.toISOString().split('T')[0] : 'null'}</code>
+        </p>
+      </section>
+
+      <section className="demo-panel">
+        <h2>DateRangePicker — Selected Display</h2>
+        <p>
+          Formats the selected range as ISO dates, places the display below the calendar,
+          and keeps the date inputs editable.
+        </p>
+        <DateRangePicker
+          onChange={handleSelectedDisplayChange}
+          ranges={selectedDisplayRanges}
+          editableDateInputs
+          selectedDisplay={{ format: 'yyyy-MM-dd', placement: 'bottom', separator: ' – ' }}
+        />
+        <p className="state-output">
+          <code>
+            range = {formatDate(selectedDisplayRanges[0]?.startDate)} → {formatDate(selectedDisplayRanges[0]?.endDate)}
+          </code>
         </p>
       </section>
 

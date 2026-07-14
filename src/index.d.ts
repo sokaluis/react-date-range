@@ -184,6 +184,15 @@ export interface HeaderConfig {
 
 export type TodayAffordance = 'highlight' | 'label' | 'off';
 
+export interface SelectedDisplay {
+  /** Date-fns format for selected date display inputs. Defaults to `dateDisplayFormat`. */
+  format?: string | undefined;
+  /** Position of the selected date display relative to the calendar. Default: `top`. */
+  placement?: 'top' | 'bottom' | undefined;
+  /** Text rendered only between the start and end display values. Default: empty string. */
+  separator?: string | undefined;
+}
+
 // =============================================================================
 // Calendar Component
 // =============================================================================
@@ -278,6 +287,8 @@ export interface CalendarProps {
   scroll?: ScrollOptions | undefined;
   /** Opt-in flag that makes passive (neighbour-month) cells selectable when scroll is disabled — default: `false` */
   selectablePassive?: boolean | undefined;
+  /** Selected date display presentation — defaults to current 1.2.x top placement and `dateDisplayFormat`. */
+  selectedDisplay?: SelectedDisplay | undefined;
   /** default: true */
   showDateDisplay?: boolean | undefined;
   /** default: true */

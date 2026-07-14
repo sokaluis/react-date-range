@@ -92,6 +92,12 @@ const getDateOptions = ({ locale, weekStartsOn }) => {
 
 const getMonthNames = locale => [...Array(12).keys()].map(i => locale.localize.month(i));
 
+const resolveSelectedDisplay = (selectedDisplay, dateDisplayFormat) => ({
+  format: selectedDisplay?.format || dateDisplayFormat,
+  placement: selectedDisplay?.placement || 'top',
+  separator: selectedDisplay?.separator ?? '',
+});
+
 const calcScrollArea = ({ direction, months, scroll }) => {
   if (!scroll.enabled) return { enabled: false };
 
@@ -603,6 +609,7 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
         maxDate={maxDate}
         disabledDates={disabledDates}
         uiSlots={props.uiSlots}
+        selectedDisplay={props.selectedDisplay}
         styles={styles}
         dateOptions={dateOptions}
         onChange={onDragSelectionEnd}
@@ -630,6 +637,8 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
   } = props;
   const isVertical = direction === 'vertical';
   const monthAndYearRenderer = navigatorRenderer || renderMonthAndYear;
+  const dateDisplay = showDateDisplay ? renderDateDisplay() : null;
+  const isDateDisplayBottom = props.selectedDisplay?.placement === 'bottom';
   const ranges = props.ranges.map((range, i) => ({
     ...range,
     color: range.color || rangeColors[i] || color,
@@ -655,7 +664,7 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
       onMouseLeave={() => {
         setDrag({ status: false, range: {} });
       }}>
-      {showDateDisplay && renderDateDisplay()}
+      {!isDateDisplayBottom && dateDisplay}
       {monthAndYearRenderer(focusedDate, changeShownDate, props)}
       <div aria-live="polite" aria-atomic="true" className={styles.liveRegion}>
         {liveAnnouncement}
@@ -777,6 +786,7 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
           })}
         </div>
       )}
+      {isDateDisplayBottom && dateDisplay}
     </div>
   );
 });
@@ -816,6 +826,7 @@ const ForwardedCalendar = React.forwardRef(function Calendar(
     selectablePassive = calendarDefaultProps.selectablePassive,
     headerConfig = calendarDefaultProps.headerConfig,
     todayAffordance = calendarDefaultProps.todayAffordance,
+    selectedDisplay,
     uiSlots,
     ...rest
   },
@@ -837,6 +848,7 @@ const ForwardedCalendar = React.forwardRef(function Calendar(
     navigation: true,
     ...headerConfig,
   };
+  const resolvedSelectedDisplay = resolveSelectedDisplay(selectedDisplay, dateDisplayFormat);
 
   const resolvedProps = {
     showMonthArrow,
@@ -872,6 +884,7 @@ const ForwardedCalendar = React.forwardRef(function Calendar(
     ariaLabels,
     headerConfig: resolvedHeaderConfig,
     todayAffordance,
+    selectedDisplay: resolvedSelectedDisplay,
     uiSlots,
     ...rest,
   };

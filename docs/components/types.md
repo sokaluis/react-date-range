@@ -264,6 +264,26 @@ Slot `className` values append to the package classes, and slot `style` values m
 
 ---
 
+## `SelectedDisplay`
+
+Presentation options for the selected start/end display row in `DateRange` and `DateRangePicker`.
+
+```ts
+export interface SelectedDisplay {
+  format?: string | undefined;
+  placement?: 'top' | 'bottom' | undefined;
+  separator?: string | undefined;
+}
+```
+
+| Prop | Type | Default | Notes |
+|------|------|---------|-------|
+| `format` | `string \| undefined` | `dateDisplayFormat` | Date-fns format used by the display inputs |
+| `placement` | `'top' \| 'bottom' \| undefined` | `'top'` | Position relative to the calendar grid |
+| `separator` | `string \| undefined` | `''` | Visual text rendered only between start and end values |
+
+---
+
 ## `AriaLabelsShape`
 
 All `ariaLabel` overrides for accessible naming of calendar elements. All fields optional.

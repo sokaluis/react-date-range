@@ -63,6 +63,7 @@ All other props are inherited verbatim from `CalendarProps`. See [`calendar.md`]
 | `showDateDisplay` | `boolean \| undefined` | `true` | Shows start/end date display row |
 | `dragSelectionEnabled` | `boolean \| undefined` | `true` | Click-and-drag to select a range |
 | `editableDateInputs` | `boolean \| undefined` | `false` | Allows typing dates in the display inputs |
+| `selectedDisplay` | `SelectedDisplay \| undefined` | `{ format: dateDisplayFormat, placement: 'top', separator: '' }` | Formats and positions the selected date display |
 | `disabledDates` | `Date[] \| undefined` | `[]` | Disabled dates cannot be selected |
 | `classNames` | `ClassNames \| undefined` | `{}` | CSS class overrides |
 | `uiSlots` | `UiSlots \| undefined` | `{}` | Additive stable classes/styles inherited from `CalendarProps` |
@@ -71,6 +72,27 @@ All other props are inherited verbatim from `CalendarProps`. See [`calendar.md`]
 | `onPreviewChange` | `((previewDate?: Date) => void) \| undefined` | none | Called as the mouse hovers over dates |
 
 For the complete inherited prop table, see [`calendar.md`](./calendar.md#props).
+
+### Selected display
+
+`selectedDisplay` customizes only the selected start/end display row. It does not change selected `Date` values, range selection behavior, or whether the inputs are editable.
+
+```tsx
+<DateRange
+  ranges={ranges}
+  onChange={(rangesByKey) => setRanges([rangesByKey.selection])}
+  editableDateInputs
+  selectedDisplay={{
+    format: 'yyyy-MM-dd',
+    placement: 'bottom',
+    separator: ' – ',
+  }}
+/>
+```
+
+- `format` defaults to `dateDisplayFormat`.
+- `placement` defaults to `'top'`, matching 1.2.x.
+- `separator` defaults to `''` and renders only between the start and end display values.
 
 ---
 
@@ -81,6 +103,7 @@ For the complete inherited prop table, see [`calendar.md`](./calendar.md#props).
 - **`onChange` signature**: `DateRangeProps['onChange']` receives `RangeKeyDict` (a `Record<string, Range>`), **not** a single `Range` or `Date`. This differs from `CalendarProps['onChange']` which receives a single `Date`.
 - **`ranges` keying**: Each range slot is identified by its `key` property. `onChange` returns a `RangeKeyDict` keyed by those `key` values. Unkeyed ranges use fallback keys like `range1`, `range2`, ….
 - **`uiSlots.root`**: In `DateRange`, the rendered root is the calendar wrapper with the range class appended. Use `uiSlots.dateDisplay` and `uiSlots.dateDisplayItem` for the selected date display row.
+- **`selectedDisplay.separator`**: The separator is visual display text only; date parsing/editing still belongs to the two date inputs.
 
 ---
 

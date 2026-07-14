@@ -62,6 +62,7 @@ function PresetRangePicker() {
 | `rangeColors` | `string[] \| undefined` | `['#3d91ff', '#3ecf8e', '#fed14c']` | |
 | `focusedRange` | `RangeFocus \| undefined` | `[0, 0]` | `[rangeIndex, 0\|1]` |
 | `showDateDisplay` | `boolean \| undefined` | `true` | Shows start/end date display row |
+| `selectedDisplay` | `SelectedDisplay \| undefined` | `{ format: dateDisplayFormat, placement: 'top', separator: '' }` | Formats and positions the selected date display |
 | `dragSelectionEnabled` | `boolean \| undefined` | `true` | Click-and-drag range selection |
 | `disabledDates` | `Date[] \| undefined` | `[]` | Disabled dates |
 | `classNames` | `ClassNames \| undefined` | `{}` | CSS class overrides |
@@ -73,6 +74,27 @@ function PresetRangePicker() {
 | `weekStartsOn` | `0 \| 1 \| 2 \| 3 \| 4 \| 5 \| 6 \| undefined` | none | First day of week for default static ranges |
 
 For the complete inherited prop table, see [`date-range.md`](./date-range.md#props) (for `DateRangeProps`) and [`defined-range.md`](./defined-range.md#props) (for `DefinedRangeProps`).
+
+---
+
+## Selected display
+
+Use `selectedDisplay` when the preset picker needs a different selected range presentation from the default top row.
+
+```tsx
+<DateRangePicker
+  ranges={ranges}
+  onChange={(rangesByKey) => setRanges([rangesByKey.selection])}
+  editableDateInputs
+  selectedDisplay={{
+    format: 'yyyy-MM-dd',
+    placement: 'bottom',
+    separator: ' – ',
+  }}
+/>
+```
+
+The option is inherited from `DateRange`: `format` defaults to `dateDisplayFormat`, `placement` defaults to `'top'`, and `separator` defaults to an empty string.
 
 ---
 
@@ -131,6 +153,7 @@ For the complete inherited prop table, see [`date-range.md`](./date-range.md#pro
 - **`rangeColors`**: Applied per-range in `ranges`; also used as defaults for the preset sidebar.
 - **`DefinedRangeProps` is also inherited**: `DateRangePicker` extends both `DateRangeProps` and `DefinedRangeProps`, so it accepts both range-selection and preset-sidebar props simultaneously.
 - **`uiSlots.root` isolation**: `DateRangePicker` applies `root` to the outer picker only, so the same root class does not leak onto the nested `DateRange` calendar.
+- **Bottom selected display**: With `selectedDisplay.placement: 'bottom'`, the display follows the calendar grid inside the range calendar; the preset sidebar stays in its existing position.
 
 ---
 

@@ -18,6 +18,12 @@ const dateRangeDefaultProps = {
   disabledDates: [],
 };
 
+const resolveSelectedDisplay = (selectedDisplay, dateDisplayFormat) => ({
+  format: selectedDisplay?.format || dateDisplayFormat,
+  placement: selectedDisplay?.placement || 'top',
+  separator: selectedDisplay?.separator ?? '',
+});
+
 const DateRange = forwardRef(function DateRange(
   {
     classNames = dateRangeDefaultProps.classNames,
@@ -36,7 +42,10 @@ const DateRange = forwardRef(function DateRange(
   const safeDisabledDates = Array.isArray(disabledDates) ? disabledDates : EMPTY_DATES;
 
   const props = useMemo(
-    () => ({
+    () => {
+      const resolvedSelectedDisplay = resolveSelectedDisplay(rest.selectedDisplay, rest.dateDisplayFormat);
+
+      return ({
       classNames,
       ranges,
       moveRangeOnFirstSelection,
@@ -44,7 +53,9 @@ const DateRange = forwardRef(function DateRange(
       rangeColors,
       disabledDates: safeDisabledDates,
       ...rest,
-    }),
+      selectedDisplay: resolvedSelectedDisplay,
+    });
+    },
     [classNames, ranges, moveRangeOnFirstSelection, retainEndDateOnFirstSelection, rangeColors, safeDisabledDates, rest]
   );
 
