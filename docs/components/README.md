@@ -1,6 +1,6 @@
 # Component Reference
 
-> Stable since 1.2.x. Props tables are literal mirrors of `src/index.d.ts`.
+> Stable since 1.3.x. Props tables are literal mirrors of `src/index.d.ts`.
 
 ## Components
 

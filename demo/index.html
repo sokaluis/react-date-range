@@ -21,6 +21,9 @@
       }
 
       .container {
+        --page-max-width: none;
+        width: 100%;
+        max-width: var(--page-max-width);
         margin: 0 auto;
         padding: 2rem 1rem;
       }
@@ -66,11 +69,16 @@
       }
 
       .demo-panel {
+        --demo-panel-max-width: 100%;
+        width: 100%;
+        max-width: var(--demo-panel-max-width);
+        margin-inline: auto;
         background: #fff;
         border-radius: 8px;
         box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
         padding: 1.5rem;
         margin-bottom: 1.5rem;
+        overflow-x: hidden;
       }
 
       .demo-panel h2 {
@@ -195,6 +203,83 @@
         background: #dbeafe;
         outline: 2px solid #93c5fd;
         outline-offset: 2px;
+      }
+
+      /* ---------------------------------------------------------------------
+         Demo example — centered calendar / component area
+         --------------------------------------------------------------------- */
+      .demo-example {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        width: 100%;
+        margin: 1.5rem 0;
+        padding: 1rem 0;
+        overflow-x: auto;
+      }
+
+      /* ---------------------------------------------------------------------
+         Demo callout — quote/callout below the example
+         --------------------------------------------------------------------- */
+      .demo-callout {
+        margin: 0.75rem 0 0;
+        padding: 0.875rem 1rem;
+        background: #f8fafc;
+        border: 1px solid #dbeafe;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        line-height: 1.6;
+        color: #475569;
+      }
+
+      @media (min-width: 700px) {
+        .container {
+          --page-max-width: 44rem;
+          padding-inline: 1.25rem;
+        }
+
+        .demo-panel {
+          --demo-panel-max-width: 44rem;
+        }
+      }
+
+      @media (min-width: 960px) {
+        .container {
+          --page-max-width: 64rem;
+          padding-inline: 1.5rem;
+        }
+
+        .demo-panel {
+          --demo-panel-max-width: 56rem;
+        }
+      }
+
+      @media (min-width: 1200px) {
+        .container {
+          --page-max-width: 76rem;
+        }
+
+        .demo-panel {
+          --demo-panel-max-width: 60rem;
+        }
+      }
+
+      @media (min-width: 1440px) {
+        .container {
+          --page-max-width: 84rem;
+        }
+      }
+
+      .demo-callout p {
+        margin: 0;
+        max-width: 72ch;
+      }
+
+      .demo-callout code {
+        background: #f1f5f9;
+        padding: 0.1em 0.35em;
+        border-radius: 3px;
+        font-size: 0.85em;
       }
 
       /* ---------------------------------------------------------------------

@@ -145,6 +145,58 @@ export interface ClassNames {
   rtl?: string | undefined;
 }
 
+export type UiSlotKey =
+  | 'root'
+  | 'header'
+  | 'monthYear'
+  | 'monthPicker'
+  | 'yearPicker'
+  | 'nav'
+  | 'navPrev'
+  | 'navNext'
+  | 'months'
+  | 'month'
+  | 'weekdays'
+  | 'weekDay'
+  | 'days'
+  | 'day'
+  | 'dayToday'
+  | 'dateDisplay'
+  | 'dateDisplayItem'
+  | 'footer'
+  | 'definedRanges';
+
+export interface UiSlotOverride {
+  className?: string | undefined;
+  style?: React.CSSProperties | undefined;
+}
+
+export type UiSlots = Partial<Record<UiSlotKey, UiSlotOverride>>;
+
+export interface HeaderConfig {
+  /** Show the month picker or month text — default: true */
+  month?: boolean | undefined;
+  /** Show the year picker or year text — default: true */
+  year?: boolean | undefined;
+  /** Show previous/next month buttons — default: true */
+  navigation?: boolean | undefined;
+}
+
+export type TodayAffordance = 'highlight' | 'label' | 'off';
+
+export interface SelectedDisplay {
+  /** Date-fns format for selected date display inputs. Defaults to `dateDisplayFormat`. */
+  format?: string | undefined;
+  /** Position of the selected date display relative to the calendar. Default: `top`. */
+  placement?: 'top' | 'bottom' | undefined;
+  /** Text rendered only between the start and end display values. Default: empty string. */
+  separator?: string | undefined;
+}
+
+export type CalendarCount = 1 | 2;
+
+export type ScrollOrientation = 'horizontal' | 'vertical';
+
 // =============================================================================
 // Calendar Component
 // =============================================================================
@@ -186,6 +238,8 @@ export interface CalendarProps {
   endDatePlaceholder?: string | undefined;
   /** default: `false` */
   fixedHeight?: boolean | undefined;
+  /** Independent default header controls. Omitted keys default to true. */
+  headerConfig?: HeaderConfig | undefined;
   /**
    * Which range and step are focused. First value is index of ranges,
    * second value is which step on date range (startDate or endDate).
@@ -237,6 +291,8 @@ export interface CalendarProps {
   scroll?: ScrollOptions | undefined;
   /** Opt-in flag that makes passive (neighbour-month) cells selectable when scroll is disabled — default: `false` */
   selectablePassive?: boolean | undefined;
+  /** Selected date display presentation — defaults to current 1.2.x top placement and `dateDisplayFormat`. */
+  selectedDisplay?: SelectedDisplay | undefined;
   /** default: true */
   showDateDisplay?: boolean | undefined;
   /** default: true */
@@ -251,6 +307,10 @@ export interface CalendarProps {
   startDatePlaceholder?: string | undefined;
   /** default: none */
   updateRange?: ((newRange: Range) => void) | undefined;
+  /** Today visual affordance — default: `highlight`; `aria-current="date"` is preserved in every mode. */
+  todayAffordance?: TodayAffordance | undefined;
+  /** Stable additive UI slots. Classes append to, and styles merge with, library styling. */
+  uiSlots?: UiSlots | undefined;
   /** default: `E` */
   weekdayDisplayFormat?: string | undefined;
   /** default: none */
@@ -394,6 +454,8 @@ export interface InputRange {
 export interface DefinedRangeProps {
   /** default: none */
   className?: string | undefined;
+  /** default: none */
+  style?: React.CSSProperties | undefined;
   /**
    * Which range and step are focused.
    * default: `[0, 0]`
@@ -435,6 +497,10 @@ export function createStaticRanges(
 // =============================================================================
 
 export interface DateRangePickerProps extends DateRangeProps, DefinedRangeProps {
+  /** Number of calendars rendered by the picker when virtualized scroll is disabled. Default: `1`. */
+  calendarCount?: CalendarCount | undefined;
+  /** Calendar flow direction for the picker when virtualized scroll is disabled. Default: `vertical`. */
+  scrollOrientation?: ScrollOrientation | undefined;
   /**
    * NOTE: currently the date range picker component passes the
    * `onPreviewChange` prop (if included) to both subcomponents even
@@ -460,6 +526,7 @@ export function DateRangePicker(props: DateRangePickerProps): React.JSX.Element;
 export interface DateInputProps {
   ariaLabel?: string | undefined;
   className?: string | undefined;
+  style?: React.CSSProperties | undefined;
   dateDisplayFormat?: string | undefined;
   dateOptions?: FormatOptions | undefined;
   disabled?: boolean | undefined;

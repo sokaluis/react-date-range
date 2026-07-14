@@ -6,7 +6,7 @@ let classnames = require("classnames");
 classnames = require_runtime.__toESM(classnames);
 //#region src/components/DateInput/index.jsx
 function DateInput(props) {
-	const { className, readOnly = true, placeholder, ariaLabel, disabled = false, onFocus, value, dateDisplayFormat = "MMM D, YYYY", dateOptions, onChange, minDate, maxDate, disabledDates = [] } = props;
+	const { className, readOnly = true, placeholder, ariaLabel, disabled = false, onFocus, value, dateDisplayFormat = "MMM D, YYYY", dateOptions, onChange, minDate, maxDate, disabledDates = [], style } = props;
 	const [invalid, setInvalid] = (0, react.useState)(false);
 	const [changed, setChanged] = (0, react.useState)(false);
 	const [inputValue, setInputValue] = (0, react.useState)(() => formatDate({
@@ -57,7 +57,10 @@ function DateInput(props) {
 		onChange,
 		isWithinConstraints
 	]);
-	return /* @__PURE__ */ react.default.createElement("span", { className: (0, classnames.default)("rdrDateInput", className) }, /* @__PURE__ */ react.default.createElement("input", {
+	return /* @__PURE__ */ react.default.createElement("span", {
+		className: (0, classnames.default)("rdrDateInput", className),
+		style
+	}, /* @__PURE__ */ react.default.createElement("input", {
 		readOnly,
 		disabled,
 		value: inputValue,

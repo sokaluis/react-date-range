@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import classnames from "classnames";
 //#region src/components/DateInput/index.jsx
 function DateInput(props) {
-	const { className, readOnly = true, placeholder, ariaLabel, disabled = false, onFocus, value, dateDisplayFormat = "MMM D, YYYY", dateOptions, onChange, minDate, maxDate, disabledDates = [] } = props;
+	const { className, readOnly = true, placeholder, ariaLabel, disabled = false, onFocus, value, dateDisplayFormat = "MMM D, YYYY", dateOptions, onChange, minDate, maxDate, disabledDates = [], style } = props;
 	const [invalid, setInvalid] = useState(false);
 	const [changed, setChanged] = useState(false);
 	const [inputValue, setInputValue] = useState(() => formatDate({
@@ -54,7 +54,10 @@ function DateInput(props) {
 		onChange,
 		isWithinConstraints
 	]);
-	return /* @__PURE__ */ React.createElement("span", { className: classnames("rdrDateInput", className) }, /* @__PURE__ */ React.createElement("input", {
+	return /* @__PURE__ */ React.createElement("span", {
+		className: classnames("rdrDateInput", className),
+		style
+	}, /* @__PURE__ */ React.createElement("input", {
 		readOnly,
 		disabled,
 		value: inputValue,

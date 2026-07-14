@@ -45,20 +45,18 @@ docs: add release flow documentation
 | Alpha | `v{version}-alpha.{n}` | `v0.1.0-alpha.1` |
 | Beta | `v{version}-beta.{n}` | `v0.1.0-beta.0` |
 | RC | `v{version}-rc.{n}` | `v1.0.0-rc.0` |
-| Stable | `v{version}` | `v1.2.2` |
+| Stable | `v{version}` | `v1.3.0` |
 
-**Current npm stable:** `v1.2.1` was published on npm but is superseded by the
-prepared `v1.2.2` corrective release; `v1.1.1` tag exists at commit `843b09b`
-(historical, never promoted to npm `latest`).
+**Current npm stable:** `v1.2.2` is the previous stable release; `v1.1.1` tag
+exists at commit `843b09b` (historical, never promoted to npm `latest`).
 
-**Current local release prep:** `v1.2.2` is prepared as a corrective patch
-release. `v1.2.1` was published without rebuilt `dist/` artifacts and is
-superseded by `v1.2.2`. Do not claim npm `latest` is `1.2.2` until the
-maintainer publishes it manually.
+**Current local release prep:** `v1.3.0` is prepared as the Configurable UI
+Foundation release. Do not claim npm `latest` is `1.3.0` until the maintainer
+publishes it manually.
 
-**Prepared stable tag:** `v1.2.2`
-- `package.json` version: `1.2.2`
-- npm dist-tag: pending maintainer publish; do not claim `latest` is `1.2.2`
+**Prepared stable tag:** `v1.3.0`
+- `package.json` version: `1.3.0`
+- npm dist-tag: pending maintainer publish; do not claim `latest` is `1.3.0`
 
 The `package.json` `version` field **must match** the tag version exactly.
 
@@ -128,9 +126,13 @@ git push origin v0.1.0-alpha.1
 - `package.json` version: `1.2.1`
 - npm dist-tag: published, but superseded because `dist/` was not rebuilt before publish
 
-**v1.2.2 prepared locally:** `v1.2.2`
+**v1.2.2 published:** `v1.2.2`
 - `package.json` version: `1.2.2`
-- npm dist-tag: pending maintainer publish; do not claim `latest` is `1.2.2`
+- npm dist-tag: previous stable on `latest`
+
+**v1.3.0 prepared locally:** `v1.3.0`
+- `package.json` version: `1.3.0`
+- npm dist-tag: pending maintainer publish; do not claim `latest` is `1.3.0`
 
 ### Step 3 — GitHub Release
 
@@ -172,7 +174,7 @@ version after publishing so `@alpha` continues to mean "newest prerelease" while
 
 | Dist-tag | Points to | Audience |
 |----------|-----------|----------|
-| `latest` | `1.2.1` until maintainer publishes `1.2.2` | Default npm installs |
+| `latest` | `1.2.2` until maintainer publishes `1.3.0` | Default npm installs |
 | `alpha` | `0.1.0-alpha.3` (legacy) | Existing testers: `npm install @cyberlz/react-date-range@alpha` |
 | `beta` | `0.1.0-beta.0` (legacy) | Early adopters: `npm install @cyberlz/react-date-range@beta` |
 | `rc` | `1.0.0-rc.0` (stable anchor for pre-1.0 testers) | Pre-release validation: `npm install @cyberlz/react-date-range@rc` |
@@ -186,7 +188,7 @@ npm dist-tag ls @cyberlz/react-date-range
 npm dist-tag add @cyberlz/react-date-range@0.1.0-beta.0 alpha
 
 # Promote a patch to latest after publish, if needed
-npm dist-tag add @cyberlz/react-date-range@1.2.2 latest
+npm dist-tag add @cyberlz/react-date-range@1.3.0 latest
 ```
 
 ---
@@ -195,10 +197,10 @@ npm dist-tag add @cyberlz/react-date-range@1.2.2 latest
 
 | Source | Example | Must match |
 |--------|---------|------------|
-| `package.json` → `version` | `1.2.2` | Git tag |
-| Git tag | `v1.2.2` | `package.json` version (minus `v` prefix) |
-| GitHub Release tag | `v1.2.2` | Git tag |
-| npm version (registry) | `1.2.2` | `package.json` version after publish |
+| `package.json` → `version` | `1.3.0` | Git tag |
+| Git tag | `v1.3.0` | `package.json` version (minus `v` prefix) |
+| GitHub Release tag | `v1.3.0` | Git tag |
+| npm version (registry) | `1.3.0` | `package.json` version after publish |
 
 **Order matters:** update `package.json` version → commit → tag → push → publish.
 

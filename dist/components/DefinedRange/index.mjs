@@ -19,7 +19,7 @@ const DefinedRange = forwardRef((props, ref) => {
 		"#3d91ff",
 		"#3ecf8e",
 		"#fed14c"
-	], className, onChange } = props;
+	], className, style, onChange } = props;
 	const [, setRangeOffset] = useState(0);
 	const [, setFocusedInput] = useState(-1);
 	useImperativeHandle(ref, () => ({}), []);
@@ -40,7 +40,10 @@ const DefinedRange = forwardRef((props, ref) => {
 		const selectedRange = ranges[focusedRange[0]] || {};
 		return option.getCurrentValue(selectedRange) || "";
 	}, [focusedRange, ranges]);
-	return /* @__PURE__ */ React.createElement("div", { className: classnames(styles_default.definedRangesWrapper, className) }, headerContent, /* @__PURE__ */ React.createElement("div", { className: styles_default.staticRanges }, staticRanges.map((staticRange, i) => {
+	return /* @__PURE__ */ React.createElement("div", {
+		className: classnames(styles_default.definedRangesWrapper, className),
+		style
+	}, headerContent, /* @__PURE__ */ React.createElement("div", { className: styles_default.staticRanges }, staticRanges.map((staticRange, i) => {
 		const { selectedRange, focusedRangeIndex } = getSelectedRange(ranges, staticRange, props);
 		let labelContent;
 		if (staticRange.hasCustomRendering) labelContent = renderStaticRangeLabel(staticRange);

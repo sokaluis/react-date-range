@@ -31,7 +31,7 @@ function DateRangeInput(props, ref) {
 	const [mounted, setMounted] = (0, react.useState)(false);
 	const [popoverStyle, setPopoverStyle] = (0, react.useState)(void 0);
 	const styles = (0, react.useMemo)(() => ({
-		...require_styles,
+		...require_styles.default,
 		...calendarProps.classNames,
 		...classNames
 	}), [calendarProps.classNames, classNames]);

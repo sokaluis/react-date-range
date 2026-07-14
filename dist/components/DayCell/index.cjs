@@ -1,14 +1,23 @@
 const require_runtime = require("../../_virtual/_rolldown/runtime.cjs");
+const require_styles = require("../../styles.cjs");
 let date_fns = require("date-fns");
 let react = require("react");
 react = require_runtime.__toESM(react);
 let classnames = require("classnames");
 classnames = require_runtime.__toESM(classnames);
 //#region src/components/DayCell/index.jsx
+const getTodayLabel = (dateOptions) => {
+	const localeCode = dateOptions?.locale?.code;
+	if (!localeCode || typeof Intl === "undefined" || typeof Intl.RelativeTimeFormat !== "function") return "Today";
+	const label = new Intl.RelativeTimeFormat(localeCode, { numeric: "auto" }).format(0, "day");
+	return label.charAt(0).toLocaleUpperCase(localeCode) + label.slice(1);
+};
 function DayCell(props) {
 	const [hover, setHover] = (0, react.useState)(false);
 	const [active, setActive] = (0, react.useState)(false);
-	const { day, disabled, isPassive, isToday, isWeekend, isStartOfWeek, isEndOfWeek, isStartOfMonth, isEndOfMonth, styles, color, onMouseDown, onMouseUp, onMouseEnter, onPreviewChange, preview, ranges, displayMode, date, dayContentRenderer, dayDisplayFormat } = props;
+	const { day, disabled, isPassive, isToday, isWeekend, isStartOfWeek, isEndOfWeek, isStartOfMonth, isEndOfMonth, styles, color, onMouseDown, onMouseUp, onMouseEnter, onPreviewChange, preview, ranges, displayMode, date, dayContentRenderer, dayDisplayFormat, dateOptions, todayAffordance = "highlight", uiSlots } = props;
+	const showTodayHighlight = isToday && todayAffordance !== "off";
+	const todayLabel = isToday && todayAffordance === "label" ? getTodayLabel(dateOptions) : null;
 	const handleKeyEvent = (event) => {
 		if ([13, 32].includes(event.keyCode)) if (event.type === "keydown") onMouseDown(day);
 		else onMouseUp(day);
@@ -43,10 +52,10 @@ function DayCell(props) {
 		}
 	};
 	const getClassNames = () => {
-		return (0, classnames.default)(styles.day, {
+		return (0, classnames.default)(styles.day, require_styles.getUiSlotClassName(uiSlots, "day"), showTodayHighlight && require_styles.getUiSlotClassName(uiSlots, "dayToday"), {
 			[styles.dayPassive]: isPassive,
 			[styles.dayDisabled]: disabled,
-			[styles.dayToday]: isToday,
+			[styles.dayToday]: showTodayHighlight,
 			[styles.dayWeekend]: isWeekend,
 			[styles.dayStartOfWeek]: isStartOfWeek,
 			[styles.dayEndOfWeek]: isEndOfWeek,
@@ -134,8 +143,8 @@ function DayCell(props) {
 		onKeyUp: handleKeyEvent,
 		className: getClassNames(props.styles),
 		...disabled || isPassive ? { tabIndex: -1 } : {},
-		style: { color }
-	}, renderSelectionPlaceholders(), renderPreviewPlaceholder(), /* @__PURE__ */ react.default.createElement("span", { className: styles.dayNumber }, dayContentRenderer?.(day) || /* @__PURE__ */ react.default.createElement("span", null, (0, date_fns.format)(day, dayDisplayFormat))));
+		style: require_styles.mergeUiSlotStyles(require_styles.mergeUiSlotStyles({ color }, uiSlots, "day"), showTodayHighlight ? uiSlots : void 0, "dayToday")
+	}, renderSelectionPlaceholders(), renderPreviewPlaceholder(), /* @__PURE__ */ react.default.createElement("span", { className: styles.dayNumber }, dayContentRenderer?.(day) || /* @__PURE__ */ react.default.createElement("span", null, (0, date_fns.format)(day, dayDisplayFormat)), todayLabel ? /* @__PURE__ */ react.default.createElement("span", null, todayLabel) : null));
 }
 //#endregion
 module.exports = DayCell;

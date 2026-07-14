@@ -1,5 +1,5 @@
-import { findNextRangeIndex, generateStyles } from "../../utils.mjs";
 import styles_default from "../../styles.mjs";
+import { findNextRangeIndex, generateStyles } from "../../utils.mjs";
 import Calendar from "../Calendar/index.mjs";
 import { addDays, differenceInCalendarDays, format, isBefore, isWithinInterval, max, min } from "date-fns";
 import React, { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
@@ -18,17 +18,26 @@ const dateRangeDefaultProps = {
 	],
 	disabledDates: []
 };
+const resolveSelectedDisplay = (selectedDisplay, dateDisplayFormat) => ({
+	format: selectedDisplay?.format || dateDisplayFormat,
+	placement: selectedDisplay?.placement || "top",
+	separator: selectedDisplay?.separator ?? ""
+});
 const DateRange = forwardRef(function DateRange({ classNames = dateRangeDefaultProps.classNames, ranges = dateRangeDefaultProps.ranges, moveRangeOnFirstSelection = dateRangeDefaultProps.moveRangeOnFirstSelection, retainEndDateOnFirstSelection = dateRangeDefaultProps.retainEndDateOnFirstSelection, rangeColors = dateRangeDefaultProps.rangeColors, disabledDates = dateRangeDefaultProps.disabledDates, ...rest }, ref) {
 	const safeDisabledDates = Array.isArray(disabledDates) ? disabledDates : EMPTY_DATES;
-	const props = useMemo(() => ({
-		classNames,
-		ranges,
-		moveRangeOnFirstSelection,
-		retainEndDateOnFirstSelection,
-		rangeColors,
-		disabledDates: safeDisabledDates,
-		...rest
-	}), [
+	const props = useMemo(() => {
+		const resolvedSelectedDisplay = resolveSelectedDisplay(rest.selectedDisplay, rest.dateDisplayFormat);
+		return {
+			classNames,
+			ranges,
+			moveRangeOnFirstSelection,
+			retainEndDateOnFirstSelection,
+			rangeColors,
+			disabledDates: safeDisabledDates,
+			...rest,
+			selectedDisplay: resolvedSelectedDisplay
+		};
+	}, [
 		classNames,
 		ranges,
 		moveRangeOnFirstSelection,

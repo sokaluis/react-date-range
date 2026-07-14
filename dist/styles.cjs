@@ -1,4 +1,51 @@
+Object.defineProperties(exports, {
+	__esModule: { value: true },
+	[Symbol.toStringTag]: { value: "Module" }
+});
 //#region src/styles.js
+const UI_SLOT_KEYS = Object.freeze([
+	"root",
+	"header",
+	"monthYear",
+	"monthPicker",
+	"yearPicker",
+	"nav",
+	"navPrev",
+	"navNext",
+	"months",
+	"month",
+	"weekdays",
+	"weekDay",
+	"days",
+	"day",
+	"dayToday",
+	"dateDisplay",
+	"dateDisplayItem",
+	"footer",
+	"definedRanges"
+]);
+const UiSlots = Object.freeze(UI_SLOT_KEYS.reduce((slots, key) => ({
+	...slots,
+	[key]: key
+}), {}));
+const getUiSlotClassName = (uiSlots, key) => uiSlots?.[key]?.className;
+const getUiSlotStyle = (uiSlots, key) => uiSlots?.[key]?.style;
+const mergeUiSlotStyles = (baseStyle, uiSlots, key) => {
+	const slotStyle = getUiSlotStyle(uiSlots, key);
+	if (!slotStyle) return baseStyle;
+	return {
+		...baseStyle || {},
+		...slotStyle
+	};
+};
+const omitUiSlotKeys = (uiSlots, keys) => {
+	if (!uiSlots) return uiSlots;
+	const nextSlots = { ...uiSlots };
+	keys.forEach((key) => {
+		delete nextSlots[key];
+	});
+	return nextSlots;
+};
 var styles_default = {
 	dateRangeWrapper: "rdrDateRangeWrapper",
 	calendarWrapper: "rdrCalendarWrapper",
@@ -62,4 +109,10 @@ var styles_default = {
 	rtl: "rdrRtl"
 };
 //#endregion
-module.exports = styles_default;
+exports.UI_SLOT_KEYS = UI_SLOT_KEYS;
+exports.UiSlots = UiSlots;
+exports.default = styles_default;
+exports.getUiSlotClassName = getUiSlotClassName;
+exports.getUiSlotStyle = getUiSlotStyle;
+exports.mergeUiSlotStyles = mergeUiSlotStyles;
+exports.omitUiSlotKeys = omitUiSlotKeys;

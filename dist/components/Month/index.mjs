@@ -1,21 +1,27 @@
+import { getUiSlotClassName, mergeUiSlotStyles } from "../../styles.mjs";
 import DayCell from "../DayCell/index.mjs";
 import { getMonthDisplayRange } from "../../utils.mjs";
 import { eachDayOfInterval, endOfDay, endOfWeek, format, isAfter, isBefore, isSameDay, isWeekend, isWithinInterval, startOfDay, startOfWeek } from "date-fns";
 import React from "react";
+import classnames from "classnames";
 //#region src/components/Month/index.jsx
-function renderWeekdays(styles, dateOptions, weekdayDisplayFormat) {
+function renderWeekdays(styles, dateOptions, weekdayDisplayFormat, uiSlots) {
 	const now = /* @__PURE__ */ new Date();
-	return /* @__PURE__ */ React.createElement("div", { className: styles.weekDays }, eachDayOfInterval({
+	return /* @__PURE__ */ React.createElement("div", {
+		className: classnames(styles.weekDays, getUiSlotClassName(uiSlots, "weekdays")),
+		style: mergeUiSlotStyles(void 0, uiSlots, "weekdays")
+	}, eachDayOfInterval({
 		start: startOfWeek(now, dateOptions),
 		end: endOfWeek(now, dateOptions)
 	}).map((day, i) => /* @__PURE__ */ React.createElement("span", {
-		className: styles.weekDay,
+		className: classnames(styles.weekDay, getUiSlotClassName(uiSlots, "weekDay")),
+		style: mergeUiSlotStyles(void 0, uiSlots, "weekDay"),
 		key: i
 	}, format(day, weekdayDisplayFormat, dateOptions))));
 }
 function Month(props) {
 	const now = /* @__PURE__ */ new Date();
-	const { displayMode, focusedRange, drag, styles, disabledDates, disabledDay, minDate: rawMinDate, maxDate: rawMaxDate, month, dateOptions, fixedHeight, ranges: rawRanges, showPreview: shouldShowPreview, preview, style, showMonthName, monthDisplayFormat, showWeekDays, weekdayDisplayFormat, onMouseLeave, onDragSelectionStart, onDragSelectionEnd, onDragSelectionMove } = props;
+	const { displayMode, focusedRange, drag, styles, disabledDates, disabledDay, minDate: rawMinDate, maxDate: rawMaxDate, month, dateOptions, fixedHeight, ranges: rawRanges, showPreview: shouldShowPreview, preview, style, showMonthName, monthDisplayFormat, showWeekDays, weekdayDisplayFormat, onMouseLeave, onDragSelectionStart, onDragSelectionEnd, onDragSelectionMove, todayAffordance, uiSlots } = props;
 	const minDate = rawMinDate && startOfDay(rawMinDate);
 	const maxDate = rawMaxDate && endOfDay(rawMaxDate);
 	const monthDisplay = getMonthDisplayRange(month, dateOptions, fixedHeight);
@@ -33,10 +39,11 @@ function Month(props) {
 	}
 	const showPreview = shouldShowPreview && !drag.disablePreview;
 	return /* @__PURE__ */ React.createElement("div", {
-		className: styles.month,
-		style
-	}, showMonthName ? /* @__PURE__ */ React.createElement("div", { className: styles.monthName }, format(month, monthDisplayFormat, dateOptions)) : null, showWeekDays && renderWeekdays(styles, dateOptions, weekdayDisplayFormat), /* @__PURE__ */ React.createElement("div", {
-		className: styles.days,
+		className: classnames(styles.month, getUiSlotClassName(uiSlots, "month")),
+		style: mergeUiSlotStyles(style, uiSlots, "month")
+	}, showMonthName ? /* @__PURE__ */ React.createElement("div", { className: styles.monthName }, format(month, monthDisplayFormat, dateOptions)) : null, showWeekDays && renderWeekdays(styles, dateOptions, weekdayDisplayFormat, uiSlots), /* @__PURE__ */ React.createElement("div", {
+		className: classnames(styles.days, getUiSlotClassName(uiSlots, "days")),
+		style: mergeUiSlotStyles(void 0, uiSlots, "days"),
 		onMouseLeave
 	}, eachDayOfInterval({
 		start: monthDisplay.start,
@@ -54,6 +61,7 @@ function Month(props) {
 			preview: showPreview ? preview : null,
 			isWeekend: isWeekend(day, dateOptions),
 			isToday: isSameDay(day, now),
+			todayAffordance,
 			isStartOfWeek: isSameDay(day, startOfWeek(day, dateOptions)),
 			isEndOfWeek: isSameDay(day, endOfWeek(day, dateOptions)),
 			isStartOfMonth,

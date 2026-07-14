@@ -1,10 +1,10 @@
 # Migrating from `react-date-range` upstream
 
-> `@cyberlz/react-date-range` is the maintained drop-in fork for `react-date-range@2.0.1`. `1.2.x` is the current stable line on npm `latest` (`v1.2.0` published). `1.0.0-rc.0` remains available on the historical `rc` tag.
+> `@cyberlz/react-date-range` is the maintained drop-in fork for `react-date-range@2.0.1`. `1.3.x` is the current stable line on npm `latest` after maintainer publish. `1.0.0-rc.0` remains available on the historical `rc` tag.
 
 ## TL;DR
 
-`@cyberlz/react-date-range` is a community-maintained fork of `hypeserver/react-date-range` targeting React 18/19 compatibility, first-party TypeScript types, modern build tooling, additive accessibility/RTL improvements, and input-trigger picker components (`DatePickerInput`, `DateRangeInput`). Install `@cyberlz/react-date-range` in place of `react-date-range@2.0.1`; plain install resolves to the current stable `1.2.x` line. If you were using `prop-types` or `react-list` as runtime dependencies, or deep-importing `react-date-range/dist/locale`, see [What you need to do](#what-you-need-to-do).
+`@cyberlz/react-date-range` is a community-maintained fork of `hypeserver/react-date-range` targeting React 18/19 compatibility, first-party TypeScript types, modern build tooling, additive accessibility/RTL improvements, input-trigger picker components (`DatePickerInput`, `DateRangeInput`), and configurable UI slots/tokens. Install `@cyberlz/react-date-range` in place of `react-date-range@2.0.1`; plain install resolves to the current stable `1.3.x` line after maintainer publish. If you were using `prop-types` or `react-list` as runtime dependencies, or deep-importing `react-date-range/dist/locale`, see [What you need to do](#what-you-need-to-do).
 
 ---
 
@@ -72,7 +72,7 @@ If you encounter issues, check the following:
    ```
 4. **No other changes needed**: All public component props, event signatures, and return types are unchanged.
 
-For the full list of changes, see the [CHANGELOG](../CHANGELOG.md) `1.0.x`, `1.1.x`, and `1.2.x` entries.
+For the full list of changes, see the [CHANGELOG](../CHANGELOG.md) `1.0.x`, `1.1.x`, `1.2.x`, and `1.3.x` entries.
 
 ---
 

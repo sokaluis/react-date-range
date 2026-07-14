@@ -412,16 +412,21 @@ function App() {
 
       <section className="demo-panel">
         <h2>DateRangePicker — Selected Display</h2>
-        <p>
-          Formats the selected range as ISO dates, places the display below the calendar,
-          and keeps the date inputs editable.
-        </p>
-        <DateRangePicker
-          onChange={handleSelectedDisplayChange}
-          ranges={selectedDisplayRanges}
-          editableDateInputs
-          selectedDisplay={{ format: 'yyyy-MM-dd', placement: 'bottom', separator: ' – ' }}
-        />
+        <div className="demo-example">
+          <DateRangePicker
+            onChange={handleSelectedDisplayChange}
+            ranges={selectedDisplayRanges}
+            editableDateInputs
+            selectedDisplay={{ format: 'yyyy-MM-dd', placement: 'bottom', separator: ' – ' }}
+          />
+        </div>
+        <div className="demo-callout">
+          <p>
+            The <code>selectedDisplay</code> prop formats the range as ISO dates,
+            moves it below the calendar, and separates start/end with a custom visual
+            separator. Editable date inputs still own parsing and selection state.
+          </p>
+        </div>
         <p className="state-output">
           <code>
             range = {formatDate(selectedDisplayRanges[0]?.startDate)} → {formatDate(selectedDisplayRanges[0]?.endDate)}
@@ -431,18 +436,23 @@ function App() {
 
       <section className="demo-panel">
         <h2>DateRangePicker — Picker Layout</h2>
-        <p>
-          Uses the picker-level <code>calendarCount</code> and <code>scrollOrientation</code> props
-          to render two calendars in horizontal order without changing virtualized scroll behavior.
-        </p>
-        <DateRangePicker
-          onChange={handleLayoutChange}
-          ranges={layoutRanges}
-          showPreview={true}
-          moveRangeOnFirstSelection={false}
-          calendarCount={2}
-          scrollOrientation="horizontal"
-        />
+        <div className="demo-example">
+          <DateRangePicker
+            onChange={handleLayoutChange}
+            ranges={layoutRanges}
+            showPreview={true}
+            moveRangeOnFirstSelection={false}
+            calendarCount={2}
+            scrollOrientation="horizontal"
+          />
+        </div>
+        <div className="demo-callout">
+          <p>
+            Layout is controlled by <code>calendarCount</code> and <code>scrollOrientation</code>.
+            Two calendars render side by side in horizontal mode. Virtualized scroll keeps its
+            legacy behavior when <code>scroll.enabled</code> is used.
+          </p>
+        </div>
         <p className="state-output">
           <code>
             range = {formatDate(layoutRanges[0]?.startDate)} → {formatDate(layoutRanges[0]?.endDate)}
@@ -452,19 +462,25 @@ function App() {
 
       <section className="demo-panel">
         <h2>Calendar — Configurable Header &amp; Today Label</h2>
-        <p>
-          Hides year and previous/next header chrome while keeping keyboard date navigation.
-          Today renders as a visible label and still exposes <code>aria-current=&quot;date&quot;</code>.
-        </p>
-        <Calendar
-          onChange={handleInputDateChange('Calendar header/today demo', setHeaderDemoDate)}
-          onShownDateChange={handleShownDateChange('Calendar header/today demo')}
-          date={headerDemoDate}
-          displayMode="date"
-          showDateDisplay={false}
-          headerConfig={{ year: false, navigation: false }}
-          todayAffordance="label"
-        />
+        <div className="demo-example">
+          <Calendar
+            onChange={handleInputDateChange('Calendar header/today demo', setHeaderDemoDate)}
+            onShownDateChange={handleShownDateChange('Calendar header/today demo')}
+            date={headerDemoDate}
+            displayMode="date"
+            showDateDisplay={false}
+            headerConfig={{ year: false, navigation: false }}
+            todayAffordance="label"
+          />
+        </div>
+        <div className="demo-callout">
+          <p>
+            <code>headerConfig</code> hides the year and previous/next controls, while{' '}
+            <code>todayAffordance=&quot;label&quot;</code> shows a visible "Today" text.
+            Keyboard navigation still works. Use <code>todayAffordance=&quot;highlight&quot;</code>{' '}
+            when you only want the visual day highlight.
+          </p>
+        </div>
         <p className="state-output">
           <code>date = {headerDemoDate ? headerDemoDate.toISOString().split('T')[0] : 'null'}</code>
         </p>
@@ -472,17 +488,22 @@ function App() {
 
       <section className="demo-panel">
         <h2>DateRangePicker — Stable UI Slots</h2>
-        <p>
-          Adds host classes and inline styles to locked zones while preserving the default picker classes,
-          labels, keyboard behavior, and range state.
-        </p>
-        <DateRangePicker
-          onChange={handleSlotChange}
-          ranges={slotRanges}
-          showPreview={true}
-          moveRangeOnFirstSelection={false}
-          uiSlots={slotDemoSlots}
-        />
+        <div className="demo-example">
+          <DateRangePicker
+            onChange={handleSlotChange}
+            ranges={slotRanges}
+            showPreview={true}
+            moveRangeOnFirstSelection={false}
+            uiSlots={slotDemoSlots}
+          />
+        </div>
+        <div className="demo-callout">
+          <p>
+            <code>uiSlots</code> lets host apps append classes and inline styles to stable zones
+            without replacing library classes. The picker still owns labels, keyboard behavior,
+            focus, and range state.
+          </p>
+        </div>
         <p className="state-output">
           <code>
             range = {formatDate(slotRanges[0]?.startDate)} → {formatDate(slotRanges[0]?.endDate)}
@@ -492,17 +513,22 @@ function App() {
 
       <section className="demo-panel">
         <h2>DateRangePicker — Opt-in Tokens</h2>
-        <p>
-          Imports <code>theme/tokens.css</code> only for this demo app and overrides token values
-          on this wrapper, so existing consumers keep their default theme unless they opt in.
-        </p>
-        <div style={tokenDemoStyle}>
-          <DateRangePicker
-            onChange={handleTokenChange}
-            ranges={tokenRanges}
-            showPreview={true}
-            moveRangeOnFirstSelection={false}
-          />
+        <div className="demo-example">
+          <div style={tokenDemoStyle}>
+            <DateRangePicker
+              onChange={handleTokenChange}
+              ranges={tokenRanges}
+              showPreview={true}
+              moveRangeOnFirstSelection={false}
+            />
+          </div>
+        </div>
+        <div className="demo-callout">
+          <p>
+            The optional <code>theme/tokens.css</code> stylesheet overrides CSS variables on the
+            wrapper only. Existing consumers keep the default theme unless they explicitly import
+            the token stylesheet.
+          </p>
         </div>
         <p className="state-output">
           <code>

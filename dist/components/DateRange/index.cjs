@@ -1,6 +1,6 @@
 const require_runtime = require("../../_virtual/_rolldown/runtime.cjs");
-const require_utils = require("../../utils.cjs");
 const require_styles = require("../../styles.cjs");
+const require_utils = require("../../utils.cjs");
 const require_components_Calendar_index = require("../Calendar/index.cjs");
 let date_fns = require("date-fns");
 let react = require("react");
@@ -21,17 +21,26 @@ const dateRangeDefaultProps = {
 	],
 	disabledDates: []
 };
+const resolveSelectedDisplay = (selectedDisplay, dateDisplayFormat) => ({
+	format: selectedDisplay?.format || dateDisplayFormat,
+	placement: selectedDisplay?.placement || "top",
+	separator: selectedDisplay?.separator ?? ""
+});
 const DateRange = (0, react.forwardRef)(function DateRange({ classNames = dateRangeDefaultProps.classNames, ranges = dateRangeDefaultProps.ranges, moveRangeOnFirstSelection = dateRangeDefaultProps.moveRangeOnFirstSelection, retainEndDateOnFirstSelection = dateRangeDefaultProps.retainEndDateOnFirstSelection, rangeColors = dateRangeDefaultProps.rangeColors, disabledDates = dateRangeDefaultProps.disabledDates, ...rest }, ref) {
 	const safeDisabledDates = Array.isArray(disabledDates) ? disabledDates : EMPTY_DATES;
-	const props = (0, react.useMemo)(() => ({
-		classNames,
-		ranges,
-		moveRangeOnFirstSelection,
-		retainEndDateOnFirstSelection,
-		rangeColors,
-		disabledDates: safeDisabledDates,
-		...rest
-	}), [
+	const props = (0, react.useMemo)(() => {
+		const resolvedSelectedDisplay = resolveSelectedDisplay(rest.selectedDisplay, rest.dateDisplayFormat);
+		return {
+			classNames,
+			ranges,
+			moveRangeOnFirstSelection,
+			retainEndDateOnFirstSelection,
+			rangeColors,
+			disabledDates: safeDisabledDates,
+			...rest,
+			selectedDisplay: resolvedSelectedDisplay
+		};
+	}, [
 		classNames,
 		ranges,
 		moveRangeOnFirstSelection,
@@ -50,7 +59,7 @@ const DateRange = (0, react.forwardRef)(function DateRange({ classNames = dateRa
 	const [focusedRangeState, setFocusedRangeState] = (0, react.useState)(() => props.initialFocusedRange || [require_utils.findNextRangeIndex(props.ranges), 0]);
 	const [preview, setPreview] = (0, react.useState)(null);
 	const [liveAnnouncement, setLiveAnnouncement] = (0, react.useState)("");
-	const styles = (0, react.useMemo)(() => require_utils.generateStyles([require_styles, props.classNames]), [props.classNames]);
+	const styles = (0, react.useMemo)(() => require_utils.generateStyles([require_styles.default, props.classNames]), [props.classNames]);
 	const calcNewSelection = (0, react.useCallback)((value, isSingleValue = true) => {
 		const focusedRange = props.focusedRange || focusedRangeState;
 		const { ranges, onChange, maxDate, moveRangeOnFirstSelection, retainEndDateOnFirstSelection, disabledDates } = props;

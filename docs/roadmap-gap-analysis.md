@@ -12,10 +12,10 @@
 |------|--------|-------|
 | Public landing/demo | ✅ Deployed | <https://sokaluis.github.io/react-date-range/> |
 | Public demo URL in README | ✅ Done | |
-| 1.2.x stable line | ✅ Published as `1.2.2` | Corrected after `1.2.1` shipped stale `dist/` |
+| 1.3.x stable line | 🔲 Prepared as `1.3.0` | Pending maintainer publish/tag/release handoff |
 | Full component docs | ✅ Complete | Component reference live at `docs/components/` |
-| Configurable UI foundation | 🔲 Not specced | User raised in memory #11130 |
-| Responsive/mobile (1.3) | 🔲 Not specced | |
+| Configurable UI foundation | ✅ Complete | Stable UI slots, opt-in tokens, and demo coverage prepared for `1.3.0` |
+| Responsive/mobile | 🔲 Not specced | Release target needs rescheduling after `1.3.0` |
 | Styling system (1.4) | 🔲 Not specced | Depends on configurable UI foundation |
 | Advanced rules (1.6) | 🔲 Not specced | |
 | 2.x Labs | 🔲 Exploratory | |

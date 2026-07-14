@@ -1,40 +1,39 @@
-# Release Checklist — `v1.2.2` (prepared)
+# Release Checklist — `v1.3.0` (prepared)
 
-> **Status.** `v1.2.1` was tagged, pushed, and published, but is superseded
-> because it was published without rebuilt `dist/` artifacts. `v1.2.2` is
-> prepared as the corrective patch for the same Calendar scroll fixes plus
-> adoption docs/demo updates, with regenerated `dist/`. npm publish remains a
-> manual maintainer step. The agent does not request OTP and does not run
-> `npm publish`.
+> **Status.** `v1.3.0` is prepared as the Configurable UI Foundation release:
+> additive UI slots, opt-in CSS design tokens, and demo token styling fixes.
+> npm publish remains a manual maintainer step. The agent does not request OTP
+> and does not run `npm publish`.
 >
 > See [`docs/npm-publishing.md`](npm-publishing.md) for the publishing guide and
 > [`docs/release-flow.md`](release-flow.md) for the full git/tag/npm pipeline.
 
 ---
 
-## Before tagging `v1.2.2`
+## Before tagging `v1.3.0`
 
-- [x] **`package.json` version**: `1.2.2`.
-- [x] **`package-lock.json`** root package version: `1.2.2`.
+- [x] **`package.json` version**: `1.3.0`.
+- [x] **`package-lock.json`** root package version: `1.3.0`.
 - [x] **`demo/package.json`** dependency: `@cyberlz/react-date-range: "file:.."` for local demo validation.
-- [x] **`CHANGELOG.md`** has a `## [1.2.2]` section explaining the rebuilt
-      `dist/` corrective release for the `1.2.1` Calendar scroll fixes.
-- [x] **`README.md`** includes quick links to the evaluation guide and
-      integration snippets.
-- [x] **Doc sweep**: adoption docs, demo landing copy, release checklist, and
-      release flow reflect the local `1.2.2` preparation and note `1.2.1` was
-      superseded without claiming npm `latest` has moved before maintainer
-      publish.
+- [x] **`CHANGELOG.md`** has a `## [1.3.0]` section covering UI slots, tokens,
+      docs/demo coverage, and the demo token styling fix.
+- [x] **`README.md`** reflects the `1.3.x` stable line and includes
+      `dist/theme/tokens.css` in the build output table.
+- [x] **Doc sweep**: release checklist, release flow, npm publishing notes, and
+      stable-line docs reflect local `1.3.0` preparation without claiming npm
+      `latest` has moved before maintainer publish.
 - [ ] CI is green on the commit being tagged.
 - [x] `npm run build` passes and regenerates `dist/`.
-- [x] `dist/` inspection confirms the Calendar scroll fixes are present in the
-      generated CSS and JS artifacts.
-- [x] `npm run type-check` passes.
-- [x] Demo `npm run typecheck` passes.
+- [x] `dist/` inspection confirms public API/types and CSS outputs are present,
+      including `dist/theme/tokens.css`.
+- [ ] `npm run type-check` passes.
+- [ ] Demo `npm run typecheck` passes.
 - [ ] `npm run lint` passes.
 - [ ] `npm run test:ci` passes.
-- [x] `npm test -- --runInBand` passes.
+- [x] `npm test` passes.
 - [x] `git diff --check` exits clean (no conflict markers / whitespace).
+- [x] `npm pack --dry-run` confirms the package includes `dist/`,
+      `dist/theme/default.css`, `dist/theme/tokens.css`, and declarations.
 - [ ] Tree-shaking analyzer still reports real delta:
   - Calendar-only: ~41 KB
   - DateRangePicker: ~58 KB
@@ -53,22 +52,22 @@
 
 ---
 
-## Tagging `v1.2.2`
+## Tagging `v1.3.0`
 
 > Tagging is a separate step from npm publish. See
 > [`docs/release-flow.md`](release-flow.md) for the full git/tag/GitHub flow.
 
 ```bash
 # Dry-run only — performed by the maintainer
-git tag v1.2.2
-git push origin v1.2.2
+git tag v1.3.0
+git push origin v1.3.0
 ```
 
-- [ ] **Git tag** `v1.2.2` created and pushed to `origin`.
+- [ ] **Git tag** `v1.3.0` created and pushed to `origin`.
 
 ---
 
-## Publishing `v1.2.2` (manual — maintainer)
+## Publishing `v1.3.0` (manual — maintainer)
 
 > **The agent does NOT run `npm publish` and does NOT request OTP.**
 > This checklist section is for the maintainer. Use the same OTP device as
@@ -81,7 +80,7 @@ git push origin v1.2.2
   ```
   If OTP is required: `npm publish --tag latest --access public --otp=XXXXXX`
 - [ ] Maintainer verifies dist-tags:
-  - `npm view @cyberlz/react-date-range@latest version` → `1.2.2` after manual publish
+  - `npm view @cyberlz/react-date-range@latest version` → `1.3.0` after manual publish
   - `npm view @cyberlz/react-date-range@rc version` → `1.0.0-rc.0` (rc stays available)
 - [ ] Maintainer verifies registry install:
   ```bash
@@ -93,8 +92,8 @@ git push origin v1.2.2
   ```bash
   npm view @cyberlz/react-date-range@latest readme version dist-tags --json
   ```
-  Confirm `version` is `1.2.2`, `dist-tags.latest` is `1.2.2`, and the
-  `readme` field reflects the 1.2.x features plus the adoption docs links.
+  Confirm `version` is `1.3.0`, `dist-tags.latest` is `1.3.0`, and the
+  `readme` field reflects the 1.3.x UI customization surface.
 - [ ] Maintainer refreshes the demo `package-lock.json` integrity hashes:
   ```bash
   cd demo && npm install
@@ -104,12 +103,12 @@ git push origin v1.2.2
 
 ---
 
-## Post-publish (`v1.2.2`)
+## Post-publish (`v1.3.0`)
 
-- [ ] GitHub Release created from `CHANGELOG.md` entry for `1.2.2`.
+- [ ] GitHub Release created from `CHANGELOG.md` entry for `1.3.0`.
 - [ ] README npm install guidance checked after dist-tags settle.
 - [ ] Monitor issues for regressions in tree-shaking, CJS import, styling
-      compatibility, and the new `DatePickerInput` / `DateRangeInput` triggers.
+      compatibility, `theme/tokens.css`, and `classNames` / `styles` slot hooks.
 
 ---
 

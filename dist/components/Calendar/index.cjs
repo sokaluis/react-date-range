@@ -1,8 +1,8 @@
 const require_runtime = require("../../_virtual/_rolldown/runtime.cjs");
+const require_styles = require("../../styles.cjs");
 const require_utils = require("../../utils.cjs");
 const require_components_Month_index = require("../Month/index.cjs");
 const require_components_DateDisplay_index = require("../DateDisplay/index.cjs");
-const require_styles = require("../../styles.cjs");
 let date_fns = require("date-fns");
 let react = require("react");
 react = require_runtime.__toESM(react);
@@ -48,7 +48,9 @@ const calendarDefaultProps = {
 	preventSnapRefocus: false,
 	ariaLabels: {},
 	/** Opt-in: neighbour-month filler cells become selectable when scroll is disabled. */
-	selectablePassive: false
+	selectablePassive: false,
+	headerConfig: {},
+	todayAffordance: "highlight"
 };
 const uninitializedTargetProp = Symbol("uninitializedTargetProp");
 const getDateOptions = ({ locale, weekStartsOn }) => {
@@ -57,6 +59,11 @@ const getDateOptions = ({ locale, weekStartsOn }) => {
 	return dateOptions;
 };
 const getMonthNames = (locale) => [...Array(12).keys()].map((i) => locale.localize.month(i));
+const resolveSelectedDisplay = (selectedDisplay, dateDisplayFormat) => ({
+	format: selectedDisplay?.format || dateDisplayFormat,
+	placement: selectedDisplay?.placement || "top",
+	separator: selectedDisplay?.separator ?? ""
+});
 const calcScrollArea = ({ direction, months, scroll }) => {
 	if (!scroll.enabled) return { enabled: false };
 	const longMonthHeight = scroll.longMonthHeight || scroll.monthHeight;
@@ -338,25 +345,40 @@ const CalendarContent = react.default.forwardRef(function CalendarContent(props,
 		updateShownDate
 	]);
 	const renderMonthAndYear = (0, react.useCallback)((date, changeDate, calendarProps) => {
-		const { showMonthArrow, minDate, maxDate, showMonthAndYearPickers, ariaLabels } = calendarProps;
+		const { showMonthArrow, minDate, maxDate, showMonthAndYearPickers, ariaLabels, headerConfig, uiSlots } = calendarProps;
+		const showMonth = headerConfig.month !== false;
+		const showYear = headerConfig.year !== false;
+		const showNavigation = showMonthArrow && headerConfig.navigation !== false;
+		if (!showMonth && !showYear && !showNavigation) return null;
 		const upperYearLimit = maxDate.getFullYear();
 		const lowerYearLimit = minDate.getFullYear();
 		return /* @__PURE__ */ react.default.createElement("div", {
 			onMouseUp: (e) => e.stopPropagation(),
-			className: styles.monthAndYearWrapper
-		}, showMonthArrow ? /* @__PURE__ */ react.default.createElement("button", {
+			className: (0, classnames.default)(styles.monthAndYearWrapper, require_styles.getUiSlotClassName(uiSlots, "header")),
+			style: require_styles.mergeUiSlotStyles(void 0, uiSlots, "header")
+		}, showNavigation ? /* @__PURE__ */ react.default.createElement("button", {
 			type: "button",
-			className: (0, classnames.default)(styles.nextPrevButton, styles.prevButton),
+			className: (0, classnames.default)(styles.nextPrevButton, styles.prevButton, require_styles.getUiSlotClassName(uiSlots, "nav"), require_styles.getUiSlotClassName(uiSlots, "navPrev")),
+			style: require_styles.mergeUiSlotStyles(require_styles.mergeUiSlotStyles(void 0, uiSlots, "nav"), uiSlots, "navPrev"),
 			onClick: () => changeDate(-1, "monthOffset"),
 			"aria-label": ariaLabels.prevButton
-		}, /* @__PURE__ */ react.default.createElement("i", null)) : null, showMonthAndYearPickers ? /* @__PURE__ */ react.default.createElement("span", { className: styles.monthAndYearPickers }, /* @__PURE__ */ react.default.createElement("span", { className: styles.monthPicker }, /* @__PURE__ */ react.default.createElement("select", {
+		}, /* @__PURE__ */ react.default.createElement("i", null)) : null, showMonthAndYearPickers ? /* @__PURE__ */ react.default.createElement("span", {
+			className: (0, classnames.default)(styles.monthAndYearPickers, require_styles.getUiSlotClassName(uiSlots, "monthYear")),
+			style: require_styles.mergeUiSlotStyles(void 0, uiSlots, "monthYear")
+		}, showMonth ? /* @__PURE__ */ react.default.createElement("span", {
+			className: (0, classnames.default)(styles.monthPicker, require_styles.getUiSlotClassName(uiSlots, "monthPicker")),
+			style: require_styles.mergeUiSlotStyles(void 0, uiSlots, "monthPicker")
+		}, /* @__PURE__ */ react.default.createElement("select", {
 			value: date.getMonth(),
 			onChange: (e) => changeDate(e.target.value, "setMonth"),
 			"aria-label": ariaLabels.monthPicker
 		}, monthNames.map((monthName, i) => /* @__PURE__ */ react.default.createElement("option", {
 			key: i,
 			value: i
-		}, monthName)))), /* @__PURE__ */ react.default.createElement("span", { className: styles.monthAndYearDivider }), /* @__PURE__ */ react.default.createElement("span", { className: styles.yearPicker }, /* @__PURE__ */ react.default.createElement("select", {
+		}, monthName)))) : null, showMonth && showYear ? /* @__PURE__ */ react.default.createElement("span", { className: styles.monthAndYearDivider }) : null, showYear ? /* @__PURE__ */ react.default.createElement("span", {
+			className: (0, classnames.default)(styles.yearPicker, require_styles.getUiSlotClassName(uiSlots, "yearPicker")),
+			style: require_styles.mergeUiSlotStyles(void 0, uiSlots, "yearPicker")
+		}, /* @__PURE__ */ react.default.createElement("select", {
 			value: date.getFullYear(),
 			onChange: (e) => changeDate(e.target.value, "setYear"),
 			"aria-label": ariaLabels.yearPicker
@@ -366,9 +388,13 @@ const CalendarContent = react.default.forwardRef(function CalendarContent(props,
 				key: year,
 				value: year
 			}, year);
-		})))) : /* @__PURE__ */ react.default.createElement("span", { className: styles.monthAndYearPickers }, monthNames[date.getMonth()], " ", date.getFullYear()), showMonthArrow ? /* @__PURE__ */ react.default.createElement("button", {
+		}))) : null) : /* @__PURE__ */ react.default.createElement("span", {
+			className: (0, classnames.default)(styles.monthAndYearPickers, require_styles.getUiSlotClassName(uiSlots, "monthYear")),
+			style: require_styles.mergeUiSlotStyles(void 0, uiSlots, "monthYear")
+		}, showMonth ? monthNames[date.getMonth()] : null, showMonth && showYear ? " " : null, showYear ? date.getFullYear() : null), showNavigation ? /* @__PURE__ */ react.default.createElement("button", {
 			type: "button",
-			className: (0, classnames.default)(styles.nextPrevButton, styles.nextButton),
+			className: (0, classnames.default)(styles.nextPrevButton, styles.nextButton, require_styles.getUiSlotClassName(uiSlots, "nav"), require_styles.getUiSlotClassName(uiSlots, "navNext")),
+			style: require_styles.mergeUiSlotStyles(require_styles.mergeUiSlotStyles(void 0, uiSlots, "nav"), uiSlots, "navNext"),
 			onClick: () => changeDate(1, "monthOffset"),
 			"aria-label": ariaLabels.nextButton
 		}, /* @__PURE__ */ react.default.createElement("i", null)) : null);
@@ -388,15 +414,19 @@ const CalendarContent = react.default.forwardRef(function CalendarContent(props,
 			minDate,
 			maxDate,
 			disabledDates,
+			uiSlots: props.uiSlots,
+			selectedDisplay: props.selectedDisplay,
 			styles,
 			dateOptions,
 			onChange: onDragSelectionEnd,
 			onRangeFocusChange: handleRangeFocusChange
 		});
 	};
-	const { showDateDisplay, onPreviewChange, scroll, direction, dir, disabledDates, disabledDay, minDate, rangeColors, color, navigatorRenderer, className, preview, _calendarScrollArea: scrollArea } = props;
+	const { showDateDisplay, onPreviewChange, scroll, direction, dir, disabledDates, disabledDay, minDate, rangeColors, color, navigatorRenderer, className, style, preview, _calendarScrollArea: scrollArea } = props;
 	const isVertical = direction === "vertical";
 	const monthAndYearRenderer = navigatorRenderer || renderMonthAndYear;
+	const dateDisplay = showDateDisplay ? renderDateDisplay() : null;
+	const isDateDisplayBottom = props.selectedDisplay?.placement === "bottom";
 	const ranges = props.ranges.map((range, i) => ({
 		...range,
 		color: range.color || rangeColors[i] || color
@@ -414,7 +444,8 @@ const CalendarContent = react.default.forwardRef(function CalendarContent(props,
 	return /* @__PURE__ */ react.default.createElement("div", {
 		ref: calendarWrapperRef,
 		dir,
-		className: (0, classnames.default)(styles.calendarWrapper, dir === "rtl" && (props.classNames?.rtl ?? styles.rtl), className),
+		className: (0, classnames.default)(styles.calendarWrapper, dir === "rtl" && (props.classNames?.rtl ?? styles.rtl), require_styles.getUiSlotClassName(props.uiSlots, "root"), className),
+		style: require_styles.mergeUiSlotStyles(style, props.uiSlots, "root"),
 		onKeyDown: handleCalendarKeyDown,
 		onMouseUp: () => setDrag({
 			status: false,
@@ -426,7 +457,7 @@ const CalendarContent = react.default.forwardRef(function CalendarContent(props,
 				range: {}
 			});
 		}
-	}, showDateDisplay && renderDateDisplay(), monthAndYearRenderer(focusedDate, changeShownDate, props), /* @__PURE__ */ react.default.createElement("div", {
+	}, !isDateDisplayBottom && dateDisplay, monthAndYearRenderer(focusedDate, changeShownDate, props), /* @__PURE__ */ react.default.createElement("div", {
 		"aria-live": "polite",
 		"aria-atomic": "true",
 		className: styles.liveRegion
@@ -437,14 +468,14 @@ const CalendarContent = react.default.forwardRef(function CalendarContent(props,
 		className: styles.weekDay,
 		key: i
 	}, (0, date_fns.format)(day, props.weekdayDisplayFormat, dateOptions)))), /* @__PURE__ */ react.default.createElement("div", {
-		className: (0, classnames.default)(styles.infiniteMonths, isVertical ? styles.monthsVertical : styles.monthsHorizontal),
+		className: (0, classnames.default)(styles.infiniteMonths, isVertical ? styles.monthsVertical : styles.monthsHorizontal, require_styles.getUiSlotClassName(props.uiSlots, "months")),
 		onMouseLeave: () => onPreviewChange && onPreviewChange(),
-		style: {
+		style: require_styles.mergeUiSlotStyles({
 			width: scrollArea.calendarWidth + 11,
 			height: scrollArea.calendarHeight + 11,
 			overflowX: isVertical ? "hidden" : void 0,
 			overflowY: isVertical ? "auto" : void 0
-		},
+		}, props.uiSlots, "months"),
 		ref: scrollContainerRef,
 		onScroll: handleScroll
 	}, /* @__PURE__ */ react.default.createElement("div", { style: virtualSizeStyle }, virtualMonths.map((virtualMonth) => {
@@ -492,7 +523,8 @@ const CalendarContent = react.default.forwardRef(function CalendarContent(props,
 		role: "grid",
 		"aria-label": ariaLabels.calendar || "Calendar",
 		"aria-roledescription": ariaLabels.calendarRoleDescription || "month grid",
-		className: (0, classnames.default)(styles.months, isVertical ? styles.monthsVertical : styles.monthsHorizontal)
+		className: (0, classnames.default)(styles.months, isVertical ? styles.monthsVertical : styles.monthsHorizontal, require_styles.getUiSlotClassName(props.uiSlots, "months")),
+		style: require_styles.mergeUiSlotStyles(void 0, props.uiSlots, "months")
 	}, new Array(props.months).fill(null).map((_, i) => {
 		let monthStep = (0, date_fns.addMonths)(focusedDate, i);
 		if (props.calendarFocus === "backwards") monthStep = (0, date_fns.subMonths)(focusedDate, props.months - 1 - i);
@@ -515,9 +547,9 @@ const CalendarContent = react.default.forwardRef(function CalendarContent(props,
 			showWeekDays: !isVertical || i === 0,
 			showMonthName: !isVertical || i > 0
 		});
-	})));
+	})), isDateDisplayBottom && dateDisplay);
 });
-const Calendar = react.default.forwardRef(function Calendar({ showMonthArrow = calendarDefaultProps.showMonthArrow, showMonthAndYearPickers = calendarDefaultProps.showMonthAndYearPickers, disabledDates = calendarDefaultProps.disabledDates, disabledDay = calendarDefaultProps.disabledDay, classNames = calendarDefaultProps.classNames, locale = calendarDefaultProps.locale, ranges = calendarDefaultProps.ranges, focusedRange = calendarDefaultProps.focusedRange, dateDisplayFormat = calendarDefaultProps.dateDisplayFormat, monthDisplayFormat = calendarDefaultProps.monthDisplayFormat, weekdayDisplayFormat = calendarDefaultProps.weekdayDisplayFormat, dayDisplayFormat = calendarDefaultProps.dayDisplayFormat, showDateDisplay = calendarDefaultProps.showDateDisplay, showPreview = calendarDefaultProps.showPreview, displayMode = calendarDefaultProps.displayMode, months = calendarDefaultProps.months, color = calendarDefaultProps.color, scroll = calendarDefaultProps.scroll, direction = calendarDefaultProps.direction, maxDate = calendarDefaultProps.maxDate, minDate = calendarDefaultProps.minDate, rangeColors = calendarDefaultProps.rangeColors, startDatePlaceholder = calendarDefaultProps.startDatePlaceholder, endDatePlaceholder = calendarDefaultProps.endDatePlaceholder, editableDateInputs = calendarDefaultProps.editableDateInputs, dragSelectionEnabled = calendarDefaultProps.dragSelectionEnabled, fixedHeight = calendarDefaultProps.fixedHeight, calendarFocus = calendarDefaultProps.calendarFocus, preventSnapRefocus = calendarDefaultProps.preventSnapRefocus, ariaLabels = calendarDefaultProps.ariaLabels, selectablePassive = calendarDefaultProps.selectablePassive, ...rest }, ref) {
+const Calendar = react.default.forwardRef(function Calendar({ showMonthArrow = calendarDefaultProps.showMonthArrow, showMonthAndYearPickers = calendarDefaultProps.showMonthAndYearPickers, disabledDates = calendarDefaultProps.disabledDates, disabledDay = calendarDefaultProps.disabledDay, classNames = calendarDefaultProps.classNames, locale = calendarDefaultProps.locale, ranges = calendarDefaultProps.ranges, focusedRange = calendarDefaultProps.focusedRange, dateDisplayFormat = calendarDefaultProps.dateDisplayFormat, monthDisplayFormat = calendarDefaultProps.monthDisplayFormat, weekdayDisplayFormat = calendarDefaultProps.weekdayDisplayFormat, dayDisplayFormat = calendarDefaultProps.dayDisplayFormat, showDateDisplay = calendarDefaultProps.showDateDisplay, showPreview = calendarDefaultProps.showPreview, displayMode = calendarDefaultProps.displayMode, months = calendarDefaultProps.months, color = calendarDefaultProps.color, scroll = calendarDefaultProps.scroll, direction = calendarDefaultProps.direction, maxDate = calendarDefaultProps.maxDate, minDate = calendarDefaultProps.minDate, rangeColors = calendarDefaultProps.rangeColors, startDatePlaceholder = calendarDefaultProps.startDatePlaceholder, endDatePlaceholder = calendarDefaultProps.endDatePlaceholder, editableDateInputs = calendarDefaultProps.editableDateInputs, dragSelectionEnabled = calendarDefaultProps.dragSelectionEnabled, fixedHeight = calendarDefaultProps.fixedHeight, calendarFocus = calendarDefaultProps.calendarFocus, preventSnapRefocus = calendarDefaultProps.preventSnapRefocus, ariaLabels = calendarDefaultProps.ariaLabels, selectablePassive = calendarDefaultProps.selectablePassive, headerConfig = calendarDefaultProps.headerConfig, todayAffordance = calendarDefaultProps.todayAffordance, selectedDisplay, uiSlots, ...rest }, ref) {
 	const resolvedProps = {
 		showMonthArrow,
 		showMonthAndYearPickers,
@@ -550,13 +582,22 @@ const Calendar = react.default.forwardRef(function Calendar({ showMonthArrow = c
 		calendarFocus,
 		preventSnapRefocus,
 		ariaLabels,
+		headerConfig: {
+			month: true,
+			year: true,
+			navigation: true,
+			...headerConfig
+		},
+		todayAffordance,
+		selectedDisplay: resolveSelectedDisplay(selectedDisplay, dateDisplayFormat),
+		uiSlots,
 		...rest
 	};
 	const dateOptions = (0, react.useMemo)(() => getDateOptions({
 		locale: resolvedProps.locale,
 		weekStartsOn: resolvedProps.weekStartsOn
 	}), [resolvedProps.locale, resolvedProps.weekStartsOn]);
-	const styles = (0, react.useMemo)(() => require_utils.generateStyles([require_styles, resolvedProps.classNames]), [resolvedProps.classNames]);
+	const styles = (0, react.useMemo)(() => require_utils.generateStyles([require_styles.default, resolvedProps.classNames]), [resolvedProps.classNames]);
 	const monthNames = (0, react.useMemo)(() => getMonthNames(resolvedProps.locale), [resolvedProps.locale]);
 	const scrollArea = (0, react.useMemo)(() => calcScrollArea({
 		direction: resolvedProps.direction,

@@ -1,6 +1,6 @@
 # Shared Types
 
-> Stable since 1.2.x. All types below are verbatim from `src/index.d.ts`.
+> Stable since 1.3.x. All types below are verbatim from `src/index.d.ts`.
 
 ## `Range`
 

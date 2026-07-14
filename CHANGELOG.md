@@ -14,6 +14,31 @@ For upstream release history (up to `2.0.1`), see [`CHANGELOG.upstream.md`](CHAN
 
 ---
 
+## [1.3.0] — 2026-07-14
+
+Minor release. Adds the Configurable UI Foundation as an additive customization
+surface: stable host class/style slots, documented `classNames` hooks, and an
+opt-in CSS token layer for theme overrides. Existing apps that import only the
+base styles and default theme keep their current styling behavior.
+
+### Added
+
+- Added stable UI slot support across `Calendar`, `DateRange`, and
+  `DateRangePicker`, including host class/style hooks for calendar regions,
+  range wrappers, day cells, navigation, defined ranges, and input-trigger
+  pickers.
+- Added the optional `@cyberlz/react-date-range/theme/tokens.css` export for
+  CSS custom-property theming without changing the default theme import path.
+- Expanded styling documentation and demo coverage for slot class overrides,
+  inline styles, and token-based theme overrides.
+
+### Fixed
+
+- Fixed demo token-preview styling so opt-in token overrides are visible when
+  validating the local source-mode demo.
+
+---
+
 ## [1.2.2] — 2026-07-11
 
 Patch release replacing `1.2.1` with the same Calendar scroll fixes and
