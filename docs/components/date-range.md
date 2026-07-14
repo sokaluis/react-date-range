@@ -65,6 +65,7 @@ All other props are inherited verbatim from `CalendarProps`. See [`calendar.md`]
 | `editableDateInputs` | `boolean \| undefined` | `false` | Allows typing dates in the display inputs |
 | `disabledDates` | `Date[] \| undefined` | `[]` | Disabled dates cannot be selected |
 | `classNames` | `ClassNames \| undefined` | `{}` | CSS class overrides |
+| `uiSlots` | `UiSlots \| undefined` | `{}` | Additive stable classes/styles inherited from `CalendarProps` |
 | `scroll` | `ScrollOptions \| undefined` | `{ enabled: false }` | Virtualized month scrolling |
 | `showPreview` | `boolean \| undefined` | `true` | Shows in-progress range preview on hover |
 | `onPreviewChange` | `((previewDate?: Date) => void) \| undefined` | none | Called as the mouse hovers over dates |
@@ -79,13 +80,14 @@ For the complete inherited prop table, see [`calendar.md`](./calendar.md#props).
 - **`retainEndDateOnFirstSelection`**: When `false` (default), the first click in a new selection sets only the start date and clears the end date. When `true`, the previously selected end date is retained as a starting point for the next range — useful for quickly chaining range selections.
 - **`onChange` signature**: `DateRangeProps['onChange']` receives `RangeKeyDict` (a `Record<string, Range>`), **not** a single `Range` or `Date`. This differs from `CalendarProps['onChange']` which receives a single `Date`.
 - **`ranges` keying**: Each range slot is identified by its `key` property. `onChange` returns a `RangeKeyDict` keyed by those `key` values. Unkeyed ranges use fallback keys like `range1`, `range2`, ….
+- **`uiSlots.root`**: In `DateRange`, the rendered root is the calendar wrapper with the range class appended. Use `uiSlots.dateDisplay` and `uiSlots.dateDisplayItem` for the selected date display row.
 
 ---
 
 ## See also
 
 - [Component hub](./README.md)
-- [Shared types](./types.md) — `Range`, `RangeKeyDict`, `RangeFocus`, `Preview`, `ClassNames`, `StaticRange`, `InputRange`
+- [Shared types](./types.md) — `Range`, `RangeKeyDict`, `RangeFocus`, `Preview`, `ClassNames`, `UiSlots`, `StaticRange`, `InputRange`
 - [`CalendarProps`](./calendar.md) — full inherited prop table
 - [Getting started](../getting-started.md) — install, CSS imports, tree-shaking, SSR
 - [Controlled state](../integrations/controlled-state.md) — `onChange`, `ranges`, `focusedRange` patterns

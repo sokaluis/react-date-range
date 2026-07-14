@@ -204,6 +204,66 @@ export interface ClassNames {
 
 ---
 
+## `UiSlots`
+
+Stable additive UI slots for host classes and inline styles. `Calendar`, `DateRange`, and `DateRangePicker` accept this map.
+
+```ts
+export type UiSlotKey =
+  | 'root'
+  | 'header'
+  | 'monthYear'
+  | 'monthPicker'
+  | 'yearPicker'
+  | 'nav'
+  | 'navPrev'
+  | 'navNext'
+  | 'months'
+  | 'month'
+  | 'weekdays'
+  | 'weekDay'
+  | 'days'
+  | 'day'
+  | 'dayToday'
+  | 'dateDisplay'
+  | 'dateDisplayItem'
+  | 'footer'
+  | 'definedRanges';
+
+export interface UiSlotOverride {
+  className?: string | undefined;
+  style?: React.CSSProperties | undefined;
+}
+
+export type UiSlots = Partial<Record<UiSlotKey, UiSlotOverride>>;
+```
+
+| Slot | Component area |
+|------|----------------|
+| `root` | Component root (`Calendar`, `DateRange`, or outer `DateRangePicker`) |
+| `header` | Default calendar month/year header wrapper |
+| `monthYear` | Month/year picker group |
+| `monthPicker` | Month picker wrapper |
+| `yearPicker` | Year picker wrapper |
+| `nav` | Previous and next navigation buttons |
+| `navPrev` | Previous navigation button |
+| `navNext` | Next navigation button |
+| `months` | Multi-month container |
+| `month` | Individual month container |
+| `weekdays` | Weekday header row |
+| `weekDay` | Individual weekday label |
+| `days` | Day grid container |
+| `day` | Day cell button |
+| `dayToday` | Today day cell button when the today highlight is visible |
+| `dateDisplay` | Per-range date display group |
+| `dateDisplayItem` | Individual start/end date display input wrapper |
+| `footer` | Reserved footer slot; ignored where no footer zone exists |
+| `definedRanges` | `DateRangePicker` preset sidebar wrapper |
+
+Slot `className` values append to the package classes, and slot `style` values merge after library inline styles for that zone. Non-applicable slot keys are ignored and are not rendered as DOM attributes.
+
+---
+
 ## `AriaLabelsShape`
 
 All `ariaLabel` overrides for accessible naming of calendar elements. All fields optional.

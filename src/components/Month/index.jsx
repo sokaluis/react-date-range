@@ -1,6 +1,7 @@
 
 import React from 'react';
 import DayCell from '../DayCell';
+import classnames from 'classnames';
 import {
   format,
   startOfDay,
@@ -15,16 +16,22 @@ import {
   eachDayOfInterval,
 } from 'date-fns';
 import { getMonthDisplayRange } from '../../utils';
+import { getUiSlotClassName, mergeUiSlotStyles } from '../../styles';
 
-function renderWeekdays(styles, dateOptions, weekdayDisplayFormat) {
+function renderWeekdays(styles, dateOptions, weekdayDisplayFormat, uiSlots) {
   const now = new Date();
   return (
-    <div className={styles.weekDays}>
+    <div
+      className={classnames(styles.weekDays, getUiSlotClassName(uiSlots, 'weekdays'))}
+      style={mergeUiSlotStyles(undefined, uiSlots, 'weekdays')}>
       {eachDayOfInterval({
         start: startOfWeek(now, dateOptions),
         end: endOfWeek(now, dateOptions),
       }).map((day, i) => (
-        <span className={styles.weekDay} key={i}>
+        <span
+          className={classnames(styles.weekDay, getUiSlotClassName(uiSlots, 'weekDay'))}
+          style={mergeUiSlotStyles(undefined, uiSlots, 'weekDay')}
+          key={i}>
           {format(day, weekdayDisplayFormat, dateOptions)}
         </span>
       ))}
@@ -59,6 +66,7 @@ function Month(props) {
     onDragSelectionEnd,
     onDragSelectionMove,
     todayAffordance,
+    uiSlots,
   } = props;
 
   const minDate = rawMinDate && startOfDay(rawMinDate);
@@ -77,14 +85,19 @@ function Month(props) {
   const showPreview = shouldShowPreview && !drag.disablePreview;
 
   return (
-    <div className={styles.month} style={style}>
+    <div
+      className={classnames(styles.month, getUiSlotClassName(uiSlots, 'month'))}
+      style={mergeUiSlotStyles(style, uiSlots, 'month')}>
       {showMonthName ? (
         <div className={styles.monthName}>
           {format(month, monthDisplayFormat, dateOptions)}
         </div>
       ) : null}
-      {showWeekDays && renderWeekdays(styles, dateOptions, weekdayDisplayFormat)}
-      <div className={styles.days} onMouseLeave={onMouseLeave}>
+      {showWeekDays && renderWeekdays(styles, dateOptions, weekdayDisplayFormat, uiSlots)}
+      <div
+        className={classnames(styles.days, getUiSlotClassName(uiSlots, 'days'))}
+        style={mergeUiSlotStyles(undefined, uiSlots, 'days')}
+        onMouseLeave={onMouseLeave}>
         {eachDayOfInterval({ start: monthDisplay.start, end: monthDisplay.end }).map(
           (day, index) => {
             const isStartOfMonth = isSameDay(day, monthDisplay.startDateOfMonth);

@@ -65,6 +65,7 @@ function PresetRangePicker() {
 | `dragSelectionEnabled` | `boolean \| undefined` | `true` | Click-and-drag range selection |
 | `disabledDates` | `Date[] \| undefined` | `[]` | Disabled dates |
 | `classNames` | `ClassNames \| undefined` | `{}` | CSS class overrides |
+| `uiSlots` | `UiSlots \| undefined` | `{}` | Additive stable classes/styles for picker, range, calendar, and sidebar zones |
 | `showPreview` | `boolean \| undefined` | `true` | Hover preview |
 | `footerContent` | `React.ReactNode \| undefined` | none | Custom content below preset sidebar |
 | `headerContent` | `React.ReactNode \| undefined` | none | Custom content above preset sidebar |
@@ -102,6 +103,26 @@ For the complete inherited prop table, see [`date-range.md`](./date-range.md#pro
 
 ---
 
+## Stable UI slots
+
+`DateRangePicker` accepts the same `uiSlots` contract as `Calendar` and `DateRange`, plus picker-specific zones:
+
+```tsx
+<DateRangePicker
+  uiSlots={{
+    root: { className: 'booking-picker' },
+    definedRanges: { style: { borderRight: '1px solid #e5e7eb' } },
+    day: { className: 'booking-picker-day' },
+  }}
+/>
+```
+
+- `root` applies to the outer picker wrapper.
+- `definedRanges` applies to the preset sidebar wrapper.
+- Calendar slots such as `header`, `months`, `day`, and `dateDisplayItem` are forwarded to the inner range calendar.
+
+---
+
 ## Gotchas
 
 - **No trigger wrapper**: `DateRangePicker` renders the picker surface directly. Use `DateRangeInput` when you need a trigger + popover wrapper.
@@ -109,13 +130,14 @@ For the complete inherited prop table, see [`date-range.md`](./date-range.md#pro
 - **`staticRanges` + `inputRanges`**: Both default to the built-in sets (`defaultStaticRanges`, `defaultInputRanges`). Override either to provide only the presets your UI needs.
 - **`rangeColors`**: Applied per-range in `ranges`; also used as defaults for the preset sidebar.
 - **`DefinedRangeProps` is also inherited**: `DateRangePicker` extends both `DateRangeProps` and `DefinedRangeProps`, so it accepts both range-selection and preset-sidebar props simultaneously.
+- **`uiSlots.root` isolation**: `DateRangePicker` applies `root` to the outer picker only, so the same root class does not leak onto the nested `DateRange` calendar.
 
 ---
 
 ## See also
 
 - [Component hub](./README.md)
-- [Shared types](./types.md) — `Range`, `RangeKeyDict`, `RangeFocus`, `Preview`, `ClassNames`, `StaticRange`, `InputRange`
+- [Shared types](./types.md) — `Range`, `RangeKeyDict`, `RangeFocus`, `Preview`, `ClassNames`, `UiSlots`, `StaticRange`, `InputRange`
 - [`DateRangeProps`](./date-range.md) — range selection props
 - [`DefinedRangeProps`](./defined-range.md) — preset sidebar props
 - [`CalendarProps`](./calendar.md) — base calendar props

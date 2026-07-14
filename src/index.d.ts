@@ -145,6 +145,34 @@ export interface ClassNames {
   rtl?: string | undefined;
 }
 
+export type UiSlotKey =
+  | 'root'
+  | 'header'
+  | 'monthYear'
+  | 'monthPicker'
+  | 'yearPicker'
+  | 'nav'
+  | 'navPrev'
+  | 'navNext'
+  | 'months'
+  | 'month'
+  | 'weekdays'
+  | 'weekDay'
+  | 'days'
+  | 'day'
+  | 'dayToday'
+  | 'dateDisplay'
+  | 'dateDisplayItem'
+  | 'footer'
+  | 'definedRanges';
+
+export interface UiSlotOverride {
+  className?: string | undefined;
+  style?: React.CSSProperties | undefined;
+}
+
+export type UiSlots = Partial<Record<UiSlotKey, UiSlotOverride>>;
+
 export interface HeaderConfig {
   /** Show the month picker or month text — default: true */
   month?: boolean | undefined;
@@ -266,6 +294,8 @@ export interface CalendarProps {
   updateRange?: ((newRange: Range) => void) | undefined;
   /** Today visual affordance — default: `highlight`; `aria-current="date"` is preserved in every mode. */
   todayAffordance?: TodayAffordance | undefined;
+  /** Stable additive UI slots. Classes append to, and styles merge with, library styling. */
+  uiSlots?: UiSlots | undefined;
   /** default: `E` */
   weekdayDisplayFormat?: string | undefined;
   /** default: none */
@@ -409,6 +439,8 @@ export interface InputRange {
 export interface DefinedRangeProps {
   /** default: none */
   className?: string | undefined;
+  /** default: none */
+  style?: React.CSSProperties | undefined;
   /**
    * Which range and step are focused.
    * default: `[0, 0]`
@@ -475,6 +507,7 @@ export function DateRangePicker(props: DateRangePickerProps): React.JSX.Element;
 export interface DateInputProps {
   ariaLabel?: string | undefined;
   className?: string | undefined;
+  style?: React.CSSProperties | undefined;
   dateDisplayFormat?: string | undefined;
   dateOptions?: FormatOptions | undefined;
   disabled?: boolean | undefined;

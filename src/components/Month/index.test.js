@@ -15,6 +15,7 @@ jest.mock('../DayCell/index.jsx', () => {
       data-isendofweek={props.isEndOfWeek ? 'true' : 'false'}
       data-ranges={JSON.stringify(props.ranges)}
       data-ispassive={props.isPassive ? 'true' : 'false'}
+      data-ui-slot-class={props.uiSlots?.day?.className || ''}
       tabIndex={props.disabled || props.isPassive ? -1 : 0}
     />
   );
@@ -67,6 +68,46 @@ describe('Month', () => {
       render(<Month {...defaultProps} showWeekDays={false} />);
       const weekdays = document.querySelectorAll('.rdrWeekDay');
       expect(weekdays).toHaveLength(0);
+    });
+  });
+
+  describe('uiSlots', () => {
+    test('appends classes and merges styles on stable month zones', () => {
+      const { container } = render(
+        <Month
+          {...defaultProps}
+          uiSlots={{
+            month: { className: 'host-month', style: { outlineColor: 'red' } },
+            weekdays: { className: 'host-weekdays', style: { color: 'purple' } },
+            weekDay: { className: 'host-weekday', style: { letterSpacing: '2px' } },
+            days: { className: 'host-days', style: { backgroundColor: 'yellow' } },
+          }}
+        />
+      );
+
+      expect(container.querySelector('.rdrMonth')).toHaveClass('host-month');
+      expect(container.querySelector('.rdrMonth')).toHaveStyle('outline-color: rgb(255, 0, 0);');
+      expect(container.querySelector('.rdrWeekDays')).toHaveClass('host-weekdays');
+      expect(container.querySelector('.rdrWeekDays')).toHaveStyle('color: rgb(128, 0, 128);');
+      expect(container.querySelector('.rdrWeekDay')).toHaveClass('host-weekday');
+      expect(container.querySelector('.rdrWeekDay')).toHaveStyle('letter-spacing: 2px;');
+      expect(container.querySelector('.rdrDays')).toHaveClass('host-days');
+      expect(container.querySelector('.rdrDays')).toHaveStyle('background-color: rgb(255, 255, 0);');
+    });
+
+    test('forwards day slot keys to DayCell and ignores non-applicable keys on Month DOM', () => {
+      const { container } = render(
+        <Month
+          {...defaultProps}
+          uiSlots={{
+            day: { className: 'host-day' },
+            dateDisplay: { className: 'should-not-render-on-month' },
+          }}
+        />
+      );
+
+      expect(screen.getAllByTestId('day-cell')[0]).toHaveAttribute('data-ui-slot-class', 'host-day');
+      expect(container.querySelector('.should-not-render-on-month')).toBeNull();
     });
   });
 

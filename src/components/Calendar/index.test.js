@@ -383,6 +383,56 @@ describe('Calendar', () => {
       expect(container.querySelector('.rdrMonthAndYearWrapper')).toBeNull();
     });
 
+    test('uiSlots appends classes and merges styles on calendar chrome without replacing legacy classes', () => {
+      const { container } = renderCalendar({
+        uiSlots: {
+          root: { className: 'host-root', style: { borderColor: 'red' } },
+          header: { className: 'host-header', style: { backgroundColor: 'yellow' } },
+          monthYear: { className: 'host-month-year', style: { color: 'purple' } },
+          monthPicker: { className: 'host-month-picker', style: { outlineColor: 'blue' } },
+          yearPicker: { className: 'host-year-picker', style: { outlineColor: 'green' } },
+          months: { className: 'host-months', style: { gap: '12px' } },
+        },
+      });
+
+      expect(container.firstChild).toHaveClass('rdrCalendarWrapper', 'host-root');
+      expect(container.firstChild).toHaveStyle('border-color: red;');
+      expect(container.querySelector('.rdrMonthAndYearWrapper')).toHaveClass('host-header');
+      expect(container.querySelector('.rdrMonthAndYearWrapper')).toHaveStyle('background-color: rgb(255, 255, 0);');
+      expect(container.querySelector('.rdrMonthAndYearPickers')).toHaveClass('host-month-year');
+      expect(container.querySelector('.rdrMonthAndYearPickers')).toHaveStyle('color: rgb(128, 0, 128);');
+      expect(container.querySelector('.rdrMonthPicker')).toHaveClass('host-month-picker');
+      expect(container.querySelector('.rdrMonthPicker')).toHaveStyle('outline-color: rgb(0, 0, 255);');
+      expect(container.querySelector('.rdrYearPicker')).toHaveClass('host-year-picker');
+      expect(container.querySelector('.rdrYearPicker')).toHaveStyle('outline-color: rgb(0, 128, 0);');
+      expect(container.querySelector('.rdrMonths')).toHaveClass('host-months');
+      expect(container.querySelector('.rdrMonths')).toHaveStyle({ gap: '12px' });
+    });
+
+    test('uiSlots appends navigation classes and preserves button labels and click handlers', () => {
+      const onShownDateChange = jest.fn();
+      renderCalendar({
+        onShownDateChange,
+        uiSlots: {
+          nav: { className: 'host-nav', style: { borderColor: 'blue' } },
+          navPrev: { className: 'host-prev', style: { color: 'red' } },
+          navNext: { className: 'host-next', style: { color: 'green' } },
+          definedRanges: { className: 'should-not-render-on-calendar' },
+        },
+      });
+
+      const previousButton = findButtonByLabel('Previous month');
+      const nextButton = findButtonByLabel('Next month');
+      expect(previousButton).toHaveClass('rdrNextPrevButton', 'rdrPprevButton', 'host-nav', 'host-prev');
+      expect(previousButton).toHaveStyle('border-color: blue; color: rgb(255, 0, 0);');
+      expect(nextButton).toHaveClass('rdrNextPrevButton', 'rdrNextButton', 'host-nav', 'host-next');
+      expect(nextButton).toHaveStyle('border-color: blue; color: rgb(0, 128, 0);');
+      expect(document.querySelector('.should-not-render-on-calendar')).toBeNull();
+
+      fireEvent.click(nextButton);
+      expect(onShownDateChange).toHaveBeenCalledWith(new Date(2025, 6, 15));
+    });
+
     test('renders one polite atomic live region outside rendered month content', () => {
       const { container } = renderCalendar({
         scroll: { enabled: true, monthHeight: 240, longMonthHeight: 280, calendarHeight: 420 },
@@ -1331,6 +1381,13 @@ describe('Calendar', () => {
       });
 
       expect(onRangeFocusChange).toHaveBeenCalledWith([0, 1]);
+    });
+
+    test('forwards uiSlots to DateDisplay', () => {
+      const uiSlots = { dateDisplay: { className: 'host-date-display' } };
+      renderCalendar({ showDateDisplay: true, uiSlots });
+
+      expect(mockDateDisplayProps.uiSlots).toBe(uiSlots);
     });
 
     test('DateDisplay onChange forwards selected date through Calendar selection handler', () => {

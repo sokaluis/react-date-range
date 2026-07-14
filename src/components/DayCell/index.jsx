@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import classnames from 'classnames';
 import { startOfDay, format, isSameDay, isAfter, isBefore, endOfDay } from 'date-fns';
+import { getUiSlotClassName, mergeUiSlotStyles } from '../../styles';
 
 const getTodayLabel = dateOptions => {
   const localeCode = dateOptions?.locale?.code;
@@ -41,6 +42,7 @@ function DayCell(props) {
     dayDisplayFormat,
     dateOptions,
     todayAffordance = 'highlight',
+    uiSlots,
   } = props;
   const showTodayHighlight = isToday && todayAffordance !== 'off';
   const showTodayLabel = isToday && todayAffordance === 'label';
@@ -85,18 +87,23 @@ function DayCell(props) {
   };
 
   const getClassNames = () => {
-    return classnames(styles.day, {
-      [styles.dayPassive]: isPassive,
-      [styles.dayDisabled]: disabled,
-      [styles.dayToday]: showTodayHighlight,
-      [styles.dayWeekend]: isWeekend,
-      [styles.dayStartOfWeek]: isStartOfWeek,
-      [styles.dayEndOfWeek]: isEndOfWeek,
-      [styles.dayStartOfMonth]: isStartOfMonth,
-      [styles.dayEndOfMonth]: isEndOfMonth,
-      [styles.dayHovered]: hover,
-      [styles.dayActive]: active,
-    });
+    return classnames(
+      styles.day,
+      getUiSlotClassName(uiSlots, 'day'),
+      showTodayHighlight && getUiSlotClassName(uiSlots, 'dayToday'),
+      {
+        [styles.dayPassive]: isPassive,
+        [styles.dayDisabled]: disabled,
+        [styles.dayToday]: showTodayHighlight,
+        [styles.dayWeekend]: isWeekend,
+        [styles.dayStartOfWeek]: isStartOfWeek,
+        [styles.dayEndOfWeek]: isEndOfWeek,
+        [styles.dayStartOfMonth]: isStartOfMonth,
+        [styles.dayEndOfMonth]: isEndOfMonth,
+        [styles.dayHovered]: hover,
+        [styles.dayActive]: active,
+      }
+    );
   };
 
   const renderPreviewPlaceholder = () => {
@@ -207,7 +214,11 @@ function DayCell(props) {
       onKeyUp={handleKeyEvent}
       className={getClassNames(props.styles)}
       {...(disabled || isPassive ? { tabIndex: -1 } : {})}
-      style={{ color }}>
+      style={mergeUiSlotStyles(
+        mergeUiSlotStyles({ color }, uiSlots, 'day'),
+        showTodayHighlight ? uiSlots : undefined,
+        'dayToday'
+      )}>
       {renderSelectionPlaceholders()}
       {renderPreviewPlaceholder()}
       <span className={styles.dayNumber}>

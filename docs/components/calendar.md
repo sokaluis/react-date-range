@@ -80,6 +80,7 @@ function SingleDatePicker() {
 | `startDatePlaceholder` | `string \| undefined` | `'Early'` | no |
 | `updateRange` | `((newRange: Range) => void) \| undefined` | none | no |
 | `todayAffordance` | `'highlight' \| 'label' \| 'off' \| undefined` | `'highlight'` | no |
+| `uiSlots` | `UiSlots \| undefined` | `{}` | no |
 | `weekdayDisplayFormat` | `string \| undefined` | `'E'` | no |
 | `weekStartsOn` | `0 \| 1 \| 2 \| 3 \| 4 \| 5 \| 6 \| undefined` | none | no |
 
@@ -105,6 +106,28 @@ Use `headerConfig` to hide the default header pieces independently:
 
 ---
 
+## Stable UI slots
+
+Use `uiSlots` when you need additive host classes or inline styles on locked calendar zones without replacing `classNames`:
+
+```tsx
+<Calendar
+  uiSlots={{
+    root: { className: 'booking-calendar' },
+    header: { style: { borderBottom: '1px solid #e5e7eb' } },
+    day: { className: 'booking-day' },
+    dayToday: { style: { outline: '2px solid currentColor' } },
+  }}
+/>
+```
+
+- Slot classes append to the package classes; they do not replace `classNames`.
+- Slot styles merge after library inline styles for that zone.
+- Locked Calendar slots include `root`, `header`, `monthYear`, `monthPicker`, `yearPicker`, `nav`, `navPrev`, `navNext`, `months`, `month`, `weekdays`, `weekDay`, `days`, `day`, `dayToday`, `dateDisplay`, and `dateDisplayItem`.
+- Non-applicable keys such as `definedRanges` are ignored by `Calendar` and never forwarded to the DOM as unknown attributes.
+
+---
+
 ## DateDisplay and DateInput contract
 
 `DateInput` is **not** a public runtime export. It is an internal component used by `DateDisplay` when `editableDateInputs={true}` is set on `CalendarProps`. Its props are documented as `DateInputProps` on the [shared types page](./types.md#dateinputprops).
@@ -122,13 +145,14 @@ Do not import `DateInput` at runtime — it is type-only for consumers who need 
 - **`direction`**: Controls multi-month layout. `vertical` stacks months top-to-bottom; `horizontal` arranges them left-to-right.
 - **`navigatorRenderer`**: Receives `changeShownDate` with four modes — `'set'`, `'setYear'`, `'setMonth'`, and `'monthOffset'`. Use this to replace the default prev/next arrows with custom controls.
 - **`headerConfig` with `navigatorRenderer`**: A custom `navigatorRenderer` owns its own chrome. The built-in `headerConfig` controls apply to the default header renderer.
+- **`uiSlots` vs. `classNames`**: `classNames` still overrides the package CSS-module class map. `uiSlots` is additive and is safer for app-level styling because it appends a host class and/or inline style to stable zones.
 
 ---
 
 ## See also
 
 - [Component hub](./README.md)
-- [Shared types](./types.md) — `Range`, `RangeKeyDict`, `RangeFocus`, `Preview`, `ClassNames`, `AriaLabelsShape`, `ScrollOptions`, `DateInputProps`
+- [Shared types](./types.md) — `Range`, `RangeKeyDict`, `RangeFocus`, `Preview`, `ClassNames`, `UiSlots`, `UiSlotKey`, `AriaLabelsShape`, `ScrollOptions`, `DateInputProps`
 - [Getting started](../getting-started.md) — install, CSS imports, tree-shaking, SSR
 - [Controlled state](../integrations/controlled-state.md) — `onChange`, `ranges`, `date` patterns
 - [Accessibility setup](../integrations/accessibility-setup.md) — `ariaLabels`, live regions

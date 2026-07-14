@@ -17,6 +17,7 @@ function DateInput(props) {
     minDate,
     maxDate,
     disabledDates = [],
+    style,
   } = props;
 
   const [invalid, setInvalid] = useState(false);
@@ -89,7 +90,7 @@ function DateInput(props) {
   );
 
   return (
-    <span className={classnames('rdrDateInput', className)}>
+    <span className={classnames('rdrDateInput', className)} style={style}>
       <input
         readOnly={readOnly}
         disabled={disabled}

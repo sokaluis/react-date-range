@@ -247,6 +247,42 @@ describe('DateDisplay', () => {
     });
   });
 
+  describe('uiSlots', () => {
+    test('appends dateDisplay class and merges style while preserving range group semantics', () => {
+      const { container } = setup({
+        ranges: [{ startDate: null, endDate: null, key: 'selection', label: 'Trip' }],
+        uiSlots: {
+          dateDisplay: { className: 'host-date-display', style: { borderColor: 'red' } },
+        },
+      });
+
+      const rangeGroup = screen.getByRole('group', { name: 'Trip' });
+      expect(rangeGroup).toHaveClass('dd', 'host-date-display');
+      expect(rangeGroup).toHaveStyle('color: rgb(0, 0, 255); border-color: red;');
+      expect(container.querySelector('.ddw')).not.toHaveClass('host-date-display');
+    });
+
+    test('appends dateDisplayItem class and style without changing DateInput labels or focus callbacks', () => {
+      const onRangeFocusChange = jest.fn();
+      setup({
+        onRangeFocusChange,
+        uiSlots: {
+          dateDisplayItem: { className: 'host-date-item', style: { backgroundColor: 'yellow' } },
+          day: { className: 'should-not-render-on-date-display' },
+        },
+      });
+
+      const startInput = screen.getByLabelText('Check-in date');
+      expect(startInput.parentElement).toHaveClass('ddi', 'host-date-item');
+      expect(startInput.parentElement).toHaveStyle('background-color: rgb(255, 255, 0);');
+      expect(screen.getByLabelText('Check-out date').parentElement).toHaveClass('host-date-item');
+      expect(document.querySelector('.should-not-render-on-date-display')).toBeNull();
+
+      fireEvent.focus(startInput);
+      expect(onRangeFocusChange).toHaveBeenCalledWith(0, 0);
+    });
+  });
+
   describe('range labels', () => {
     test('labelled range renders visible label text', () => {
       setup({

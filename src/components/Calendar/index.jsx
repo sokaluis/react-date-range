@@ -37,7 +37,7 @@ import {
   endOfDay,
 } from 'date-fns';
 import { enUS as defaultLocale } from 'date-fns/locale/en-US';
-import coreStyles from '../../styles';
+import coreStyles, { getUiSlotClassName, mergeUiSlotStyles } from '../../styles';
 
 // REQ-UBF-003: frozen empty array preserves referential equality across renders
 // so downstream useMemo/useCallback deps remain stable when disabledDates is non-array.
@@ -456,7 +456,15 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
 
   const renderMonthAndYear = useCallback(
     (date, changeDate, calendarProps) => {
-      const { showMonthArrow, minDate, maxDate, showMonthAndYearPickers, ariaLabels, headerConfig } = calendarProps;
+      const {
+        showMonthArrow,
+        minDate,
+        maxDate,
+        showMonthAndYearPickers,
+        ariaLabels,
+        headerConfig,
+        uiSlots,
+      } = calendarProps;
       const showMonth = headerConfig.month !== false;
       const showYear = headerConfig.year !== false;
       const showNavigation = showMonthArrow && headerConfig.navigation !== false;
@@ -464,20 +472,37 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
       const upperYearLimit = maxDate.getFullYear();
       const lowerYearLimit = minDate.getFullYear();
       return (
-        <div onMouseUp={e => e.stopPropagation()} className={styles.monthAndYearWrapper}>
+        <div
+          onMouseUp={e => e.stopPropagation()}
+          className={classnames(styles.monthAndYearWrapper, getUiSlotClassName(uiSlots, 'header'))}
+          style={mergeUiSlotStyles(undefined, uiSlots, 'header')}>
           {showNavigation ? (
             <button
               type="button"
-              className={classnames(styles.nextPrevButton, styles.prevButton)}
+              className={classnames(
+                styles.nextPrevButton,
+                styles.prevButton,
+                getUiSlotClassName(uiSlots, 'nav'),
+                getUiSlotClassName(uiSlots, 'navPrev')
+              )}
+              style={mergeUiSlotStyles(
+                mergeUiSlotStyles(undefined, uiSlots, 'nav'),
+                uiSlots,
+                'navPrev'
+              )}
               onClick={() => changeDate(-1, 'monthOffset')}
               aria-label={ariaLabels.prevButton}>
               <i />
             </button>
           ) : null}
           {showMonthAndYearPickers ? (
-            <span className={styles.monthAndYearPickers}>
+            <span
+              className={classnames(styles.monthAndYearPickers, getUiSlotClassName(uiSlots, 'monthYear'))}
+              style={mergeUiSlotStyles(undefined, uiSlots, 'monthYear')}>
               {showMonth ? (
-                <span className={styles.monthPicker}>
+                <span
+                  className={classnames(styles.monthPicker, getUiSlotClassName(uiSlots, 'monthPicker'))}
+                  style={mergeUiSlotStyles(undefined, uiSlots, 'monthPicker')}>
                   <select
                     value={date.getMonth()}
                     onChange={e => changeDate(e.target.value, 'setMonth')}
@@ -492,7 +517,9 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
               ) : null}
               {showMonth && showYear ? <span className={styles.monthAndYearDivider} /> : null}
               {showYear ? (
-                <span className={styles.yearPicker}>
+                <span
+                  className={classnames(styles.yearPicker, getUiSlotClassName(uiSlots, 'yearPicker'))}
+                  style={mergeUiSlotStyles(undefined, uiSlots, 'yearPicker')}>
                   <select
                     value={date.getFullYear()}
                     onChange={e => changeDate(e.target.value, 'setYear')}
@@ -512,7 +539,9 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
               ) : null}
             </span>
           ) : (
-            <span className={styles.monthAndYearPickers}>
+            <span
+              className={classnames(styles.monthAndYearPickers, getUiSlotClassName(uiSlots, 'monthYear'))}
+              style={mergeUiSlotStyles(undefined, uiSlots, 'monthYear')}>
               {showMonth ? monthNames[date.getMonth()] : null}
               {showMonth && showYear ? ' ' : null}
               {showYear ? date.getFullYear() : null}
@@ -521,7 +550,17 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
           {showNavigation ? (
             <button
               type="button"
-              className={classnames(styles.nextPrevButton, styles.nextButton)}
+              className={classnames(
+                styles.nextPrevButton,
+                styles.nextButton,
+                getUiSlotClassName(uiSlots, 'nav'),
+                getUiSlotClassName(uiSlots, 'navNext')
+              )}
+              style={mergeUiSlotStyles(
+                mergeUiSlotStyles(undefined, uiSlots, 'nav'),
+                uiSlots,
+                'navNext'
+              )}
               onClick={() => changeDate(+1, 'monthOffset')}
               aria-label={ariaLabels.nextButton}>
               <i />
@@ -563,6 +602,7 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
         minDate={minDate}
         maxDate={maxDate}
         disabledDates={disabledDates}
+        uiSlots={props.uiSlots}
         styles={styles}
         dateOptions={dateOptions}
         onChange={onDragSelectionEnd}
@@ -584,6 +624,7 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
     color,
     navigatorRenderer,
     className,
+    style,
     preview,
     _calendarScrollArea: scrollArea,
   } = props;
@@ -605,8 +646,10 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
       className={classnames(
         styles.calendarWrapper,
         dir === 'rtl' && (props.classNames?.rtl ?? styles.rtl),
+        getUiSlotClassName(props.uiSlots, 'root'),
         className
       )}
+      style={mergeUiSlotStyles(style, props.uiSlots, 'root')}
       onKeyDown={handleCalendarKeyDown}
       onMouseUp={() => setDrag({ status: false, range: {} })}
       onMouseLeave={() => {
@@ -625,7 +668,7 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
                 start: startOfWeek(new Date(), dateOptions),
                 end: endOfWeek(new Date(), dateOptions),
               }).map((day, i) => (
-                <span className={styles.weekDay} key={i}>
+                  <span className={styles.weekDay} key={i}>
                   {format(day, props.weekdayDisplayFormat, dateOptions)}
                 </span>
               ))}
@@ -634,15 +677,16 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
           <div
             className={classnames(
               styles.infiniteMonths,
-              isVertical ? styles.monthsVertical : styles.monthsHorizontal
+              isVertical ? styles.monthsVertical : styles.monthsHorizontal,
+              getUiSlotClassName(props.uiSlots, 'months')
             )}
             onMouseLeave={() => onPreviewChange && onPreviewChange()}
-            style={{
+            style={mergeUiSlotStyles({
               width: scrollArea.calendarWidth + 11,
               height: scrollArea.calendarHeight + 11,
               overflowX: isVertical ? 'hidden' : undefined,
               overflowY: isVertical ? 'auto' : undefined,
-            }}
+            }, props.uiSlots, 'months')}
             ref={scrollContainerRef}
             onScroll={handleScroll}>
             <div style={virtualSizeStyle}>
@@ -700,8 +744,10 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
           aria-roledescription={ariaLabels.calendarRoleDescription || 'month grid'}
           className={classnames(
             styles.months,
-            isVertical ? styles.monthsVertical : styles.monthsHorizontal
-          )}>
+            isVertical ? styles.monthsVertical : styles.monthsHorizontal,
+            getUiSlotClassName(props.uiSlots, 'months')
+          )}
+          style={mergeUiSlotStyles(undefined, props.uiSlots, 'months')}>
           {new Array(props.months).fill(null).map((_, i) => {
             let monthStep = addMonths(focusedDate, i);
             if (props.calendarFocus === 'backwards') {
@@ -770,6 +816,7 @@ const ForwardedCalendar = React.forwardRef(function Calendar(
     selectablePassive = calendarDefaultProps.selectablePassive,
     headerConfig = calendarDefaultProps.headerConfig,
     todayAffordance = calendarDefaultProps.todayAffordance,
+    uiSlots,
     ...rest
   },
   ref
@@ -825,6 +872,7 @@ const ForwardedCalendar = React.forwardRef(function Calendar(
     ariaLabels,
     headerConfig: resolvedHeaderConfig,
     todayAffordance,
+    uiSlots,
     ...rest,
   };
   const dateOptions = useMemo(

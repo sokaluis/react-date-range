@@ -7,6 +7,7 @@ import {
   DateRangePicker,
   type Range,
   type RangeKeyDict,
+  type UiSlots,
 } from '@cyberlz/react-date-range';
 import { enUS } from 'date-fns/locale';
 import '@cyberlz/react-date-range/styles.css';
@@ -86,6 +87,7 @@ function App() {
   const [inputRange, setInputRange] = useState<Range[]>([createInitialRange()]);
   const [controlledInputRange, setControlledInputRange] = useState<Range[]>([createInitialRange()]);
   const [inputRangeOpen, setInputRangeOpen] = useState(false);
+  const [slotRanges, setSlotRanges] = useState<Range[]>([createInitialRange()]);
 
   // States for new demo panels
   const [a11yRanges, setA11yRanges] = useState<Range[]>([createInitialRange()]);
@@ -186,6 +188,17 @@ function App() {
     setRtlDate(date);
   };
 
+  const handleSlotChange = (rangesByKey: RangeKeyDict) => {
+    const next = rangesByKey.selection;
+    if (next) {
+      logManualQA('Stable uiSlots DateRangePicker onChange', {
+        startDate: toISODate(next.startDate),
+        endDate: toISODate(next.endDate),
+      });
+      setSlotRanges([next]);
+    }
+  };
+
   const handleLabelledChange = (rangesByKey: RangeKeyDict) => {
     const trip1 = rangesByKey.trip1;
     const trip2 = rangesByKey.trip2;
@@ -209,6 +222,18 @@ function App() {
       new Date(today.getFullYear(), today.getMonth(), today.getDate() + 7),
       new Date(today.getFullYear(), today.getMonth(), today.getDate() + 14),
     ],
+  };
+
+  const slotDemoSlots: UiSlots = {
+    root: {
+      className: 'demo-ui-slots-root',
+      style: { border: '1px solid #d1d5db', borderRadius: 12 },
+    },
+    header: { style: { borderBottom: '1px solid #e5e7eb' } },
+    definedRanges: { style: { background: '#f9fafb' } },
+    day: { className: 'demo-ui-slots-day' },
+    dayToday: { style: { outline: '2px solid #111827', outlineOffset: 2 } },
+    dateDisplayItem: { style: { borderRadius: 8 } },
   };
 
   return (
@@ -359,6 +384,26 @@ function App() {
         />
         <p className="state-output">
           <code>date = {headerDemoDate ? headerDemoDate.toISOString().split('T')[0] : 'null'}</code>
+        </p>
+      </section>
+
+      <section className="demo-panel">
+        <h2>DateRangePicker — Stable UI Slots</h2>
+        <p>
+          Adds host classes and inline styles to locked zones while preserving the default picker classes,
+          labels, keyboard behavior, and range state.
+        </p>
+        <DateRangePicker
+          onChange={handleSlotChange}
+          ranges={slotRanges}
+          showPreview={true}
+          moveRangeOnFirstSelection={false}
+          uiSlots={slotDemoSlots}
+        />
+        <p className="state-output">
+          <code>
+            range = {formatDate(slotRanges[0]?.startDate)} → {formatDate(slotRanges[0]?.endDate)}
+          </code>
         </p>
       </section>
 

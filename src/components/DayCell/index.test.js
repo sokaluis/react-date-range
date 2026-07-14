@@ -185,6 +185,48 @@ describe('DayCell', () => {
     });
   });
 
+  describe('uiSlots', () => {
+    test('appends day class and merges day style without replacing interactive semantics', () => {
+      const onMouseDown = jest.fn();
+      render(
+        <DayCell
+          {...baseProps}
+          onMouseDown={onMouseDown}
+          uiSlots={{ day: { className: 'host-day', style: { backgroundColor: 'yellow' } } }}
+        />
+      );
+
+      const button = screen.getByRole('gridcell');
+      expect(button).toHaveClass('rdrDay');
+      expect(button).toHaveClass('host-day');
+      expect(button).toHaveStyle('color: rgb(61, 145, 255); background-color: rgb(255, 255, 0);');
+      expect(button).toHaveAttribute('data-date', baseProps.day.toISOString());
+
+      fireEvent.mouseDown(button);
+      expect(onMouseDown).toHaveBeenCalledWith(baseProps.day);
+    });
+
+    test('applies dayToday slot only to today cells and ignores non-applicable keys', () => {
+      const { rerender } = render(
+        <DayCell
+          {...baseProps}
+          isToday={true}
+          uiSlots={{
+            dayToday: { className: 'host-today', style: { borderColor: 'blue' } },
+            header: { className: 'should-not-render-on-day' },
+          }}
+        />
+      );
+
+      expect(screen.getByRole('gridcell')).toHaveClass('rdrDayToday', 'host-today');
+      expect(screen.getByRole('gridcell')).toHaveStyle('border-color: blue;');
+      expect(screen.getByRole('gridcell')).not.toHaveClass('should-not-render-on-day');
+
+      rerender(<DayCell {...baseProps} isToday={false} uiSlots={{ dayToday: { className: 'host-today' } }} />);
+      expect(screen.getByRole('gridcell')).not.toHaveClass('host-today');
+    });
+  });
+
   describe('mouse and focus interactions', () => {
     test('mouseEnter triggers hover, mouse callbacks, and preview update', () => {
       const onMouseEnter = jest.fn();

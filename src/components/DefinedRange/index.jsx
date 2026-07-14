@@ -25,6 +25,7 @@ const DefinedRange = forwardRef((props, ref) => {
     renderStaticRangeLabel,
     rangeColors = ['#3d91ff', '#3ecf8e', '#fed14c'],
     className,
+    style,
     onChange,
   } = props;
   const [, setRangeOffset] = useState(0);
@@ -56,7 +57,7 @@ const DefinedRange = forwardRef((props, ref) => {
   );
 
   return (
-    <div className={cx(styles.definedRangesWrapper, className)}>
+    <div className={cx(styles.definedRangesWrapper, className)} style={style}>
       {headerContent}
       <div className={styles.staticRanges}>
         {staticRanges.map((staticRange, i) => {

@@ -1,6 +1,7 @@
 import React, { useId } from 'react';
 import classnames from 'classnames';
 import DateInput from '../DateInput';
+import { getUiSlotClassName, mergeUiSlotStyles } from '../../styles';
 
 function DateDisplay({
   focusedRange = [0, 0],
@@ -19,6 +20,7 @@ function DateDisplay({
   onRangeFocusChange,
   dateOptions,
   styles = {},
+  uiSlots,
 }) {
   const defaultColor = rangeColors[focusedRange[0]] || color;
   const labelBaseId = useId();
@@ -32,9 +34,9 @@ function DateDisplay({
         if (range.showDateDisplay === false || (range.disabled && !range.showDateDisplay)) return null;
         return (
           <div
-            className={styles.dateDisplay}
+            className={classnames(styles.dateDisplay, getUiSlotClassName(uiSlots, 'dateDisplay'))}
             key={i}
-            style={{ color: range.color || defaultColor }}
+            style={mergeUiSlotStyles({ color: range.color || defaultColor }, uiSlots, 'dateDisplay')}
             role={range.label ? 'group' : undefined}
             aria-labelledby={range.label ? labelBaseId + '-label-' + i : undefined}>
             {range.label && (
@@ -45,7 +47,8 @@ function DateDisplay({
             <DateInput
               className={classnames(styles.dateDisplayItem, {
                 [styles.dateDisplayItemActive]: focusedRange[0] === i && focusedRange[1] === 0,
-              })}
+              }, getUiSlotClassName(uiSlots, 'dateDisplayItem'))}
+              style={mergeUiSlotStyles(undefined, uiSlots, 'dateDisplayItem')}
               readOnly={!editableDateInputs}
               disabled={range.disabled}
               value={range.startDate}
@@ -66,7 +69,8 @@ function DateDisplay({
             <DateInput
               className={classnames(styles.dateDisplayItem, {
                 [styles.dateDisplayItemActive]: focusedRange[0] === i && focusedRange[1] === 1,
-              })}
+              }, getUiSlotClassName(uiSlots, 'dateDisplayItem'))}
+              style={mergeUiSlotStyles(undefined, uiSlots, 'dateDisplayItem')}
               readOnly={!editableDateInputs}
               disabled={range.disabled}
               value={range.endDate}

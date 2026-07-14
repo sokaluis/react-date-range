@@ -1,3 +1,48 @@
+export const UI_SLOT_KEYS = Object.freeze([
+  'root',
+  'header',
+  'monthYear',
+  'monthPicker',
+  'yearPicker',
+  'nav',
+  'navPrev',
+  'navNext',
+  'months',
+  'month',
+  'weekdays',
+  'weekDay',
+  'days',
+  'day',
+  'dayToday',
+  'dateDisplay',
+  'dateDisplayItem',
+  'footer',
+  'definedRanges',
+]);
+
+export const UiSlots = Object.freeze(
+  UI_SLOT_KEYS.reduce((slots, key) => ({ ...slots, [key]: key }), {})
+);
+
+export const getUiSlotClassName = (uiSlots, key) => uiSlots?.[key]?.className;
+
+export const getUiSlotStyle = (uiSlots, key) => uiSlots?.[key]?.style;
+
+export const mergeUiSlotStyles = (baseStyle, uiSlots, key) => {
+  const slotStyle = getUiSlotStyle(uiSlots, key);
+  if (!slotStyle) return baseStyle;
+  return { ...(baseStyle || {}), ...slotStyle };
+};
+
+export const omitUiSlotKeys = (uiSlots, keys) => {
+  if (!uiSlots) return uiSlots;
+  const nextSlots = { ...uiSlots };
+  keys.forEach(key => {
+    delete nextSlots[key];
+  });
+  return nextSlots;
+};
+
 export default {
   dateRangeWrapper: 'rdrDateRangeWrapper',
   calendarWrapper: 'rdrCalendarWrapper',
