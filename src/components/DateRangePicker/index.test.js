@@ -162,4 +162,45 @@ describe('DateRangePicker hooks parity', () => {
 
     expect(mockLatestDateRangeProps.ariaLabels.liveRegionSelection).toBe(formatter);
   });
+
+  test('defaults picker layout to one vertical calendar', () => {
+    renderDateRangePicker();
+
+    expect(mockLatestDateRangeProps.months).toBe(1);
+    expect(mockLatestDateRangeProps.direction).toBe('vertical');
+  });
+
+  test('maps two horizontal picker layout props to DateRange calendar props', () => {
+    renderDateRangePicker({ calendarCount: 2, scrollOrientation: 'horizontal' });
+
+    expect(mockLatestDateRangeProps.months).toBe(2);
+    expect(mockLatestDateRangeProps.direction).toBe('horizontal');
+  });
+
+  test('preserves explicit legacy layout props when picker layout props are omitted', () => {
+    renderDateRangePicker({ months: 2, direction: 'horizontal' });
+
+    expect(mockLatestDateRangeProps.months).toBe(2);
+    expect(mockLatestDateRangeProps.direction).toBe('horizontal');
+  });
+
+  test('falls back to default layout for unsupported runtime values', () => {
+    renderDateRangePicker({ calendarCount: 3, scrollOrientation: 'diagonal' });
+
+    expect(mockLatestDateRangeProps.months).toBe(1);
+    expect(mockLatestDateRangeProps.direction).toBe('vertical');
+  });
+
+  test('leaves scroll-enabled calendar layout props unchanged', () => {
+    renderDateRangePicker({
+      calendarCount: 2,
+      scrollOrientation: 'horizontal',
+      scroll: { enabled: true },
+      months: 4,
+      direction: 'vertical',
+    });
+
+    expect(mockLatestDateRangeProps.months).toBe(4);
+    expect(mockLatestDateRangeProps.direction).toBe('vertical');
+  });
 });

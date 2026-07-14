@@ -89,6 +89,7 @@ function App() {
   const [inputRangeOpen, setInputRangeOpen] = useState(false);
   const [slotRanges, setSlotRanges] = useState<Range[]>([createInitialRange()]);
   const [selectedDisplayRanges, setSelectedDisplayRanges] = useState<Range[]>([createInitialRange()]);
+  const [layoutRanges, setLayoutRanges] = useState<Range[]>([createInitialRange()]);
 
   // States for new demo panels
   const [a11yRanges, setA11yRanges] = useState<Range[]>([createInitialRange()]);
@@ -208,6 +209,17 @@ function App() {
         endDate: toISODate(next.endDate),
       });
       setSelectedDisplayRanges([next]);
+    }
+  };
+
+  const handleLayoutChange = (rangesByKey: RangeKeyDict) => {
+    const next = rangesByKey.selection;
+    if (next) {
+      logManualQA('Picker layout DateRangePicker onChange', {
+        startDate: toISODate(next.startDate),
+        endDate: toISODate(next.endDate),
+      });
+      setLayoutRanges([next]);
     }
   };
 
@@ -394,6 +406,27 @@ function App() {
         <p className="state-output">
           <code>
             range = {formatDate(selectedDisplayRanges[0]?.startDate)} → {formatDate(selectedDisplayRanges[0]?.endDate)}
+          </code>
+        </p>
+      </section>
+
+      <section className="demo-panel">
+        <h2>DateRangePicker — Picker Layout</h2>
+        <p>
+          Uses the picker-level <code>calendarCount</code> and <code>scrollOrientation</code> props
+          to render two calendars in horizontal order without changing virtualized scroll behavior.
+        </p>
+        <DateRangePicker
+          onChange={handleLayoutChange}
+          ranges={layoutRanges}
+          showPreview={true}
+          moveRangeOnFirstSelection={false}
+          calendarCount={2}
+          scrollOrientation="horizontal"
+        />
+        <p className="state-output">
+          <code>
+            range = {formatDate(layoutRanges[0]?.startDate)} → {formatDate(layoutRanges[0]?.endDate)}
           </code>
         </p>
       </section>

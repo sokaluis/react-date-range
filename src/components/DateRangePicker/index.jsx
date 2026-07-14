@@ -6,6 +6,7 @@ import classnames from 'classnames';
 import coreStyles, { getUiSlotClassName, mergeUiSlotStyles, omitUiSlotKeys } from '../../styles';
 
 const DateRangePicker = forwardRef(function DateRangePicker(props, ref) {
+  const { calendarCount, scrollOrientation, ...inheritedProps } = props;
   const dateRangeRef = useRef(null);
   const [focusedRangeState, setFocusedRangeState] = useState(() => [findNextRangeIndex(props.ranges), 0]);
   const focusedRange = props.focusedRange || focusedRangeState;
@@ -18,6 +19,19 @@ const DateRangePicker = forwardRef(function DateRangePicker(props, ref) {
     role: 'region',
     'aria-label': props.ariaLabels?.dateRangePicker || 'Date range picker',
   };
+  const layoutProps = useMemo(() => {
+    if (props.scroll?.enabled === true) return {};
+
+    const hasCalendarCount = calendarCount !== undefined;
+    const hasScrollOrientation = scrollOrientation !== undefined;
+
+    return {
+      months: hasCalendarCount ? (calendarCount === 2 ? 2 : 1) : props.months ?? 1,
+      direction: hasScrollOrientation
+        ? (scrollOrientation === 'horizontal' ? 'horizontal' : 'vertical')
+        : props.direction ?? 'vertical',
+    };
+  }, [calendarCount, props.direction, props.months, props.scroll?.enabled, scrollOrientation]);
 
   useImperativeHandle(ref, () => ({}), []);
 
@@ -53,7 +67,7 @@ const DateRangePicker = forwardRef(function DateRangePicker(props, ref) {
       {...regionProps}
     >
       <DefinedRange
-        {...props}
+        {...inheritedProps}
         focusedRange={focusedRange}
         onPreviewChange={handlePreviewChange}
         range={props.ranges[focusedRange[0]]}
@@ -61,7 +75,8 @@ const DateRangePicker = forwardRef(function DateRangePicker(props, ref) {
         style={mergeUiSlotStyles(undefined, props.uiSlots, 'definedRanges')}
       />
       <DateRange
-        {...props}
+        {...inheritedProps}
+        {...layoutProps}
         uiSlots={dateRangeUiSlots}
         onRangeFocusChange={handleRangeFocusChange}
         focusedRange={focusedRange}

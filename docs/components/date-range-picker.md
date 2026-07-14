@@ -2,7 +2,7 @@
 
 `DateRange` + `DefinedRange` preset sidebar + hover preview. Combines range inputs, preset ranges, and custom inputs in one composed picker.
 
-**Source:** `src/index.d.ts` lines 437–449 (`DateRangePickerProps`). Extends [`DateRangeProps`](./date-range.md) and [`DefinedRangeProps`](./defined-range.md).
+**Source:** `src/index.d.ts` (`DateRangePickerProps`). Extends [`DateRangeProps`](./date-range.md) and [`DefinedRangeProps`](./defined-range.md).
 
 ---
 
@@ -47,6 +47,8 @@ function PresetRangePicker() {
 
 | Prop | Type | Default | Required |
 |------|------|---------|----------|
+| `calendarCount` | `1 \| 2 \| undefined` | `1` | no |
+| `scrollOrientation` | `'horizontal' \| 'vertical' \| undefined` | `'vertical'` | no |
 | `onPreviewChange` | `((preview?: Date \| Preview) => void) \| undefined` | none | no |
 
 ### Inherited Props
@@ -95,6 +97,25 @@ Use `selectedDisplay` when the preset picker needs a different selected range pr
 ```
 
 The option is inherited from `DateRange`: `format` defaults to `dateDisplayFormat`, `placement` defaults to `'top'`, and `separator` defaults to an empty string.
+
+---
+
+## Picker layout
+
+Use `calendarCount` and `scrollOrientation` for the composed picker layout instead of reaching through to the underlying calendar props.
+
+```tsx
+<DateRangePicker
+  ranges={ranges}
+  onChange={(rangesByKey) => setRanges([rangesByKey.selection])}
+  calendarCount={2}
+  scrollOrientation="horizontal"
+/>
+```
+
+- `calendarCount` is intentionally constrained to `1 | 2`; unsupported runtime values fall back to `1`.
+- `scrollOrientation` accepts `'vertical'` or `'horizontal'`; unsupported runtime values fall back to `'vertical'`.
+- When `scroll.enabled` is `true`, the picker leaves existing scroll calendar `months` and `direction` behavior unchanged.
 
 ---
 
@@ -154,6 +175,7 @@ The option is inherited from `DateRange`: `format` defaults to `dateDisplayForma
 - **`DefinedRangeProps` is also inherited**: `DateRangePicker` extends both `DateRangeProps` and `DefinedRangeProps`, so it accepts both range-selection and preset-sidebar props simultaneously.
 - **`uiSlots.root` isolation**: `DateRangePicker` applies `root` to the outer picker only, so the same root class does not leak onto the nested `DateRange` calendar.
 - **Bottom selected display**: With `selectedDisplay.placement: 'bottom'`, the display follows the calendar grid inside the range calendar; the preset sidebar stays in its existing position.
+- **Layout prop boundary**: `calendarCount`/`scrollOrientation` are the picker-level layout contract. Existing `months`/`direction` still pass through when the picker layout props are omitted, and scroll-enabled calendars keep their existing scroll layout semantics.
 
 ---
 

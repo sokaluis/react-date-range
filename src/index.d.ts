@@ -193,6 +193,10 @@ export interface SelectedDisplay {
   separator?: string | undefined;
 }
 
+export type CalendarCount = 1 | 2;
+
+export type ScrollOrientation = 'horizontal' | 'vertical';
+
 // =============================================================================
 // Calendar Component
 // =============================================================================
@@ -493,6 +497,10 @@ export function createStaticRanges(
 // =============================================================================
 
 export interface DateRangePickerProps extends DateRangeProps, DefinedRangeProps {
+  /** Number of calendars rendered by the picker when virtualized scroll is disabled. Default: `1`. */
+  calendarCount?: CalendarCount | undefined;
+  /** Calendar flow direction for the picker when virtualized scroll is disabled. Default: `vertical`. */
+  scrollOrientation?: ScrollOrientation | undefined;
   /**
    * NOTE: currently the date range picker component passes the
    * `onPreviewChange` prop (if included) to both subcomponents even
