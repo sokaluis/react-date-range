@@ -9,6 +9,7 @@ export default defineConfig({
     alias: [
       { find: '@cyberlz/react-date-range/styles.css', replacement: resolve(__dirname, '../src/styles.scss') },
       { find: '@cyberlz/react-date-range/theme/default.css', replacement: resolve(__dirname, '../src/theme/default.scss') },
+      { find: '@cyberlz/react-date-range/theme/tokens.css', replacement: resolve(__dirname, '../src/theme/tokens.css') },
       { find: '@cyberlz/react-date-range', replacement: resolve(__dirname, '../src/index.js') },
     ],
   },
