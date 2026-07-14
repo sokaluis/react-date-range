@@ -47,16 +47,15 @@ docs: add release flow documentation
 | RC | `v{version}-rc.{n}` | `v1.0.0-rc.0` |
 | Stable | `v{version}` | `v1.3.0` |
 
-**Current npm stable:** `v1.2.2` is the previous stable release; `v1.1.1` tag
+**Current npm stable:** `v1.3.0` is published on npm `latest`; `v1.1.1` tag
 exists at commit `843b09b` (historical, never promoted to npm `latest`).
 
-**Current local release prep:** `v1.3.0` is prepared as the Configurable UI
-Foundation release. Do not claim npm `latest` is `1.3.0` until the maintainer
-publishes it manually.
+**Current release:** `v1.3.0` is the Configurable UI Foundation release and is
+published on npm `latest`. GitHub Release creation may still be handled separately.
 
-**Prepared stable tag:** `v1.3.0`
+**Current stable tag:** `v1.3.0`
 - `package.json` version: `1.3.0`
-- npm dist-tag: pending maintainer publish; do not claim `latest` is `1.3.0`
+- npm dist-tag: `latest`
 
 The `package.json` `version` field **must match** the tag version exactly.
 
@@ -126,13 +125,13 @@ git push origin v0.1.0-alpha.1
 - `package.json` version: `1.2.1`
 - npm dist-tag: published, but superseded because `dist/` was not rebuilt before publish
 
-**v1.2.2 published:** `v1.2.2`
+**v1.2.2 published, superseded:** `v1.2.2`
 - `package.json` version: `1.2.2`
-- npm dist-tag: previous stable on `latest`
+- npm dist-tag: previous stable on `latest`, superseded by `v1.3.0`
 
-**v1.3.0 prepared locally:** `v1.3.0`
+**v1.3.0 published:** `v1.3.0`
 - `package.json` version: `1.3.0`
-- npm dist-tag: pending maintainer publish; do not claim `latest` is `1.3.0`
+- npm dist-tag: `latest`
 
 ### Step 3 — GitHub Release
 
@@ -174,7 +173,7 @@ version after publishing so `@alpha` continues to mean "newest prerelease" while
 
 | Dist-tag | Points to | Audience |
 |----------|-----------|----------|
-| `latest` | `1.2.2` until maintainer publishes `1.3.0` | Default npm installs |
+| `latest` | `1.3.0` | Default npm installs |
 | `alpha` | `0.1.0-alpha.3` (legacy) | Existing testers: `npm install @cyberlz/react-date-range@alpha` |
 | `beta` | `0.1.0-beta.0` (legacy) | Early adopters: `npm install @cyberlz/react-date-range@beta` |
 | `rc` | `1.0.0-rc.0` (stable anchor for pre-1.0 testers) | Pre-release validation: `npm install @cyberlz/react-date-range@rc` |

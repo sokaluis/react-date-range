@@ -49,7 +49,7 @@ Candidate direction — docs/demo only, no runtime API change.
 
 - Promote the existing [`demo/`](../demo/) into a public landing-page baseline
 - Deploy a small GitHub Pages site with install command, live `<DateRangePicker />`, and links to npm/GitHub
-- Keep the landing honest: maintained fork, stable `1.3.x` after maintainer publish, roadmap candidates are exploratory
+- Keep the landing honest: maintained fork, stable `1.3.x` on npm `latest`, roadmap candidates are exploratory
 - Add the public demo URL to `README.md` once deployed
 
 ### Full library documentation
@@ -78,8 +78,9 @@ Candidate direction — requires separate spec.
 
 ### 1.2 — Configurable UI Foundation
 
-Candidate direction — requires separate API design spec. User has expressed need
-for configurable base UI features (see `docs/roadmap-gap-analysis.md`).
+**✅ Complete — tagged as `v1.3.0` and published on npm `latest`.** GitHub Release
+handoff may still be completed separately.
+See `docs/roadmap-gap-analysis.md` for completed feature table.
 
 - Toggle header elements (month, year, navigation arrows)
 - Selected date display customization
@@ -89,24 +90,27 @@ for configurable base UI features (see `docs/roadmap-gap-analysis.md`).
 - Stable `className`/`style` slots per component region
 - CSS token surface for colors, spacing, radius
 
-This phase should be specced before `1.4` (styling system), which depends on it.
+This foundation now unlocks the Styling System / Skins track.
 
-### 1.3 — Responsive / Mobile
+### 1.3 — Responsive / Mobile (future)
 
-Candidate direction — requires separate spec.
+Candidate direction — unscheduled, requires separate spec before release phase.
+Not started. Styling System / Skins is the recommended next spec candidate
+after `1.3.0` release handoff.
 
 - Mobile fullscreen / sheet mode
 - Responsive layout modes for Calendar and DateRangePicker
 - Touch improvements (swipe, gesture support)
 
-### 1.4 — Styling System
+### 1.4 — Styling System (future)
 
-Candidate direction — requires separate spec.
+Candidate direction — unscheduled. Base `uiSlots` and `tokens.css` are available
+from `1.3.0`. Remaining work is higher-level styling API, size variants, and
+skin/template system.
 
-- CSS custom properties (design tokens) for colors, spacing, radius
-- `className` / `style` support by slot (header, footer, day cell, etc.)
 - Size variants (compact, comfortable, spacious)
 - Icon slots for nav arrows, clear button, etc.
+- Skin/template system (classic, booking, dashboard, etc.)
 
 ### 1.5 — Templates / Skins
 

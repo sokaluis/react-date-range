@@ -12,7 +12,7 @@
 |------|--------|-------|
 | Public landing/demo | ✅ Deployed | <https://sokaluis.github.io/react-date-range/> |
 | Public demo URL in README | ✅ Done | |
-| 1.3.x stable line | 🔲 Prepared as `1.3.0` | Pending maintainer publish/tag/release handoff |
+| 1.3.x stable line | ✅ Published as `v1.3.0` | npm `latest` points to `1.3.0`; GitHub Release handoff pending |
 | Full component docs | ✅ Complete | Component reference live at `docs/components/` |
 | Configurable UI foundation | ✅ Complete | Stable UI slots, opt-in tokens, and demo coverage prepared for `1.3.0` |
 | Responsive/mobile | 🔲 Not specced | Release target needs rescheduling after `1.3.0` |
@@ -45,32 +45,29 @@ spec before implementation (see below).
 
 ---
 
-## Configurable UI foundation (not yet specced)
+## Configurable UI foundation (complete — `1.3.0`)
 
-User has expressed interest in configurable base UI features. These require a
-separate API design spec before implementation — they are listed here for
-tracking and discovery.
+Foundation complete, tagged as `v1.3.0`, and published on npm `latest`; GitHub
+Release handoff remains pending. Stable UI slots,
+`className`/`style` per slot, and opt-in CSS token surface are all in place. This
+foundation now unlocks the Styling System / Skins track.
 
-| Feature | Description |
-|---------|-------------|
-| Toggle header elements | Show/hide month, year, navigation arrows independently |
-| Selected date display | Customize how the selected date(s) are shown |
-| Today affordance | Configurable today indicator/highlight |
-| Calendar count | 1 vs 2 calendars (or more) in `DateRangePicker` |
-| Scroll orientation | Book/horizontal vs vertical scroll for multi-calendar layouts |
-| Stable styling slots | `className`/`style` per slot (header, footer, day cell, nav arrows, etc.) |
-| CSS token surface | Design tokens for colors, spacing, radius — prerequisite for `1.5` skins |
-
-**Constraints:**
-- Slots/tokens must be stable before skins (1.4) can be built cleanly
-- Configurable UI foundation should be specced as its own phase, likely between `1.1` ergonomics and `1.3` responsive/mobile
-- These items are exploratory until a spec is written and reviewed
+| Feature | Status |
+|---------|--------|
+| Toggle header elements | ✅ Shipped |
+| Selected date display | ✅ Shipped |
+| Today affordance | ✅ Shipped |
+| Calendar count (1 vs 2+) | ✅ Shipped |
+| Scroll orientation | ✅ Shipped |
+| Stable styling slots | ✅ Shipped |
+| CSS token surface | ✅ Shipped (opt-in `tokens.css`) |
 
 ---
 
-## Responsive / Mobile (1.3 — exploratory)
+## Responsive / Mobile (unscheduled — candidate for future)
 
-Requires separate spec.
+Requires separate spec. Not yet specced; no release target assigned. Styling System /
+Skins foundation is the recommended next execution candidate after `1.3.0` handoff.
 
 - Mobile fullscreen / sheet mode
 - Responsive layout modes for Calendar and DateRangePicker
@@ -78,14 +75,14 @@ Requires separate spec.
 
 ---
 
-## Styling system (1.4 — exploratory)
+## Styling system (unscheduled — candidate for future)
 
-Requires configurable UI foundation to be specced first.
+Base `uiSlots` and `tokens.css` are available from `1.3.0`. Remaining work
+includes higher-level styling API, size variants, and skin/template system.
 
-- CSS custom properties (design tokens) for colors, spacing, radius
-- `className`/`style` support by slot
 - Size variants (compact, comfortable, spacious)
 - Icon slots for nav arrows, clear button
+- Skin/template system (classic, booking, dashboard, etc.)
 
 ---
 

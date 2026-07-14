@@ -296,7 +296,7 @@ function App() {
       <section className="hero">
         <h1 className="hero-title">
           @cyberlz/react-date-range
-          <span className="badge">1.2.x stable</span>
+          <span className="badge">1.3.0 stable</span>
         </h1>
         <p className="hero-subtitle">
           Modern maintained fork of <code>react-date-range</code>.

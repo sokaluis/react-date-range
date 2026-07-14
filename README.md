@@ -1,7 +1,7 @@
 # @cyberlz/react-date-range
 
 > Maintained fork/rescue of [`react-date-range`](https://github.com/hypeserver/react-date-range).
-> **Current channel**: `1.3.x` is the stable release line on npm `latest`.
+> **Current channel**: `1.3.0` is tagged in the repo and published on npm `latest`.
 > It adds configurable UI slots and opt-in design tokens on top of the `1.2.x`
 > input-trigger picker and named range-slot baseline. The `rc` tag remains
 > on `1.0.0-rc.0` for historical validation. See [Dist-tag policy](#dist-tag-policy) below.
@@ -196,18 +196,17 @@ A **modern, maintained, production-ready** date range picker for React that:
 | **Phase 1** — Compatible rescue | Complete |
 | **Phase 3** — Core refactor | Complete (Slices 1–21 done) |
 
-**`@cyberlz/react-date-range@1.3.x`** is the stable release line on npm `latest`.
-1.0/1.1/1.2/1.3 are stable, additive, and non-breaking. `1.3` adds configurable
-UI slots and opt-in CSS design tokens on top of the 1.2 input-trigger picker
-baseline. Future work is tracked separately. See
-[`docs/fork-roadmap.md`](docs/fork-roadmap.md) for the full plan and
-[`docs/refactor-roadmap.md`](docs/refactor-roadmap.md) for incremental refactor slices.
+**`@cyberlz/react-date-range@1.3.0`** is tagged and published on npm `latest`.
+`1.0`/`1.1`/`1.2` are stable, additive, and non-breaking. `1.3.0` adds configurable UI slots and opt-in
+CSS design tokens on top of the 1.2 input-trigger picker baseline. Future work is
+tracked separately. See [`docs/fork-roadmap.md`](docs/fork-roadmap.md) for the full plan
+and [`docs/refactor-roadmap.md`](docs/refactor-roadmap.md) for incremental refactor slices.
 
 ## Dist-tag policy
 
 npm has four relevant dist-tags for this package:
 
-- **`latest`** — points to the current `1.3.x` stable release. Default install path: `npm install @cyberlz/react-date-range`.
+- **`latest`** — currently points to `1.3.0`. Default install path: `npm install @cyberlz/react-date-range`.
 - **`rc`** — points to `1.0.0-rc.0`. Historical release candidate for pre-release validation: `npm install @cyberlz/react-date-range@rc`.
 - **`beta`** — points to `0.1.0-beta.0`. Legacy prerelease channel.
 - **`alpha`** — points to `0.1.0-alpha.3`. Legacy prerelease channel.

@@ -1,9 +1,9 @@
-# Release Checklist — `v1.3.0` (prepared)
+# Release Checklist — `v1.3.0` (published)
 
-> **Status.** `v1.3.0` is prepared as the Configurable UI Foundation release:
+> **Status.** `v1.3.0` is published as the Configurable UI Foundation release:
 > additive UI slots, opt-in CSS design tokens, and demo token styling fixes.
-> npm publish remains a manual maintainer step. The agent does not request OTP
-> and does not run `npm publish`.
+> npm `latest` points to `1.3.0`. The agent did not request OTP and did not run
+> `npm publish`; publish was handled by the maintainer.
 >
 > See [`docs/npm-publishing.md`](npm-publishing.md) for the publishing guide and
 > [`docs/release-flow.md`](release-flow.md) for the full git/tag/npm pipeline.
@@ -20,8 +20,7 @@
 - [x] **`README.md`** reflects the `1.3.x` stable line and includes
       `dist/theme/tokens.css` in the build output table.
 - [x] **Doc sweep**: release checklist, release flow, npm publishing notes, and
-      stable-line docs reflect local `1.3.0` preparation without claiming npm
-      `latest` has moved before maintainer publish.
+      stable-line docs reflect published `1.3.0` on npm `latest`.
 - [ ] CI is green on the commit being tagged.
 - [x] `npm run build` passes and regenerates `dist/`.
 - [x] `dist/` inspection confirms public API/types and CSS outputs are present,
@@ -63,7 +62,7 @@ git tag v1.3.0
 git push origin v1.3.0
 ```
 
-- [ ] **Git tag** `v1.3.0` created and pushed to `origin`.
+ - [x] **Git tag** `v1.3.0` created and pushed to `origin`.
 
 ---
 
@@ -73,14 +72,13 @@ git push origin v1.3.0
 > This checklist section is for the maintainer. Use the same OTP device as
 > previous releases if 2FA is enabled on the npm account.
 
-- [ ] Maintainer runs `npm login` (or confirms `npm whoami`) locally.
-- [ ] Maintainer publishes with the `latest` tag:
+- [x] Maintainer publishes with the `latest` tag:
   ```bash
   npm publish --tag latest --access public
   ```
   If OTP is required: `npm publish --tag latest --access public --otp=XXXXXX`
-- [ ] Maintainer verifies dist-tags:
-  - `npm view @cyberlz/react-date-range@latest version` → `1.3.0` after manual publish
+- [x] Maintainer verifies dist-tags:
+  - `npm view @cyberlz/react-date-range@latest version` → `1.3.0`
   - `npm view @cyberlz/react-date-range@rc version` → `1.0.0-rc.0` (rc stays available)
 - [ ] Maintainer verifies registry install:
   ```bash

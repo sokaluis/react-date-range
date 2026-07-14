@@ -23,7 +23,7 @@
 
 | Previous risk | Current state |
 |---------------|---------------|
-| Package was pre-release | `1.3.x` is prepared as the stable line after maintainer publish |
+| Package was pre-release | `1.3.x` is the current stable line on npm `latest` |
 | Demo might drift from package source | `demo/` resolves `@cyberlz/react-date-range` to local `src/` during development and is type-checked |
 | Migration path was unclear | `docs/migration-from-upstream.md` exists |
 | Roadmap could overpromise | `docs/post-1.0-roadmap.md` marks future work as exploratory |
