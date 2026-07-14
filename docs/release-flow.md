@@ -50,8 +50,8 @@ docs: add release flow documentation
 **Current npm stable:** `v1.3.0` is published on npm `latest`; `v1.1.1` tag
 exists at commit `843b09b` (historical, never promoted to npm `latest`).
 
-**Current release:** `v1.3.0` is the Configurable UI Foundation release and is
-published on npm `latest`. GitHub Release creation may still be handled separately.
+**Current release:** `v1.3.0` is the Configurable UI Foundation release, published
+on npm `latest`, and documented with a GitHub Release.
 
 **Current stable tag:** `v1.3.0`
 - `package.json` version: `1.3.0`

@@ -103,7 +103,7 @@ git push origin v1.3.0
 
 ## Post-publish (`v1.3.0`)
 
-- [ ] GitHub Release created from `CHANGELOG.md` entry for `1.3.0`.
+- [x] GitHub Release created from `CHANGELOG.md` entry for `1.3.0`.
 - [ ] README npm install guidance checked after dist-tags settle.
 - [ ] Monitor issues for regressions in tree-shaking, CJS import, styling
       compatibility, `theme/tokens.css`, and `classNames` / `styles` slot hooks.

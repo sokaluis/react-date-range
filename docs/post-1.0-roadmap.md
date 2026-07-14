@@ -78,8 +78,7 @@ Candidate direction — requires separate spec.
 
 ### 1.2 — Configurable UI Foundation
 
-**✅ Complete — tagged as `v1.3.0` and published on npm `latest`.** GitHub Release
-handoff may still be completed separately.
+**✅ Complete — tagged as `v1.3.0`, published on npm `latest`, and documented with a GitHub Release.**
 See `docs/roadmap-gap-analysis.md` for completed feature table.
 
 - Toggle header elements (month, year, navigation arrows)

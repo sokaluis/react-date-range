@@ -12,7 +12,7 @@
 |------|--------|-------|
 | Public landing/demo | ✅ Deployed | <https://sokaluis.github.io/react-date-range/> |
 | Public demo URL in README | ✅ Done | |
-| 1.3.x stable line | ✅ Published as `v1.3.0` | npm `latest` points to `1.3.0`; GitHub Release handoff pending |
+| 1.3.x stable line | ✅ Published as `v1.3.0` | npm `latest` points to `1.3.0`; GitHub Release exists |
 | Full component docs | ✅ Complete | Component reference live at `docs/components/` |
 | Configurable UI foundation | ✅ Complete | Stable UI slots, opt-in tokens, and demo coverage prepared for `1.3.0` |
 | Responsive/mobile | 🔲 Not specced | Release target needs rescheduling after `1.3.0` |
@@ -47,8 +47,8 @@ spec before implementation (see below).
 
 ## Configurable UI foundation (complete — `1.3.0`)
 
-Foundation complete, tagged as `v1.3.0`, and published on npm `latest`; GitHub
-Release handoff remains pending. Stable UI slots,
+Foundation complete, tagged as `v1.3.0`, published on npm `latest`, and documented
+with a GitHub Release. Stable UI slots,
 `className`/`style` per slot, and opt-in CSS token surface are all in place. This
 foundation now unlocks the Styling System / Skins track.
 
