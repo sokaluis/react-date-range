@@ -48,6 +48,7 @@ function PresetRangePicker() {
 | Prop | Type | Default | Required |
 |------|------|---------|----------|
 | `calendarCount` | `1 \| 2 \| undefined` | `1` | no |
+| `layout` | `'reference' \| 'auto' \| 'mobile' \| 'desktop' \| undefined` | `'reference'` | no |
 | `scrollOrientation` | `'horizontal' \| 'vertical' \| undefined` | `'vertical'` | no |
 | `onPreviewChange` | `((preview?: Date \| Preview) => void) \| undefined` | none | no |
 
@@ -76,6 +77,29 @@ function PresetRangePicker() {
 | `weekStartsOn` | `0 \| 1 \| 2 \| 3 \| 4 \| 5 \| 6 \| undefined` | none | First day of week for default static ranges |
 
 For the complete inherited prop table, see [`date-range.md`](./date-range.md#props) (for `DateRangeProps`) and [`defined-range.md`](./defined-range.md#props) (for `DefinedRangeProps`).
+
+---
+
+## Responsive layout
+
+Use `layout="auto"` for an SSR-safe mobile foundation without changing existing desktop/default behavior.
+
+```tsx
+<DateRangePicker
+  layout="auto"
+  ranges={ranges}
+  onChange={(rangesByKey) => setRanges([rangesByKey.selection])}
+/>
+```
+
+| Mode | Behavior |
+|------|----------|
+| `reference` / omitted / invalid | Existing rendering. |
+| `auto` | Starts as `reference`, then applies mobile at `(max-width: 768px)`. |
+| `mobile` | Adds responsive wrapper classes; multiple calendars stack vertically. |
+| `desktop` | Keeps non-mobile behavior. |
+
+`scroll.enabled` keeps existing virtualized behavior. On mobile, defined ranges become full width and custom input ranges stack their input above the label.
 
 ---
 

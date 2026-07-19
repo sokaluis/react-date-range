@@ -57,6 +57,7 @@ function SingleDatePicker() {
 | `focusedRange` | `RangeFocus \| undefined` | `[0, 0]` | no |
 | `initialFocusedRange` | `RangeFocus \| undefined` | none | no |
 | `locale` | `Locale \| undefined` | `en-US` from `date-fns/locale` | no |
+| `layout` | `'reference' \| 'auto' \| 'mobile' \| 'desktop' \| undefined` | `'reference'` | no |
 | `maxDate` | `Date \| undefined` | 20 years after today | no |
 | `minDate` | `Date \| undefined` | 100 years before today | no |
 | `monthDisplayFormat` | `string \| undefined` | `'MMM yyyy'` | no |
@@ -83,6 +84,29 @@ function SingleDatePicker() {
 | `uiSlots` | `UiSlots \| undefined` | `{}` | no |
 | `weekdayDisplayFormat` | `string \| undefined` | `'E'` | no |
 | `weekStartsOn` | `0 \| 1 \| 2 \| 3 \| 4 \| 5 \| 6 \| undefined` | none | no |
+
+---
+
+## Responsive layout
+
+Responsive layout is opt-in. Existing calendars keep the reference 1.3.0 rendering until you pass `layout`.
+
+```tsx
+<Calendar
+  layout="auto"
+  date={date}
+  onChange={setDate}
+/>
+```
+
+| Mode | Behavior |
+|------|----------|
+| `reference` / omitted / invalid | Existing rendering. |
+| `auto` | Starts as `reference`, then applies mobile at `(max-width: 768px)`. |
+| `mobile` | Adds `rdrCalendarWrapperResponsive`; multiple months stack vertically. |
+| `desktop` | Keeps non-mobile behavior. |
+
+`scroll.enabled` keeps the existing virtualized geometry and bypasses responsive layout handling.
 
 ---
 

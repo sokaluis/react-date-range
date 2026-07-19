@@ -366,9 +366,10 @@ function App() {
         <div className="before-after-col fork">
           <h3>After — @cyberlz/react-date-range</h3>
           <p className="upstream-callout" style={{ color: '#1e40af', margin: '0 0 0.75rem', fontSize: '0.8rem' }}>
-            Live <code>DateRangePicker</code> from local source.
+            Live <code>DateRangePicker</code> from local <code>src/</code> aliases.
           </p>
           <DateRangePicker
+            layout="auto"
             onChange={handleChange}
             ranges={ranges}
             months={1}
@@ -394,6 +395,7 @@ function App() {
       <section className="demo-panel">
         <h2>DateRangePicker — Interactive Demo</h2>
         <DateRangePicker
+          layout="auto"
           onChange={handleChange}
           ranges={ranges}
           showPreview={true}
@@ -403,6 +405,7 @@ function App() {
         />
         <DemoCode>
           {`<DateRangePicker
+  layout="auto"
   onChange={handleChange}
   ranges={ranges}
   showPreview
@@ -419,6 +422,7 @@ function App() {
         <h2>Calendar — Single Date Mode</h2>
         <p>Verifies <code>displayMode="date"</code> with hook-based state.</p>
         <Calendar
+          layout="auto"
           onChange={handleSingleDateChange('Calendar single-date')}
           onShownDateChange={handleShownDateChange('Calendar single-date')}
           date={singleDate}
@@ -431,6 +435,7 @@ function App() {
         </p>
         <DemoCode>
           {`<Calendar
+  layout="auto"
   onChange={handleSingleDateChange('Calendar single-date')}
   onShownDateChange={handleShownDateChange('Calendar single-date')}
   date={singleDate}
@@ -445,6 +450,7 @@ function App() {
         <h2>DateRangePicker — Selected Display</h2>
         <div className="demo-example">
           <DateRangePicker
+            layout="auto"
             onChange={handleSelectedDisplayChange}
             ranges={selectedDisplayRanges}
             editableDateInputs
@@ -465,6 +471,7 @@ function App() {
         </p>
         <DemoCode>
           {`<DateRangePicker
+  layout="auto"
   onChange={handleSelectedDisplayChange}
   ranges={selectedDisplayRanges}
   editableDateInputs
@@ -478,9 +485,10 @@ function App() {
       </section>
 
       <section className="demo-panel">
-        <h2>DateRangePicker — Picker Layout</h2>
+        <h2>DateRangePicker — Responsive Layout</h2>
         <div className="demo-example">
           <DateRangePicker
+            layout="auto"
             onChange={handleLayoutChange}
             ranges={layoutRanges}
             showPreview={true}
@@ -491,9 +499,8 @@ function App() {
         </div>
         <div className="demo-callout">
           <p>
-            Layout is controlled by <code>calendarCount</code> and <code>scrollOrientation</code>.
-            Two calendars render side by side in horizontal mode. Virtualized scroll keeps its
-            legacy behavior when <code>scroll.enabled</code> is used.
+            <code>layout=&quot;auto&quot;</code> switches at <code>768px</code>. This two-calendar example
+            stacks vertically on mobile; <code>scroll.enabled</code> keeps its legacy behavior.
           </p>
         </div>
         <p className="state-output">
@@ -503,6 +510,7 @@ function App() {
         </p>
         <DemoCode>
           {`<DateRangePicker
+  layout="auto"
   onChange={handleLayoutChange}
   ranges={layoutRanges}
   showPreview
@@ -517,6 +525,7 @@ function App() {
         <h2>Calendar — Configurable Header &amp; Today Label</h2>
         <div className="demo-example">
           <Calendar
+            layout="auto"
             onChange={handleInputDateChange('Calendar header/today demo', setHeaderDemoDate)}
             onShownDateChange={handleShownDateChange('Calendar header/today demo')}
             date={headerDemoDate}
@@ -539,6 +548,7 @@ function App() {
         </p>
         <DemoCode>
           {`<Calendar
+  layout="auto"
   onChange={handleHeaderDemoChange}
   onShownDateChange={handleShownDateChange}
   date={headerDemoDate}
@@ -554,6 +564,7 @@ function App() {
         <h2>DateRangePicker — Stable UI Slots</h2>
         <div className="demo-example">
           <DateRangePicker
+            layout="auto"
             onChange={handleSlotChange}
             ranges={slotRanges}
             showPreview={true}
@@ -584,6 +595,7 @@ function App() {
 };
 
 <DateRangePicker
+  layout="auto"
   onChange={handleSlotChange}
   ranges={slotRanges}
   showPreview
@@ -598,6 +610,7 @@ function App() {
         <div className="demo-example">
           <div style={tokenDemoStyle}>
             <DateRangePicker
+              layout="auto"
               onChange={handleTokenChange}
               ranges={tokenRanges}
               showPreview={true}
@@ -628,6 +641,7 @@ const tokenDemoStyle = {
 
 <div style={tokenDemoStyle}>
   <DateRangePicker
+    layout="auto"
     onChange={handleTokenChange}
     ranges={tokenRanges}
     showPreview
@@ -652,7 +666,7 @@ const tokenDemoStyle = {
               ariaLabel="Trip date"
               popoverLabel="Choose trip date"
               placeholder="Select trip date"
-              calendarProps={{ shownDate: inputDate || today }}
+              calendarProps={{ layout: 'auto', shownDate: inputDate || today }}
             />
           </label>
         </div>
@@ -666,7 +680,7 @@ const tokenDemoStyle = {
               onOpenChange={setInputOpen}
               ariaLabel="Controlled trip date"
               popoverLabel="Choose controlled trip date"
-              calendarProps={{ shownDate: controlledInputDate || today }}
+              calendarProps={{ layout: 'auto', shownDate: controlledInputDate || today }}
             />
           </label>
         </div>
@@ -683,7 +697,7 @@ const tokenDemoStyle = {
   ariaLabel="Trip date"
   popoverLabel="Choose trip date"
   placeholder="Select trip date"
-  calendarProps={{ shownDate: inputDate || today }}
+  calendarProps={{ layout: 'auto', shownDate: inputDate || today }}
 />
 
 {/* Controlled */}
@@ -694,7 +708,7 @@ const tokenDemoStyle = {
   onOpenChange={setInputOpen}
   ariaLabel="Controlled trip date"
   popoverLabel="Choose controlled trip date"
-  calendarProps={{ shownDate: controlledInputDate || today }}
+  calendarProps={{ layout: 'auto', shownDate: controlledInputDate || today }}
 />`}
         </DemoCode>
       </section>
@@ -714,7 +728,7 @@ const tokenDemoStyle = {
               ariaLabels={{ trigger: 'Trip date range' }}
               popoverLabel="Choose trip dates"
               triggerPlaceholder="Select trip dates"
-              calendarProps={{ shownDate: inputRange[0]?.startDate || today }}
+              calendarProps={{ layout: 'auto', shownDate: inputRange[0]?.startDate || today }}
             />
           </label>
         </div>
@@ -728,7 +742,7 @@ const tokenDemoStyle = {
               onOpenChange={setInputRangeOpen}
               ariaLabels={{ trigger: 'Controlled trip date range' }}
               popoverLabel="Choose controlled trip dates"
-              calendarProps={{ shownDate: controlledInputRange[0]?.startDate || today }}
+              calendarProps={{ layout: 'auto', shownDate: controlledInputRange[0]?.startDate || today }}
             />
           </label>
         </div>
@@ -747,7 +761,7 @@ const tokenDemoStyle = {
   ariaLabels={{ trigger: 'Trip date range' }}
   popoverLabel="Choose trip dates"
   triggerPlaceholder="Select trip dates"
-  calendarProps={{ shownDate: inputRange[0]?.startDate || today }}
+  calendarProps={{ layout: 'auto', shownDate: inputRange[0]?.startDate || today }}
 />
 
 {/* Controlled */}
@@ -758,7 +772,7 @@ const tokenDemoStyle = {
   onOpenChange={setInputRangeOpen}
   ariaLabels={{ trigger: 'Controlled trip date range' }}
   popoverLabel="Choose controlled trip dates"
-  calendarProps={{ shownDate: controlledInputRange[0]?.startDate || today }}
+  calendarProps={{ layout: 'auto', shownDate: controlledInputRange[0]?.startDate || today }}
 />`}
         </DemoCode>
       </section>
@@ -770,6 +784,7 @@ const tokenDemoStyle = {
           <code>updateFrameAndClearCache</code> ordering) under StrictMode.
         </p>
         <Calendar
+          layout="auto"
           onChange={handleSingleDateChange('Calendar vertical-scroll')}
           onShownDateChange={handleShownDateChange('Calendar vertical-scroll')}
           date={singleDate}
@@ -782,6 +797,7 @@ const tokenDemoStyle = {
         />
         <DemoCode>
           {`<Calendar
+  layout="auto"
   onChange={handleSingleDateChange('Calendar vertical-scroll')}
   onShownDateChange={handleShownDateChange('Calendar vertical-scroll')}
   date={singleDate}
@@ -803,6 +819,7 @@ const tokenDemoStyle = {
           DateDisplay/Month orchestration.
         </p>
         <Calendar
+          layout="auto"
           onChange={handleSingleDateChange('Calendar DateDisplay constraints')}
           onShownDateChange={handleShownDateChange('Calendar DateDisplay constraints')}
           date={singleDate}
@@ -823,6 +840,7 @@ const tokenDemoStyle = {
         </p>
         <DemoCode>
           {`<Calendar
+  layout="auto"
   onChange={handleSingleDateChange('Calendar DateDisplay constraints')}
   onShownDateChange={handleShownDateChange('Calendar DateDisplay constraints')}
   date={singleDate}
@@ -844,6 +862,7 @@ const tokenDemoStyle = {
           via hooks <code>useMemo</code>.
         </p>
         <DateRangePicker
+          layout="auto"
           onChange={handleChange}
           ranges={ranges}
           months={2}
@@ -855,6 +874,7 @@ const tokenDemoStyle = {
           {`import { enUS } from 'date-fns/locale';
 
 <DateRangePicker
+  layout="auto"
   onChange={handleChange}
   ranges={ranges}
   months={2}
@@ -890,6 +910,7 @@ const tokenDemoStyle = {
           Inspect the live-region element or use a screen reader to hear the announcement.
         </p>
         <DateRangePicker
+          layout="auto"
           onChange={handleA11yChange}
           ranges={a11yRanges}
           showPreview={true}
@@ -929,6 +950,7 @@ const liveRegionSelection = (range: { startDate: Date; endDate: Date }) =>
   \`Selected range from \${range.startDate.toDateString()} to \${range.endDate.toDateString()}\`;
 
 <DateRangePicker
+  layout="auto"
   onChange={handleA11yChange}
   ranges={a11yRanges}
   showPreview
@@ -964,6 +986,7 @@ const liveRegionSelection = (range: { startDate: Date; endDate: Date }) =>
           Use a screen reader or inspect <code>aria-label</code> on the arrows.
         </p>
         <Calendar
+          layout="auto"
           onChange={handleSingleDateChange('Calendar nav-live-region')}
           date={singleDate}
           displayMode="date"
@@ -982,6 +1005,7 @@ const liveRegionSelection = (range: { startDate: Date; endDate: Date }) =>
         </p>
         <DemoCode>
           {`<Calendar
+  layout="auto"
   onChange={handleSingleDateChange('Calendar nav-live-region')}
   date={singleDate}
   displayMode="date"
@@ -1010,6 +1034,7 @@ const liveRegionSelection = (range: { startDate: Date; endDate: Date }) =>
           Try clicking a dimmed day from an adjacent month in this 2-month horizontal layout.
         </p>
         <Calendar
+          layout="auto"
           onChange={handlePassiveDateChange}
           date={passiveDate}
           displayMode="date"
@@ -1026,6 +1051,7 @@ const liveRegionSelection = (range: { startDate: Date; endDate: Date }) =>
         </p>
         <DemoCode>
           {`<Calendar
+  layout="auto"
   onChange={handlePassiveDateChange}
   date={passiveDate}
   displayMode="date"
@@ -1049,6 +1075,7 @@ const liveRegionSelection = (range: { startDate: Date; endDate: Date }) =>
           Try clicking a dimmed day — it should <em>not</em> register.
         </p>
         <Calendar
+          layout="auto"
           onChange={handlePassiveScrollDateChange}
           date={passiveScrollDate}
           displayMode="date"
@@ -1078,6 +1105,7 @@ const liveRegionSelection = (range: { startDate: Date; endDate: Date }) =>
           The wrapper receives class <code>rdrRtl</code>.
         </p>
         <DateRangePicker
+          layout="auto"
           onChange={handleRtlChange}
           ranges={rtlRanges}
           showPreview={true}
@@ -1103,6 +1131,7 @@ const liveRegionSelection = (range: { startDate: Date; endDate: Date }) =>
           Single-date Calendar in RTL mode. Verify arrow positions and month label reading order.
         </p>
         <Calendar
+          layout="auto"
           onChange={handleRtlDateChange}
           date={rtlDate}
           displayMode="date"
@@ -1124,6 +1153,7 @@ const liveRegionSelection = (range: { startDate: Date; endDate: Date }) =>
           Inspect the DateDisplay above the calendars.
         </p>
         <DateRangePicker
+          layout="auto"
           onChange={handleLabelledChange}
           ranges={labelledRanges}
           showPreview={true}
