@@ -1,12 +1,32 @@
 import styles_default, { getUiSlotClassName, mergeUiSlotStyles, omitUiSlotKeys } from "../../styles.mjs";
 import { findNextRangeIndex, generateStyles } from "../../utils.mjs";
+import { useResponsiveLayout } from "../../hooks/useResponsiveLayout.mjs";
 import DateRange from "../DateRange/index.mjs";
 import DefinedRange from "../DefinedRange/index.mjs";
 import React, { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
 import classnames from "classnames";
 //#region src/components/DateRangePicker/index.jsx
+const resolvePickerLayout = ({ resolvedLayout, calendarCount, scrollOrientation, months, direction, scroll }) => {
+	if (scroll?.enabled) return {
+		calendarProps: {},
+		isMobile: false,
+		calendarLayout: "reference"
+	};
+	const calendarMonths = calendarCount === void 0 ? months ?? 1 : calendarCount === 2 ? 2 : 1;
+	const calendarDirection = scrollOrientation === void 0 ? direction ?? "vertical" : scrollOrientation === "horizontal" ? "horizontal" : "vertical";
+	const isMobile = resolvedLayout === "mobile";
+	return {
+		calendarProps: {
+			months: calendarMonths,
+			direction: isMobile && calendarMonths > 1 ? "vertical" : calendarDirection
+		},
+		isMobile,
+		calendarLayout: isMobile ? "mobile" : resolvedLayout === "desktop" ? "desktop" : "reference"
+	};
+};
 const DateRangePicker = forwardRef(function DateRangePicker(props, ref) {
 	const { calendarCount, scrollOrientation, ...inheritedProps } = props;
+	const resolvedLayout = useResponsiveLayout(props.layout);
 	const dateRangeRef = useRef(null);
 	const [focusedRangeState, setFocusedRangeState] = useState(() => [findNextRangeIndex(props.ranges), 0]);
 	const focusedRange = props.focusedRange || focusedRangeState;
@@ -16,19 +36,19 @@ const DateRangePicker = forwardRef(function DateRangePicker(props, ref) {
 		role: "region",
 		"aria-label": props.ariaLabels?.dateRangePicker || "Date range picker"
 	};
-	const layoutProps = useMemo(() => {
-		if (props.scroll?.enabled === true) return {};
-		const hasCalendarCount = calendarCount !== void 0;
-		const hasScrollOrientation = scrollOrientation !== void 0;
-		return {
-			months: hasCalendarCount ? calendarCount === 2 ? 2 : 1 : props.months ?? 1,
-			direction: hasScrollOrientation ? scrollOrientation === "horizontal" ? "horizontal" : "vertical" : props.direction ?? "vertical"
-		};
-	}, [
+	const { calendarProps, isMobile, calendarLayout } = useMemo(() => resolvePickerLayout({
+		resolvedLayout,
+		calendarCount,
+		scrollOrientation,
+		months: props.months,
+		direction: props.direction,
+		scroll: props.scroll
+	}), [
 		calendarCount,
 		props.direction,
 		props.months,
-		props.scroll?.enabled,
+		props.scroll,
+		resolvedLayout,
 		scrollOrientation
 	]);
 	useImperativeHandle(ref, () => ({}), []);
@@ -43,7 +63,7 @@ const DateRangePicker = forwardRef(function DateRangePicker(props, ref) {
 	}, [props]);
 	return /* @__PURE__ */ React.createElement("div", {
 		dir: props.dir,
-		className: classnames(styles.dateRangePickerWrapper, props.dir === "rtl" && (props.classNames?.rtl ?? styles.rtl), getUiSlotClassName(props.uiSlots, "root"), props.className),
+		className: classnames(styles.dateRangePickerWrapper, isMobile && styles.dateRangePickerWrapperResponsive, props.dir === "rtl" && (props.classNames?.rtl ?? styles.rtl), getUiSlotClassName(props.uiSlots, "root"), props.className),
 		style: mergeUiSlotStyles(props.style, props.uiSlots, "root"),
 		...regionProps
 	}, /* @__PURE__ */ React.createElement(DefinedRange, {
@@ -55,7 +75,8 @@ const DateRangePicker = forwardRef(function DateRangePicker(props, ref) {
 		style: mergeUiSlotStyles(void 0, props.uiSlots, "definedRanges")
 	}), /* @__PURE__ */ React.createElement(DateRange, {
 		...inheritedProps,
-		...layoutProps,
+		...calendarProps,
+		_resolvedLayout: calendarLayout,
 		uiSlots: dateRangeUiSlots,
 		onRangeFocusChange: handleRangeFocusChange,
 		focusedRange,

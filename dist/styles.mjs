@@ -45,6 +45,7 @@ const omitUiSlotKeys = (uiSlots, keys) => {
 var styles_default = {
 	dateRangeWrapper: "rdrDateRangeWrapper",
 	calendarWrapper: "rdrCalendarWrapper",
+	calendarWrapperResponsive: "rdrCalendarWrapperResponsive",
 	dateDisplay: "rdrDateDisplay",
 	dateDisplayItem: "rdrDateDisplayItem",
 	dateDisplayItemActive: "rdrDateDisplayItemActive",
@@ -96,6 +97,7 @@ var styles_default = {
 	inputRange: "rdrInputRange",
 	inputRangeInput: "rdrInputRangeInput",
 	dateRangePickerWrapper: "rdrDateRangePickerWrapper",
+	dateRangePickerWrapperResponsive: "rdrDateRangePickerWrapperResponsive",
 	staticRangeLabel: "rdrStaticRangeLabel",
 	staticRangeSelected: "rdrStaticRangeSelected",
 	monthName: "rdrMonthName",

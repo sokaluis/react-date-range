@@ -85,6 +85,7 @@ export interface ScrollOptions {
 export interface ClassNames {
   dateRangeWrapper?: string | undefined;
   calendarWrapper?: string | undefined;
+  calendarWrapperResponsive?: string | undefined;
   dateDisplay?: string | undefined;
   dateDisplayItem?: string | undefined;
   dateDisplayItemActive?: string | undefined;
@@ -136,6 +137,7 @@ export interface ClassNames {
   inputRange?: string | undefined;
   inputRangeInput?: string | undefined;
   dateRangePickerWrapper?: string | undefined;
+  dateRangePickerWrapperResponsive?: string | undefined;
   staticRangeLabel?: string | undefined;
   staticRangeSelected?: string | undefined;
   monthName?: string | undefined;
@@ -195,6 +197,8 @@ export interface SelectedDisplay {
 
 export type CalendarCount = 1 | 2;
 
+export type LayoutMode = 'reference' | 'auto' | 'mobile' | 'desktop';
+
 export type ScrollOrientation = 'horizontal' | 'vertical';
 
 // =============================================================================
@@ -252,6 +256,8 @@ export interface CalendarProps {
    * default: `en-US` from `date-fns/locale`
    */
   locale?: Locale | undefined;
+  /** Opt-in responsive layout mode. Default: `reference`. */
+  layout?: LayoutMode | undefined;
   /** default: 20 years after the current date */
   maxDate?: Date | undefined;
   /** default: 100 years before the current date */
@@ -499,6 +505,8 @@ export function createStaticRanges(
 export interface DateRangePickerProps extends DateRangeProps, DefinedRangeProps {
   /** Number of calendars rendered by the picker when virtualized scroll is disabled. Default: `1`. */
   calendarCount?: CalendarCount | undefined;
+  /** Opt-in responsive layout mode. Default: `reference`. */
+  layout?: LayoutMode | undefined;
   /** Calendar flow direction for the picker when virtualized scroll is disabled. Default: `vertical`. */
   scrollOrientation?: ScrollOrientation | undefined;
   /**
