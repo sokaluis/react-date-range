@@ -191,8 +191,9 @@ describe('DateRangePicker hooks parity', () => {
     expect(mockLatestDateRangeProps.direction).toBe('vertical');
   });
 
-  test('leaves scroll-enabled calendar layout props unchanged', () => {
-    renderDateRangePicker({
+  test('leaves scroll-enabled calendars outside responsive layout handling', () => {
+    const { container } = renderDateRangePicker({
+      layout: 'mobile',
       calendarCount: 2,
       scrollOrientation: 'horizontal',
       scroll: { enabled: true },
@@ -202,5 +203,22 @@ describe('DateRangePicker hooks parity', () => {
 
     expect(mockLatestDateRangeProps.months).toBe(4);
     expect(mockLatestDateRangeProps.direction).toBe('vertical');
+    expect(mockLatestDateRangeProps._resolvedLayout).toBe('reference');
+    expect(container.firstChild).not.toHaveClass('rdrDateRangePickerWrapperResponsive');
+  });
+
+  describe('responsive layout contract', () => {
+    test('calendarCount wins on mobile and multiple calendars stack vertically', () => {
+      renderDateRangePicker({
+        layout: 'mobile',
+        calendarCount: 2,
+        scrollOrientation: 'horizontal',
+      });
+
+      expect(mockLatestDateRangeProps._resolvedLayout).toBe('mobile');
+      expect(mockLatestDateRangeProps.months).toBe(2);
+      expect(mockLatestDateRangeProps.direction).toBe('vertical');
+    });
+
   });
 });

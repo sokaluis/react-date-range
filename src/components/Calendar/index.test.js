@@ -250,6 +250,35 @@ describe('Calendar', () => {
     });
   });
 
+  describe('responsive layout contract', () => {
+    test('keeps the reference wrapper by default', () => {
+      const { container } = renderCalendar();
+
+      expect(container.firstChild).toHaveClass('rdrCalendarWrapper');
+      expect(container.firstChild).not.toHaveClass('rdrCalendarWrapperResponsive');
+    });
+
+    test('stacks multiple mobile months vertically', () => {
+      const { container } = renderCalendar({ layout: 'mobile', months: 2, direction: 'horizontal' });
+
+      expect(container.firstChild).toHaveClass('rdrCalendarWrapperResponsive');
+      expect(container.querySelector('.rdrMonthsVertical')).toBeInTheDocument();
+      expect(container.querySelectorAll('.rdrMonth')).toHaveLength(2);
+    });
+
+    test('keeps virtualized scroll geometry outside the responsive layout', () => {
+      const { container } = renderCalendar({
+        layout: 'mobile',
+        months: 2,
+        direction: 'horizontal',
+        scroll: { enabled: true },
+      });
+
+      expect(container.firstChild).not.toHaveClass('rdrCalendarWrapperResponsive');
+      expect(container.querySelector('.rdrMonthsHorizontal')).toBeInTheDocument();
+    });
+  });
+
   describe('RTL public type surface', () => {
     test('CalendarProps and ClassNames expose additive dir and rtl declarations', () => {
       const declarations = readTypeDeclarations();

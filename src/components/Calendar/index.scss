@@ -6,6 +6,17 @@
   user-select: none;
 }
 
+.rdrCalendarWrapperResponsive {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.rdrCalendarWrapperResponsive .rdrMonth {
+  width: auto;
+  max-width: 100%;
+}
+
 .rdrDateDisplay{
   display: flex;
   justify-content: space-between;

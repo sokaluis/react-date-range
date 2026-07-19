@@ -38,6 +38,7 @@ import {
 } from 'date-fns';
 import { enUS as defaultLocale } from 'date-fns/locale/en-US';
 import coreStyles, { getUiSlotClassName, mergeUiSlotStyles } from '../../styles';
+import { useResponsiveLayout } from '../../hooks/useResponsiveLayout';
 
 // REQ-UBF-003: frozen empty array preserves referential equality across renders
 // so downstream useMemo/useCallback deps remain stable when disabledDates is non-array.
@@ -117,6 +118,22 @@ const calcScrollArea = ({ direction, months, scroll }) => {
     calendarWidth: (scroll.calendarWidth || scroll.monthWidth || 332) * months,
     monthHeight: longMonthHeight || 300,
     calendarHeight: longMonthHeight || 300,
+  };
+};
+
+const resolveCalendarLayoutProps = ({ resolvedLayout, months, direction, scroll }) => {
+  if (scroll.enabled || resolvedLayout !== 'mobile') {
+    return { months, direction, isResponsiveLayout: false };
+  }
+
+  const effectiveMonths = months ?? calendarDefaultProps.months;
+  const effectiveDirection =
+    effectiveMonths > 1 ? 'vertical' : direction ?? calendarDefaultProps.direction;
+
+  return {
+    months: effectiveMonths,
+    direction: effectiveDirection,
+    isResponsiveLayout: true,
   };
 };
 
@@ -654,6 +671,7 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
       dir={dir}
       className={classnames(
         styles.calendarWrapper,
+        props._calendarIsResponsiveLayout && styles.calendarWrapperResponsive,
         dir === 'rtl' && (props.classNames?.rtl ?? styles.rtl),
         getUiSlotClassName(props.uiSlots, 'root'),
         className
@@ -827,6 +845,8 @@ const ForwardedCalendar = React.forwardRef(function Calendar(
     headerConfig = calendarDefaultProps.headerConfig,
     todayAffordance = calendarDefaultProps.todayAffordance,
     selectedDisplay,
+    layout,
+    _resolvedLayout,
     uiSlots,
     ...rest
   },
@@ -849,6 +869,13 @@ const ForwardedCalendar = React.forwardRef(function Calendar(
     ...headerConfig,
   };
   const resolvedSelectedDisplay = resolveSelectedDisplay(selectedDisplay, dateDisplayFormat);
+  const responsiveLayout = useResponsiveLayout(_resolvedLayout ?? layout);
+  const calendarLayoutProps = resolveCalendarLayoutProps({
+    resolvedLayout: responsiveLayout,
+    months,
+    direction,
+    scroll,
+  });
 
   const resolvedProps = {
     showMonthArrow,
@@ -866,11 +893,11 @@ const ForwardedCalendar = React.forwardRef(function Calendar(
     showDateDisplay,
     showPreview,
     displayMode,
-    months,
+    months: calendarLayoutProps.months,
     color,
     scroll,
     selectablePassive: effectiveSelectablePassive,
-    direction,
+    direction: calendarLayoutProps.direction,
     maxDate,
     minDate,
     rangeColors,
@@ -886,6 +913,7 @@ const ForwardedCalendar = React.forwardRef(function Calendar(
     todayAffordance,
     selectedDisplay: resolvedSelectedDisplay,
     uiSlots,
+    _calendarIsResponsiveLayout: calendarLayoutProps.isResponsiveLayout,
     ...rest,
   };
   const dateOptions = useMemo(

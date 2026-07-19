@@ -2,3 +2,27 @@
   display: inline-flex;
   user-select: none;
 }
+
+.rdrDateRangePickerWrapperResponsive{
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.rdrDateRangePickerWrapperResponsive .rdrDefinedRangesWrapper{
+  width: clamp(12rem, 100%, 22rem);
+  max-width: 100%;
+  border-right: 0;
+  border-bottom: solid 1px #eff2f7;
+}
+
+.rdrDateRangePickerWrapperResponsive .rdrInputRange{
+  align-items: flex-start;
+  flex-direction: column;
+  gap: var(--rdr-space-xs, 0.25rem);
+}
+
+.rdrDateRangePickerWrapperResponsive .rdrInputRangeInput{
+  margin-right: 0;
+}
