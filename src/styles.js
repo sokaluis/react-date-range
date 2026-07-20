@@ -98,6 +98,7 @@ export default {
   inputRange: 'rdrInputRange',
   inputRangeInput: 'rdrInputRangeInput',
   dateRangePickerWrapper: 'rdrDateRangePickerWrapper',
+  dateRangePickerWrapperFluid: 'rdrDateRangePickerWrapperFluid',
   dateRangePickerWrapperResponsive: 'rdrDateRangePickerWrapperResponsive',
   staticRangeLabel: 'rdrStaticRangeLabel',
   staticRangeSelected: 'rdrStaticRangeSelected',

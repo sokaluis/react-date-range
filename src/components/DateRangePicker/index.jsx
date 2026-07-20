@@ -29,7 +29,7 @@ const resolvePickerLayout = ({ resolvedLayout, calendarCount, scrollOrientation,
 };
 
 const DateRangePicker = forwardRef(function DateRangePicker(props, ref) {
-  const { calendarCount, scrollOrientation, ...inheritedProps } = props;
+  const { calendarCount, scrollOrientation, widthMode, ...inheritedProps } = props;
   const resolvedLayout = useResponsiveLayout(props.layout);
   const dateRangeRef = useRef(null);
   const [focusedRangeState, setFocusedRangeState] = useState(() => [findNextRangeIndex(props.ranges), 0]);
@@ -81,6 +81,7 @@ const DateRangePicker = forwardRef(function DateRangePicker(props, ref) {
       dir={props.dir}
       className={classnames(
         styles.dateRangePickerWrapper,
+        widthMode === 'fluid' && styles.dateRangePickerWrapperFluid,
         isMobile && styles.dateRangePickerWrapperResponsive,
         props.dir === 'rtl' && (props.classNames?.rtl ?? styles.rtl),
         getUiSlotClassName(props.uiSlots, 'root'),

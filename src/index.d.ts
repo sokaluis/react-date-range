@@ -137,6 +137,7 @@ export interface ClassNames {
   inputRange?: string | undefined;
   inputRangeInput?: string | undefined;
   dateRangePickerWrapper?: string | undefined;
+  dateRangePickerWrapperFluid?: string | undefined;
   dateRangePickerWrapperResponsive?: string | undefined;
   staticRangeLabel?: string | undefined;
   staticRangeSelected?: string | undefined;
@@ -509,6 +510,11 @@ export interface DateRangePickerProps extends DateRangeProps, DefinedRangeProps 
   layout?: LayoutMode | undefined;
   /** Calendar flow direction for the picker when virtualized scroll is disabled. Default: `vertical`. */
   scrollOrientation?: ScrollOrientation | undefined;
+  /**
+   * Controls wrapper width behaviour. `content` (default) preserves intrinsic sizing.
+   * `fluid` caps to the container width without clipping — independent from `layout`.
+   */
+  widthMode?: 'content' | 'fluid' | undefined;
   /**
    * NOTE: currently the date range picker component passes the
    * `onPreviewChange` prop (if included) to both subcomponents even

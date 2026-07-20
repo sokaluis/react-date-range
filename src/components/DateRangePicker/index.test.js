@@ -207,6 +207,43 @@ describe('DateRangePicker hooks parity', () => {
     expect(container.firstChild).not.toHaveClass('rdrDateRangePickerWrapperResponsive');
   });
 
+  describe('widthMode prop', () => {
+    test('does not add fluid class when widthMode is omitted', () => {
+      const { container } = renderDateRangePicker();
+
+      expect(container.firstChild).not.toHaveClass('rdrDateRangePickerWrapperFluid');
+    });
+
+    test('adds fluid class when widthMode is "fluid"', () => {
+      const { container } = renderDateRangePicker({ widthMode: 'fluid' });
+
+      expect(container.firstChild).toHaveClass('rdrDateRangePickerWrapperFluid');
+    });
+
+    test('does not add fluid class for invalid widthMode values', () => {
+      const { container } = renderDateRangePicker({ widthMode: 'unknown' });
+
+      expect(container.firstChild).not.toHaveClass('rdrDateRangePickerWrapperFluid');
+    });
+
+    test('coexists fluid and responsive classes when widthMode="fluid" and layout="auto" on mobile', () => {
+      const { container } = renderDateRangePicker({
+        widthMode: 'fluid',
+        layout: 'auto',
+        calendarCount: 2,
+      });
+
+      expect(container.firstChild).toHaveClass('rdrDateRangePickerWrapperFluid');
+    });
+
+    test('does not leak widthMode to child components', () => {
+      renderDateRangePicker({ widthMode: 'fluid' });
+
+      expect(mockLatestDefinedRangeProps).not.toHaveProperty('widthMode');
+      expect(mockLatestDateRangeProps).not.toHaveProperty('widthMode');
+    });
+  });
+
   describe('responsive layout contract', () => {
     test('calendarCount wins on mobile and multiple calendars stack vertically', () => {
       renderDateRangePicker({

@@ -370,6 +370,7 @@ function App() {
           </p>
           <DateRangePicker
             layout="auto"
+            widthMode="fluid"
             onChange={handleChange}
             ranges={ranges}
             months={1}
@@ -396,6 +397,7 @@ function App() {
         <h2>DateRangePicker — Interactive Demo</h2>
         <DateRangePicker
           layout="auto"
+          widthMode="fluid"
           onChange={handleChange}
           ranges={ranges}
           showPreview={true}
@@ -451,6 +453,7 @@ function App() {
         <div className="demo-example">
           <DateRangePicker
             layout="auto"
+            widthMode="fluid"
             onChange={handleSelectedDisplayChange}
             ranges={selectedDisplayRanges}
             editableDateInputs
@@ -489,6 +492,7 @@ function App() {
         <div className="demo-example">
           <DateRangePicker
             layout="auto"
+            widthMode="fluid"
             onChange={handleLayoutChange}
             ranges={layoutRanges}
             showPreview={true}
@@ -565,6 +569,7 @@ function App() {
         <div className="demo-example">
           <DateRangePicker
             layout="auto"
+            widthMode="fluid"
             onChange={handleSlotChange}
             ranges={slotRanges}
             showPreview={true}

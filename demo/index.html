@@ -70,15 +70,17 @@
 
       .demo-panel {
         --demo-panel-max-width: 100%;
+        container-type: inline-size;
         width: 100%;
         max-width: var(--demo-panel-max-width);
+        min-width: 0;
         margin-inline: auto;
         background: #fff;
         border-radius: 8px;
         box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
         padding: 1.5rem;
         margin-bottom: 1.5rem;
-        overflow-x: hidden;
+        overflow-x: auto;
       }
 
       .demo-panel h2 {
@@ -213,9 +215,29 @@
         justify-content: center;
         align-items: flex-start;
         width: 100%;
+        min-width: 0;
         margin: 1.5rem 0;
         padding: 1rem 0;
         overflow-x: auto;
+      }
+
+      .demo-example > * {
+        max-width: 100%;
+        min-width: 0;
+      }
+
+      .demo-panel > .rdrDateRangePickerWrapper,
+      .demo-example .rdrDateRangePickerWrapper {
+        box-sizing: border-box;
+        inline-size: max-content;
+        max-inline-size: 100%;
+      }
+
+      .demo-panel > .rdrDateRangePickerWrapper .rdrCalendarWrapper,
+      .demo-panel > .rdrDateRangePickerWrapper .rdrMonth,
+      .demo-example .rdrCalendarWrapper,
+      .demo-example .rdrMonth {
+        max-inline-size: 100%;
       }
 
       @media (max-width: 768px) {
@@ -329,16 +351,28 @@
          --------------------------------------------------------------------- */
       .before-after {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
         gap: 1rem;
         margin-bottom: 2rem;
       }
 
       .before-after-col {
+        container-type: inline-size;
+        min-width: 0;
         background: #fff;
         border-radius: 8px;
         box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
         padding: 1.25rem;
+      }
+
+      .before-after-col.fork {
+        overflow-x: auto;
+      }
+
+      .before-after-col.fork .rdrDateRangePickerWrapper,
+      .before-after-col.fork .rdrCalendarWrapper,
+      .before-after-col.fork .rdrMonth {
+        max-width: 100%;
       }
 
       .before-after-col h3 {
@@ -384,7 +418,8 @@
         font-family: 'SF Mono', 'Fira Code', 'Fira Mono', monospace;
         font-size: 0.75rem;
         overflow-x: auto;
-        white-space: pre;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
         margin: 0 0 0.75rem;
         line-height: 1.6;
       }
@@ -404,10 +439,6 @@
 
         h1 {
           font-size: 1.25rem;
-        }
-
-        .before-after {
-          grid-template-columns: 1fr;
         }
 
         .hero {
