@@ -1,4 +1,5 @@
 import styles_default from "../../styles.mjs";
+import { useResponsiveLayout } from "../../hooks/useResponsiveLayout.mjs";
 import Calendar from "../Calendar/index.mjs";
 import usePopover from "../../hooks/usePopover.mjs";
 import { format, isValid } from "date-fns";
@@ -9,11 +10,13 @@ import { createPortal } from "react-dom";
 const defaultDateDisplayFormat = "MMM d, yyyy";
 const defaultAriaLabel = "Select date";
 const defaultPopoverLabel = "Choose date";
+const anchorPopoverMaxWidth = "min(var(--rdr-date-picker-input-popover-anchor-max-width, var(--rdr-input-popover-anchor-max-width, 26rem)), calc(100vw - 2rem))";
 const canUseDocument = () => typeof document !== "undefined";
 const canUseWindow = () => typeof window !== "undefined";
 const formatDate = (date, dateDisplayFormat, dateOptions) => date && isValid(date) ? format(date, dateDisplayFormat, dateOptions) : "";
 function DatePickerInput(props, ref) {
-	const { date, onChange, open: controlledOpen, defaultOpen, onOpenChange, dateDisplayFormat = defaultDateDisplayFormat, ariaLabel = defaultAriaLabel, popoverLabel = defaultPopoverLabel, placeholder, disabled = false, calendarProps = {}, classNames = {}, className, dir } = props;
+	const { date, onChange, open: controlledOpen, defaultOpen, onOpenChange, dateDisplayFormat = defaultDateDisplayFormat, ariaLabel = defaultAriaLabel, popoverLabel = defaultPopoverLabel, placeholder, disabled = false, calendarProps = {}, popoverPlacement = "anchor", mobileBreakpoint: mobileBreakpointProp, classNames = {}, className, dir } = props;
+	const mobileBreakpoint = mobileBreakpointProp ?? calendarProps.mobileBreakpoint ?? 768;
 	const [mounted, setMounted] = useState(false);
 	const [popoverStyle, setPopoverStyle] = useState(void 0);
 	const styles = useMemo(() => ({
@@ -27,6 +30,8 @@ function DatePickerInput(props, ref) {
 		defaultOpen,
 		onOpenChange
 	});
+	const isResponsiveModal = useResponsiveLayout(popoverPlacement === "responsive" ? "auto" : "reference", mobileBreakpoint) === "mobile";
+	const isModal = popoverPlacement === "modal" || isResponsiveModal;
 	useEffect(() => {
 		setMounted(true);
 	}, []);
@@ -35,14 +40,23 @@ function DatePickerInput(props, ref) {
 			setPopoverStyle(void 0);
 			return;
 		}
+		if (isModal) {
+			setPopoverStyle(void 0);
+			return;
+		}
 		const triggerRect = triggerRef.current?.getBoundingClientRect();
 		if (!triggerRect) return;
 		setPopoverStyle({
 			top: triggerRect.bottom + window.scrollY,
 			left: triggerRect.left + window.scrollX,
-			minWidth: triggerRect.width
+			minWidth: `min(${triggerRect.width}px, var(--rdr-date-picker-input-popover-anchor-max-width, var(--rdr-input-popover-anchor-max-width, 26rem)), calc(100vw - 2rem))`,
+			maxWidth: anchorPopoverMaxWidth
 		});
-	}, [open, triggerRef]);
+	}, [
+		isModal,
+		open,
+		triggerRef
+	]);
 	useImperativeHandle(ref, () => ({
 		focus: () => triggerRef.current?.focus(),
 		getTriggerEl: () => triggerRef.current
@@ -64,7 +78,7 @@ function DatePickerInput(props, ref) {
 		role: "dialog",
 		"aria-modal": "true",
 		"aria-label": popoverLabel,
-		className: styles.datePickerInputPopover,
+		className: classnames(styles.datePickerInputPopover, isModal && styles.datePickerInputPopoverModal),
 		style: popoverStyle,
 		dir
 	}, /* @__PURE__ */ React.createElement(Calendar, {
@@ -73,7 +87,8 @@ function DatePickerInput(props, ref) {
 		dateDisplayFormat,
 		onChange: onCalendarChange,
 		classNames: styles,
-		dir: dir || calendarProps.dir
+		dir: dir || calendarProps.dir,
+		_calendarIsFluidWidthMode: isModal
 	})) : null;
 	return /* @__PURE__ */ React.createElement("span", {
 		className: classnames(styles.datePickerInputWrapper, className),

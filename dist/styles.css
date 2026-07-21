@@ -17,6 +17,28 @@
   max-width: 100%;
 }
 
+.rdrCalendarWrapperFluid {
+  --rdr-calendar-month-min-width: 400px;
+  flex: 1 1 0;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.rdrCalendarWrapperFluid .rdrMonths {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.rdrCalendarWrapperFluid .rdrMonth {
+  box-sizing: border-box;
+  flex: 1 1 0;
+  width: auto;
+  min-width: 0;
+  max-width: 100%;
+}
+
 .rdrDateDisplay {
   display: flex;
   justify-content: space-between;
@@ -154,9 +176,24 @@
 .rdrDatePickerInputPopover {
   position: absolute;
   z-index: 1000;
+  max-width: min(var(--rdr-date-picker-input-popover-anchor-max-width, var(--rdr-input-popover-anchor-max-width, 26rem)), 100vw - 2rem);
+  overflow: auto;
   margin-top: 4px;
   background: #fff;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+}
+
+.rdrDatePickerInputPopoverModal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 1000;
+  width: calc(100vw - 2rem);
+  max-width: min(var(--rdr-date-picker-input-popover-modal-max-width, var(--rdr-input-popover-modal-max-width, 26rem)), 100vw - 2rem);
+  max-height: calc(100vh - 2rem);
+  overflow: auto;
+  margin-top: 0;
+  transform: translate(-50%, -50%);
 }
 
 .rdrDateRangeInputWrapper {
@@ -185,9 +222,24 @@
 .rdrDateRangeInputPopover {
   position: absolute;
   z-index: 1000;
+  max-width: min(var(--rdr-date-range-input-popover-anchor-max-width, var(--rdr-input-popover-anchor-max-width, 52rem)), 100vw - 2rem);
+  overflow: auto;
   margin-top: 4px;
   background: #fff;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+}
+
+.rdrDateRangeInputPopoverModal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 1000;
+  width: calc(100vw - 2rem);
+  max-width: min(var(--rdr-date-range-input-popover-modal-max-width, var(--rdr-input-popover-modal-max-width, 52rem)), 100vw - 2rem);
+  max-height: calc(100vh - 2rem);
+  overflow: auto;
+  margin-top: 0;
+  transform: translate(-50%, -50%);
 }
 
 .rdrDay {
@@ -226,6 +278,28 @@
 .rdrDateRangePickerWrapper {
   display: inline-flex;
   user-select: none;
+}
+
+.rdrDateRangePickerWrapperFluid {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.rdrDateRangePickerWrapperFluid:not(.rdrDateRangePickerWrapperResponsive) > .rdrDefinedRangesWrapper {
+  flex: 0 0 30%;
+  width: 30%;
+  max-width: 30%;
+  min-width: 0;
+}
+
+.rdrDateRangePickerWrapperFluid:not(.rdrDateRangePickerWrapperResponsive) > .rdrCalendarWrapperFluid {
+  flex: 1 1 70%;
+  max-width: 70%;
+}
+
+.rdrDateRangePickerWrapperFluid.rdrDateRangePickerWrapperResponsive {
+  width: 100%;
 }
 
 .rdrDateRangePickerWrapperResponsive {

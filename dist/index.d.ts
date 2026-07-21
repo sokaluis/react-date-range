@@ -86,6 +86,7 @@ export interface ClassNames {
   dateRangeWrapper?: string | undefined;
   calendarWrapper?: string | undefined;
   calendarWrapperResponsive?: string | undefined;
+  calendarWrapperFluid?: string | undefined;
   dateDisplay?: string | undefined;
   dateDisplayItem?: string | undefined;
   dateDisplayItemActive?: string | undefined;
@@ -93,9 +94,11 @@ export interface ClassNames {
   datePickerInputWrapper?: string | undefined;
   datePickerInputTrigger?: string | undefined;
   datePickerInputPopover?: string | undefined;
+  datePickerInputPopoverModal?: string | undefined;
   dateRangeInputWrapper?: string | undefined;
   dateRangeInputTrigger?: string | undefined;
   dateRangeInputPopover?: string | undefined;
+  dateRangeInputPopoverModal?: string | undefined;
   monthAndYearWrapper?: string | undefined;
   monthAndYearPickers?: string | undefined;
   liveRegion?: string | undefined;
@@ -137,6 +140,7 @@ export interface ClassNames {
   inputRange?: string | undefined;
   inputRangeInput?: string | undefined;
   dateRangePickerWrapper?: string | undefined;
+  dateRangePickerWrapperFluid?: string | undefined;
   dateRangePickerWrapperResponsive?: string | undefined;
   staticRangeLabel?: string | undefined;
   staticRangeSelected?: string | undefined;
@@ -199,6 +203,8 @@ export type CalendarCount = 1 | 2;
 
 export type LayoutMode = 'reference' | 'auto' | 'mobile' | 'desktop';
 
+export type PopoverPlacement = 'anchor' | 'modal' | 'responsive';
+
 export type ScrollOrientation = 'horizontal' | 'vertical';
 
 // =============================================================================
@@ -258,6 +264,8 @@ export interface CalendarProps {
   locale?: Locale | undefined;
   /** Opt-in responsive layout mode. Default: `reference`. */
   layout?: LayoutMode | undefined;
+  /** Maximum viewport width for `layout="auto"`. Default: `768`. */
+  mobileBreakpoint?: number | undefined;
   /** default: 20 years after the current date */
   maxDate?: Date | undefined;
   /** default: 100 years before the current date */
@@ -321,6 +329,13 @@ export interface CalendarProps {
   weekdayDisplayFormat?: string | undefined;
   /** default: none */
   weekStartsOn?: 0 | 1 | 2 | 3 | 4 | 5 | 6 | undefined;
+  /**
+   * Controls wrapper width behaviour independent from `layout`.
+   *
+   * - `content` (default): preserves intrinsic inline-flex sizing — the wrapper grows to its content.
+   * - `fluid`: the calendar wrapper and month grid fill available width.
+   */
+  widthMode?: 'content' | 'fluid' | undefined;
 }
 
 export function Calendar(props: CalendarProps): React.JSX.Element;
@@ -352,6 +367,10 @@ export interface DatePickerInputProps {
   disabled?: boolean | undefined;
   /** Forwarded to Calendar; date and onChange are owned by DatePickerInput. */
   calendarProps?: Omit<CalendarProps, 'date' | 'onChange'> | undefined;
+  /** Popover position. `anchor` preserves trigger anchoring; `responsive` uses a centered modal at or below `mobileBreakpoint`. */
+  popoverPlacement?: PopoverPlacement | undefined;
+  /** Maximum viewport width for responsive modal placement. Defaults to `calendarProps.mobileBreakpoint`, then `768`. */
+  mobileBreakpoint?: number | undefined;
   /** Custom class names merged with package defaults. */
   classNames?: Partial<ClassNames> | undefined;
   className?: string | undefined;
@@ -404,6 +423,10 @@ export interface DateRangeInputProps {
         | 'disabledDates'
       >
     | undefined;
+  /** Popover position. `anchor` preserves trigger anchoring; `responsive` uses a centered modal at or below `mobileBreakpoint`. */
+  popoverPlacement?: PopoverPlacement | undefined;
+  /** Maximum viewport width for responsive modal placement. Defaults to `calendarProps.mobileBreakpoint`, then `768`. */
+  mobileBreakpoint?: number | undefined;
   /** Dialog accessible name — default: `Select date range` */
   popoverLabel?: string | undefined;
   ariaLabels?:
@@ -509,6 +532,15 @@ export interface DateRangePickerProps extends DateRangeProps, DefinedRangeProps 
   layout?: LayoutMode | undefined;
   /** Calendar flow direction for the picker when virtualized scroll is disabled. Default: `vertical`. */
   scrollOrientation?: ScrollOrientation | undefined;
+  /**
+   * Controls wrapper width behaviour independent from `layout` (which decides row vs column structure).
+   *
+   * - `content` (default): preserves intrinsic inline-flex sizing — the wrapper grows to its content.
+   * - `fluid` in a row layout: the wrapper fills the available container width and splits the picker
+   *   as 30% DefinedRange / 70% calendar side.
+   * - `fluid` in a column layout (responsive / `layout="mobile"`): the wrapper occupies `100%` of the container width.
+   */
+  widthMode?: 'content' | 'fluid' | undefined;
   /**
    * NOTE: currently the date range picker component passes the
    * `onPreviewChange` prop (if included) to both subcomponents even

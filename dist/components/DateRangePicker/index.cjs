@@ -28,8 +28,8 @@ const resolvePickerLayout = ({ resolvedLayout, calendarCount, scrollOrientation,
 	};
 };
 const DateRangePicker = (0, react.forwardRef)(function DateRangePicker(props, ref) {
-	const { calendarCount, scrollOrientation, ...inheritedProps } = props;
-	const resolvedLayout = require_hooks_useResponsiveLayout.useResponsiveLayout(props.layout);
+	const { calendarCount, scrollOrientation, widthMode, ...inheritedProps } = props;
+	const resolvedLayout = require_hooks_useResponsiveLayout.useResponsiveLayout(props.layout, props.mobileBreakpoint);
 	const dateRangeRef = (0, react.useRef)(null);
 	const [focusedRangeState, setFocusedRangeState] = (0, react.useState)(() => [require_utils.findNextRangeIndex(props.ranges), 0]);
 	const focusedRange = props.focusedRange || focusedRangeState;
@@ -66,7 +66,7 @@ const DateRangePicker = (0, react.forwardRef)(function DateRangePicker(props, re
 	}, [props]);
 	return /* @__PURE__ */ react.default.createElement("div", {
 		dir: props.dir,
-		className: (0, classnames.default)(styles.dateRangePickerWrapper, isMobile && styles.dateRangePickerWrapperResponsive, props.dir === "rtl" && (props.classNames?.rtl ?? styles.rtl), require_styles.getUiSlotClassName(props.uiSlots, "root"), props.className),
+		className: (0, classnames.default)(styles.dateRangePickerWrapper, widthMode === "fluid" && styles.dateRangePickerWrapperFluid, isMobile && styles.dateRangePickerWrapperResponsive, props.dir === "rtl" && (props.classNames?.rtl ?? styles.rtl), require_styles.getUiSlotClassName(props.uiSlots, "root"), props.className),
 		style: require_styles.mergeUiSlotStyles(props.style, props.uiSlots, "root"),
 		...regionProps
 	}, /* @__PURE__ */ react.default.createElement(require_components_DefinedRange_index, {
@@ -80,6 +80,8 @@ const DateRangePicker = (0, react.forwardRef)(function DateRangePicker(props, re
 		...inheritedProps,
 		...calendarProps,
 		_resolvedLayout: calendarLayout,
+		_calendarIsFluidWidthMode: widthMode === "fluid",
+		_calendarCanAutoStackFluidMonths: props.layout === "auto",
 		uiSlots: dateRangeUiSlots,
 		onRangeFocusChange: handleRangeFocusChange,
 		focusedRange,

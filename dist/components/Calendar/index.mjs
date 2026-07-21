@@ -50,6 +50,7 @@ const calendarDefaultProps = {
 	headerConfig: {},
 	todayAffordance: "highlight"
 };
+const FLUID_MONTH_MIN_WIDTH_PX = 400;
 const uninitializedTargetProp = Symbol("uninitializedTargetProp");
 const getDateOptions = ({ locale, weekStartsOn }) => {
 	const dateOptions = { locale };
@@ -93,6 +94,12 @@ const resolveCalendarLayoutProps = ({ resolvedLayout, months, direction, scroll 
 		isResponsiveLayout: true
 	};
 };
+const getFluidMonthMinWidth = (element) => {
+	if (typeof window === "undefined" || typeof window.getComputedStyle !== "function") return FLUID_MONTH_MIN_WIDTH_PX;
+	const value = window.getComputedStyle(element).getPropertyValue("--rdr-calendar-month-min-width");
+	const parsed = Number.parseFloat(value);
+	return Number.isFinite(parsed) && parsed > 0 ? parsed : FLUID_MONTH_MIN_WIDTH_PX;
+};
 const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
 	const dateOptions = props._calendarDateOptions;
 	const styles = props._calendarStyles;
@@ -117,9 +124,32 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
 	const focusTimerRef = useRef(null);
 	const focusToDateRef = useRef(null);
 	const previousTargetPropRef = useRef(uninitializedTargetProp);
+	const [shouldStackFluidMonths, setShouldStackFluidMonths] = useState(false);
 	useEffect(() => {
 		focusedDateRef.current = focusedDate;
 	}, [focusedDate]);
+	useEffect(() => {
+		if (!props._calendarCanAutoStackFluidMonths) {
+			setShouldStackFluidMonths(false);
+			return;
+		}
+		const element = calendarWrapperRef.current;
+		if (!element || typeof window === "undefined" || typeof window.ResizeObserver === "undefined") {
+			setShouldStackFluidMonths(false);
+			return;
+		}
+		const updateStacking = () => {
+			const { width } = element.getBoundingClientRect();
+			const minWidth = getFluidMonthMinWidth(element) * props.months;
+			setShouldStackFluidMonths(width > 0 && width < minWidth);
+		};
+		updateStacking();
+		const resizeObserver = new window.ResizeObserver(updateStacking);
+		resizeObserver.observe(element);
+		return () => {
+			resizeObserver.disconnect();
+		};
+	}, [props._calendarCanAutoStackFluidMonths, props.months]);
 	const estimateMonthSize = useCallback((index) => {
 		const { direction, minDate, _calendarScrollArea: scrollArea } = props;
 		if (direction === "horizontal") return scrollArea.monthWidth;
@@ -434,7 +464,8 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
 		});
 	};
 	const { showDateDisplay, onPreviewChange, scroll, direction, dir, disabledDates, disabledDay, minDate, rangeColors, color, navigatorRenderer, className, style, preview, _calendarScrollArea: scrollArea } = props;
-	const isVertical = direction === "vertical";
+	const effectiveDirection = shouldStackFluidMonths ? "vertical" : direction;
+	const isVertical = effectiveDirection === "vertical";
 	const monthAndYearRenderer = navigatorRenderer || renderMonthAndYear;
 	const dateDisplay = showDateDisplay ? renderDateDisplay() : null;
 	const isDateDisplayBottom = props.selectedDisplay?.placement === "bottom";
@@ -455,7 +486,7 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
 	return /* @__PURE__ */ React.createElement("div", {
 		ref: calendarWrapperRef,
 		dir,
-		className: classnames(styles.calendarWrapper, props._calendarIsResponsiveLayout && styles.calendarWrapperResponsive, dir === "rtl" && (props.classNames?.rtl ?? styles.rtl), getUiSlotClassName(props.uiSlots, "root"), className),
+		className: classnames(styles.calendarWrapper, props._calendarIsResponsiveLayout && styles.calendarWrapperResponsive, props._calendarIsFluidWidthMode && styles.calendarWrapperFluid, dir === "rtl" && (props.classNames?.rtl ?? styles.rtl), getUiSlotClassName(props.uiSlots, "root"), className),
 		style: mergeUiSlotStyles(style, props.uiSlots, "root"),
 		onKeyDown: handleCalendarKeyDown,
 		onMouseUp: () => setDrag({
@@ -510,6 +541,7 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
 			}
 		}, /* @__PURE__ */ React.createElement(Month, {
 			...props,
+			direction: effectiveDirection,
 			onPreviewChange: onPreviewChange || updatePreview,
 			preview: preview || previewState,
 			ranges,
@@ -541,6 +573,7 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
 		if (props.calendarFocus === "backwards") monthStep = subMonths(focusedDate, props.months - 1 - i);
 		return /* @__PURE__ */ React.createElement(Month, {
 			...props,
+			direction: effectiveDirection,
 			onPreviewChange: onPreviewChange || updatePreview,
 			preview: preview || previewState,
 			ranges,
@@ -560,7 +593,7 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
 		});
 	})), isDateDisplayBottom && dateDisplay);
 });
-const Calendar = React.forwardRef(function Calendar({ showMonthArrow = calendarDefaultProps.showMonthArrow, showMonthAndYearPickers = calendarDefaultProps.showMonthAndYearPickers, disabledDates = calendarDefaultProps.disabledDates, disabledDay = calendarDefaultProps.disabledDay, classNames = calendarDefaultProps.classNames, locale = calendarDefaultProps.locale, ranges = calendarDefaultProps.ranges, focusedRange = calendarDefaultProps.focusedRange, dateDisplayFormat = calendarDefaultProps.dateDisplayFormat, monthDisplayFormat = calendarDefaultProps.monthDisplayFormat, weekdayDisplayFormat = calendarDefaultProps.weekdayDisplayFormat, dayDisplayFormat = calendarDefaultProps.dayDisplayFormat, showDateDisplay = calendarDefaultProps.showDateDisplay, showPreview = calendarDefaultProps.showPreview, displayMode = calendarDefaultProps.displayMode, months = calendarDefaultProps.months, color = calendarDefaultProps.color, scroll = calendarDefaultProps.scroll, direction = calendarDefaultProps.direction, maxDate = calendarDefaultProps.maxDate, minDate = calendarDefaultProps.minDate, rangeColors = calendarDefaultProps.rangeColors, startDatePlaceholder = calendarDefaultProps.startDatePlaceholder, endDatePlaceholder = calendarDefaultProps.endDatePlaceholder, editableDateInputs = calendarDefaultProps.editableDateInputs, dragSelectionEnabled = calendarDefaultProps.dragSelectionEnabled, fixedHeight = calendarDefaultProps.fixedHeight, calendarFocus = calendarDefaultProps.calendarFocus, preventSnapRefocus = calendarDefaultProps.preventSnapRefocus, ariaLabels = calendarDefaultProps.ariaLabels, selectablePassive = calendarDefaultProps.selectablePassive, headerConfig = calendarDefaultProps.headerConfig, todayAffordance = calendarDefaultProps.todayAffordance, selectedDisplay, layout, _resolvedLayout, uiSlots, ...rest }, ref) {
+const Calendar = React.forwardRef(function Calendar({ showMonthArrow = calendarDefaultProps.showMonthArrow, showMonthAndYearPickers = calendarDefaultProps.showMonthAndYearPickers, disabledDates = calendarDefaultProps.disabledDates, disabledDay = calendarDefaultProps.disabledDay, classNames = calendarDefaultProps.classNames, locale = calendarDefaultProps.locale, ranges = calendarDefaultProps.ranges, focusedRange = calendarDefaultProps.focusedRange, dateDisplayFormat = calendarDefaultProps.dateDisplayFormat, monthDisplayFormat = calendarDefaultProps.monthDisplayFormat, weekdayDisplayFormat = calendarDefaultProps.weekdayDisplayFormat, dayDisplayFormat = calendarDefaultProps.dayDisplayFormat, showDateDisplay = calendarDefaultProps.showDateDisplay, showPreview = calendarDefaultProps.showPreview, displayMode = calendarDefaultProps.displayMode, months = calendarDefaultProps.months, color = calendarDefaultProps.color, scroll = calendarDefaultProps.scroll, direction = calendarDefaultProps.direction, maxDate = calendarDefaultProps.maxDate, minDate = calendarDefaultProps.minDate, rangeColors = calendarDefaultProps.rangeColors, startDatePlaceholder = calendarDefaultProps.startDatePlaceholder, endDatePlaceholder = calendarDefaultProps.endDatePlaceholder, editableDateInputs = calendarDefaultProps.editableDateInputs, dragSelectionEnabled = calendarDefaultProps.dragSelectionEnabled, fixedHeight = calendarDefaultProps.fixedHeight, calendarFocus = calendarDefaultProps.calendarFocus, preventSnapRefocus = calendarDefaultProps.preventSnapRefocus, ariaLabels = calendarDefaultProps.ariaLabels, selectablePassive = calendarDefaultProps.selectablePassive, headerConfig = calendarDefaultProps.headerConfig, todayAffordance = calendarDefaultProps.todayAffordance, selectedDisplay, layout, mobileBreakpoint, widthMode, _resolvedLayout, _calendarIsFluidWidthMode, _calendarCanAutoStackFluidMonths, uiSlots, ...rest }, ref) {
 	const safeDisabledDates = Array.isArray(disabledDates) ? disabledDates : EMPTY_DATES;
 	/** Holds the resolved value: true only when prop=true AND scroll is disabled. */
 	const effectiveSelectablePassive = !!selectablePassive && !scroll.enabled;
@@ -570,9 +603,11 @@ const Calendar = React.forwardRef(function Calendar({ showMonthArrow = calendarD
 		navigation: true,
 		...headerConfig
 	};
+	const effectiveIsFluidWidthMode = widthMode === "fluid" || _calendarIsFluidWidthMode;
+	const canAutoStackFluidMonths = effectiveIsFluidWidthMode && !scroll.enabled && months > 1 && direction === "horizontal" && (layout === "auto" || _calendarCanAutoStackFluidMonths);
 	const resolvedSelectedDisplay = resolveSelectedDisplay(selectedDisplay, dateDisplayFormat);
 	const calendarLayoutProps = resolveCalendarLayoutProps({
-		resolvedLayout: useResponsiveLayout(_resolvedLayout ?? layout),
+		resolvedLayout: useResponsiveLayout(_resolvedLayout ?? layout, mobileBreakpoint),
 		months,
 		direction,
 		scroll
@@ -612,8 +647,11 @@ const Calendar = React.forwardRef(function Calendar({ showMonthArrow = calendarD
 		headerConfig: resolvedHeaderConfig,
 		todayAffordance,
 		selectedDisplay: resolvedSelectedDisplay,
+		mobileBreakpoint,
 		uiSlots,
 		_calendarIsResponsiveLayout: calendarLayoutProps.isResponsiveLayout,
+		_calendarIsFluidWidthMode: effectiveIsFluidWidthMode,
+		_calendarCanAutoStackFluidMonths: canAutoStackFluidMonths,
 		...rest
 	};
 	const dateOptions = useMemo(() => getDateOptions({

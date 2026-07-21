@@ -23,7 +23,7 @@ const resolveSelectedDisplay = (selectedDisplay, dateDisplayFormat) => ({
 	placement: selectedDisplay?.placement || "top",
 	separator: selectedDisplay?.separator ?? ""
 });
-const DateRange = forwardRef(function DateRange({ classNames = dateRangeDefaultProps.classNames, ranges = dateRangeDefaultProps.ranges, moveRangeOnFirstSelection = dateRangeDefaultProps.moveRangeOnFirstSelection, retainEndDateOnFirstSelection = dateRangeDefaultProps.retainEndDateOnFirstSelection, rangeColors = dateRangeDefaultProps.rangeColors, disabledDates = dateRangeDefaultProps.disabledDates, ...rest }, ref) {
+const DateRange = forwardRef(function DateRange({ classNames = dateRangeDefaultProps.classNames, ranges = dateRangeDefaultProps.ranges, moveRangeOnFirstSelection = dateRangeDefaultProps.moveRangeOnFirstSelection, retainEndDateOnFirstSelection = dateRangeDefaultProps.retainEndDateOnFirstSelection, rangeColors = dateRangeDefaultProps.rangeColors, disabledDates = dateRangeDefaultProps.disabledDates, _calendarIsFluidWidthMode, _calendarCanAutoStackFluidMonths, ...rest }, ref) {
 	const safeDisabledDates = Array.isArray(disabledDates) ? disabledDates : EMPTY_DATES;
 	const props = useMemo(() => {
 		const resolvedSelectedDisplay = resolveSelectedDisplay(rest.selectedDisplay, rest.dateDisplayFormat);
@@ -161,6 +161,8 @@ const DateRange = forwardRef(function DateRange({ classNames = dateRangeDefaultP
 			updatePreview(value ? calcNewSelection(value) : null);
 		},
 		...props,
+		_calendarIsFluidWidthMode,
+		_calendarCanAutoStackFluidMonths,
 		selectablePassive: effectiveSelectablePassive,
 		displayMode: "dateRange",
 		className: classnames(styles.dateRangeWrapper, props.className),

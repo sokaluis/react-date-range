@@ -45,17 +45,17 @@ docs: add release flow documentation
 | Alpha | `v{version}-alpha.{n}` | `v0.1.0-alpha.1` |
 | Beta | `v{version}-beta.{n}` | `v0.1.0-beta.0` |
 | RC | `v{version}-rc.{n}` | `v1.0.0-rc.0` |
-| Stable | `v{version}` | `v1.3.0` |
+| Stable | `v{version}` | `v1.4.0` |
 
 **Current npm stable:** `v1.3.0` is published on npm `latest`; `v1.1.1` tag
 exists at commit `843b09b` (historical, never promoted to npm `latest`).
 
-**Current release:** `v1.3.0` is the Configurable UI Foundation release, published
-on npm `latest`, and documented with a GitHub Release.
+**Prepared release:** `v1.4.0` is a local release checkpoint for responsive fluid
+layouts and input-popover placement. It is not tagged or published yet.
 
-**Current stable tag:** `v1.3.0`
-- `package.json` version: `1.3.0`
-- npm dist-tag: `latest`
+**Release metadata target:** `v1.4.0`
+- `package.json` version: `1.4.0`
+- npm `latest`: `1.3.0` until the maintainer publishes `1.4.0`
 
 The `package.json` `version` field **must match** the tag version exactly.
 
@@ -133,6 +133,10 @@ git push origin v0.1.0-alpha.1
 - `package.json` version: `1.3.0`
 - npm dist-tag: `latest`
 
+**v1.4.0 prepared locally:** `v1.4.0`
+- `package.json` version: `1.4.0`
+- npm dist-tag: not yet published; `latest` remains `1.3.0`
+
 ### Step 3 — GitHub Release
 
 Create a release on GitHub:
@@ -196,10 +200,10 @@ npm dist-tag add @cyberlz/react-date-range@1.3.0 latest
 
 | Source | Example | Must match |
 |--------|---------|------------|
-| `package.json` → `version` | `1.3.0` | Git tag |
-| Git tag | `v1.3.0` | `package.json` version (minus `v` prefix) |
-| GitHub Release tag | `v1.3.0` | Git tag |
-| npm version (registry) | `1.3.0` | `package.json` version after publish |
+| `package.json` → `version` | `1.4.0` | Git tag |
+| Git tag | `v1.4.0` | `package.json` version (minus `v` prefix) |
+| GitHub Release tag | `v1.4.0` | Git tag |
+| npm version (registry) | `1.4.0` | `package.json` version after publish |
 
 **Order matters:** update `package.json` version → commit → tag → push → publish.
 

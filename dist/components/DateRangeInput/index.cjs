@@ -1,5 +1,6 @@
 const require_runtime = require("../../_virtual/_rolldown/runtime.cjs");
 const require_styles = require("../../styles.cjs");
+const require_hooks_useResponsiveLayout = require("../../hooks/useResponsiveLayout.cjs");
 const require_components_DateRange_index = require("../DateRange/index.cjs");
 const require_hooks_usePopover = require("../../hooks/usePopover.cjs");
 let date_fns = require("date-fns");
@@ -13,6 +14,7 @@ const defaultFormat = "yyyy-MM-dd";
 const defaultRangeKey = "selection";
 const defaultTriggerLabel = "Select date range";
 const defaultPopoverLabel = "Select date range";
+const anchorPopoverMaxWidth = "min(var(--rdr-date-range-input-popover-anchor-max-width, var(--rdr-input-popover-anchor-max-width, 52rem)), calc(100vw - 2rem))";
 const canUseDocument = () => typeof document !== "undefined";
 const canUseWindow = () => typeof window !== "undefined";
 const isUsableDate = (date) => date instanceof Date && (0, date_fns.isValid)(date);
@@ -25,7 +27,8 @@ const formatRange = (range, dateFormat, formatter, dateOptions) => {
 	return `${(0, date_fns.format)(range.startDate, dateFormat, dateOptions)} – ${(0, date_fns.format)(range.endDate, dateFormat, dateOptions)}`;
 };
 function DateRangeInput(props, ref) {
-	const { ranges, onChange, open: controlledOpen, defaultOpen, onOpenChange, closeOnEndSelection = true, triggerPlaceholder, formatter, format = defaultFormat, rangeKey = defaultRangeKey, calendarProps = {}, popoverLabel = defaultPopoverLabel, ariaLabels = {}, disabled = false, classNames = {}, className, dir } = props;
+	const { ranges, onChange, open: controlledOpen, defaultOpen, onOpenChange, closeOnEndSelection = true, triggerPlaceholder, formatter, format = defaultFormat, rangeKey = defaultRangeKey, calendarProps = {}, popoverPlacement = "anchor", mobileBreakpoint: mobileBreakpointProp, popoverLabel = defaultPopoverLabel, ariaLabels = {}, disabled = false, classNames = {}, className, dir } = props;
+	const mobileBreakpoint = mobileBreakpointProp ?? calendarProps.mobileBreakpoint ?? 768;
 	const popoverId = (0, react.useId)();
 	const focusedRangeRef = (0, react.useRef)([0, 0]);
 	const [mounted, setMounted] = (0, react.useState)(false);
@@ -49,6 +52,8 @@ function DateRangeInput(props, ref) {
 		defaultOpen,
 		onOpenChange
 	});
+	const isResponsiveModal = require_hooks_useResponsiveLayout.useResponsiveLayout(popoverPlacement === "responsive" ? "auto" : "reference", mobileBreakpoint) === "mobile";
+	const isModal = popoverPlacement === "modal" || isResponsiveModal;
 	(0, react.useEffect)(() => {
 		setMounted(true);
 	}, []);
@@ -60,14 +65,23 @@ function DateRangeInput(props, ref) {
 			setPopoverStyle(void 0);
 			return;
 		}
+		if (isModal) {
+			setPopoverStyle(void 0);
+			return;
+		}
 		const triggerRect = triggerRef.current?.getBoundingClientRect();
 		if (!triggerRect) return;
 		setPopoverStyle({
 			top: triggerRect.bottom + window.scrollY,
 			left: triggerRect.left + window.scrollX,
-			minWidth: triggerRect.width
+			minWidth: `min(${triggerRect.width}px, var(--rdr-date-range-input-popover-anchor-max-width, var(--rdr-input-popover-anchor-max-width, 52rem)), calc(100vw - 2rem))`,
+			maxWidth: anchorPopoverMaxWidth
 		});
-	}, [open, triggerRef]);
+	}, [
+		isModal,
+		open,
+		triggerRef
+	]);
 	(0, react.useImperativeHandle)(ref, () => ({
 		focus: () => triggerRef.current?.focus(),
 		getTriggerEl: () => triggerRef.current
@@ -98,7 +112,7 @@ function DateRangeInput(props, ref) {
 		role: "dialog",
 		"aria-modal": "true",
 		"aria-label": ariaLabels.popover || popoverLabel,
-		className: styles.dateRangeInputPopover,
+		className: (0, classnames.default)(styles.dateRangeInputPopover, isModal && styles.dateRangeInputPopoverModal),
 		style: popoverStyle,
 		dir
 	}, /* @__PURE__ */ react.default.createElement(require_components_DateRange_index, {
@@ -107,7 +121,8 @@ function DateRangeInput(props, ref) {
 		onChange: onRangeChange,
 		onRangeFocusChange,
 		classNames: styles,
-		dir: dir || calendarProps.dir
+		dir: dir || calendarProps.dir,
+		_calendarIsFluidWidthMode: isModal
 	})) : null;
 	return /* @__PURE__ */ react.default.createElement("span", {
 		className: (0, classnames.default)(styles.dateRangeInputWrapper, className),

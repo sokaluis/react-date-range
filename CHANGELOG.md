@@ -14,6 +14,39 @@ For upstream release history (up to `2.0.1`), see [`CHANGELOG.upstream.md`](CHAN
 
 ---
 
+## [1.4.0] — 2026-07-21
+
+Minor release. Adds responsive fluid calendar sizing and configurable input-popover
+placement without breaking the existing reference layout.
+
+### Added
+
+- Added `Calendar.widthMode?: 'content' | 'fluid'` for opt-in fluid calendar sizing.
+- Added `DateRangePicker.widthMode` for fluid wrapper sizing: 30/70 defined-ranges
+  and calendar rows, 100% column layout, and automatic stacking when the calendar
+  reaches its minimum-width guard.
+- Added `popoverPlacement: 'anchor' | 'modal' | 'responsive'` to `DatePickerInput`
+  and `DateRangeInput`.
+- Added configurable `mobileBreakpoint` for responsive automatic layouts and input
+  popovers.
+- Added CSS custom properties for popover width guards: `26rem` for `DatePickerInput`,
+  `52rem` for `DateRangeInput`, plus generic input-popover fallback variables.
+- Added real-world demo examples at `#/real-world`, including form and input-picker
+  flows.
+
+### Changed
+
+- Responsive multi-month calendars retain usable month widths instead of compressing
+  below their layout guard.
+- Demo fluid and input examples now demonstrate responsive placement and practical
+  form integration.
+
+### Fixed
+
+- Fixed fluid calendar layouts to stack before narrow containers compress month grids.
+
+---
+
 ## [1.3.0] — 2026-07-14
 
 Minor release. Adds the Configurable UI Foundation as an additive customization

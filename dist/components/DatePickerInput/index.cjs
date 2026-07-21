@@ -1,5 +1,6 @@
 const require_runtime = require("../../_virtual/_rolldown/runtime.cjs");
 const require_styles = require("../../styles.cjs");
+const require_hooks_useResponsiveLayout = require("../../hooks/useResponsiveLayout.cjs");
 const require_components_Calendar_index = require("../Calendar/index.cjs");
 const require_hooks_usePopover = require("../../hooks/usePopover.cjs");
 let date_fns = require("date-fns");
@@ -12,11 +13,13 @@ let react_dom = require("react-dom");
 const defaultDateDisplayFormat = "MMM d, yyyy";
 const defaultAriaLabel = "Select date";
 const defaultPopoverLabel = "Choose date";
+const anchorPopoverMaxWidth = "min(var(--rdr-date-picker-input-popover-anchor-max-width, var(--rdr-input-popover-anchor-max-width, 26rem)), calc(100vw - 2rem))";
 const canUseDocument = () => typeof document !== "undefined";
 const canUseWindow = () => typeof window !== "undefined";
 const formatDate = (date, dateDisplayFormat, dateOptions) => date && (0, date_fns.isValid)(date) ? (0, date_fns.format)(date, dateDisplayFormat, dateOptions) : "";
 function DatePickerInput(props, ref) {
-	const { date, onChange, open: controlledOpen, defaultOpen, onOpenChange, dateDisplayFormat = defaultDateDisplayFormat, ariaLabel = defaultAriaLabel, popoverLabel = defaultPopoverLabel, placeholder, disabled = false, calendarProps = {}, classNames = {}, className, dir } = props;
+	const { date, onChange, open: controlledOpen, defaultOpen, onOpenChange, dateDisplayFormat = defaultDateDisplayFormat, ariaLabel = defaultAriaLabel, popoverLabel = defaultPopoverLabel, placeholder, disabled = false, calendarProps = {}, popoverPlacement = "anchor", mobileBreakpoint: mobileBreakpointProp, classNames = {}, className, dir } = props;
+	const mobileBreakpoint = mobileBreakpointProp ?? calendarProps.mobileBreakpoint ?? 768;
 	const [mounted, setMounted] = (0, react.useState)(false);
 	const [popoverStyle, setPopoverStyle] = (0, react.useState)(void 0);
 	const styles = (0, react.useMemo)(() => ({
@@ -30,6 +33,8 @@ function DatePickerInput(props, ref) {
 		defaultOpen,
 		onOpenChange
 	});
+	const isResponsiveModal = require_hooks_useResponsiveLayout.useResponsiveLayout(popoverPlacement === "responsive" ? "auto" : "reference", mobileBreakpoint) === "mobile";
+	const isModal = popoverPlacement === "modal" || isResponsiveModal;
 	(0, react.useEffect)(() => {
 		setMounted(true);
 	}, []);
@@ -38,14 +43,23 @@ function DatePickerInput(props, ref) {
 			setPopoverStyle(void 0);
 			return;
 		}
+		if (isModal) {
+			setPopoverStyle(void 0);
+			return;
+		}
 		const triggerRect = triggerRef.current?.getBoundingClientRect();
 		if (!triggerRect) return;
 		setPopoverStyle({
 			top: triggerRect.bottom + window.scrollY,
 			left: triggerRect.left + window.scrollX,
-			minWidth: triggerRect.width
+			minWidth: `min(${triggerRect.width}px, var(--rdr-date-picker-input-popover-anchor-max-width, var(--rdr-input-popover-anchor-max-width, 26rem)), calc(100vw - 2rem))`,
+			maxWidth: anchorPopoverMaxWidth
 		});
-	}, [open, triggerRef]);
+	}, [
+		isModal,
+		open,
+		triggerRef
+	]);
 	(0, react.useImperativeHandle)(ref, () => ({
 		focus: () => triggerRef.current?.focus(),
 		getTriggerEl: () => triggerRef.current
@@ -67,7 +81,7 @@ function DatePickerInput(props, ref) {
 		role: "dialog",
 		"aria-modal": "true",
 		"aria-label": popoverLabel,
-		className: styles.datePickerInputPopover,
+		className: (0, classnames.default)(styles.datePickerInputPopover, isModal && styles.datePickerInputPopoverModal),
 		style: popoverStyle,
 		dir
 	}, /* @__PURE__ */ react.default.createElement(require_components_Calendar_index, {
@@ -76,7 +90,8 @@ function DatePickerInput(props, ref) {
 		dateDisplayFormat,
 		onChange: onCalendarChange,
 		classNames: styles,
-		dir: dir || calendarProps.dir
+		dir: dir || calendarProps.dir,
+		_calendarIsFluidWidthMode: isModal
 	})) : null;
 	return /* @__PURE__ */ react.default.createElement("span", {
 		className: (0, classnames.default)(styles.datePickerInputWrapper, className),

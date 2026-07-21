@@ -1,10 +1,10 @@
 # @cyberlz/react-date-range
 
 > Maintained fork/rescue of [`react-date-range`](https://github.com/hypeserver/react-date-range).
-> **Current channel**: `1.3.0` is tagged in the repo and published on npm `latest`.
-> It adds configurable UI slots and opt-in design tokens on top of the `1.2.x`
-> input-trigger picker and named range-slot baseline. The `rc` tag remains
-> on `1.0.0-rc.0` for historical validation. See [Dist-tag policy](#dist-tag-policy) below.
+> **Release target**: `1.4.0` is prepared locally for the next minor release.
+> npm `latest` remains `1.3.0` until the maintainer publishes it. The target adds
+> fluid responsive calendar sizing and configurable input-popover placement. The
+> `rc` tag remains on `1.0.0-rc.0` for historical validation. See [Dist-tag policy](#dist-tag-policy) below.
 
 ## Quick links
 
@@ -51,6 +51,14 @@ import '@cyberlz/react-date-range/theme/default.css';
 ```
 
 > **Migrating from `react-date-range` upstream?** See [`docs/migration-from-upstream.md`](docs/migration-from-upstream.md).
+
+## Responsive and fluid layouts
+
+Use `widthMode="fluid"` with responsive `layout="auto"` when a calendar should fill
+its container while preserving usable month widths. `DatePickerInput` and
+`DateRangeInput` support `popoverPlacement="anchor" | "modal" | "responsive"` and a
+configurable `mobileBreakpoint`; see the component reference and the `#/real-world`
+demo page for complete examples.
 
 ## Accessibility baseline
 
@@ -196,11 +204,12 @@ A **modern, maintained, production-ready** date range picker for React that:
 | **Phase 1** — Compatible rescue | Complete |
 | **Phase 3** — Core refactor | Complete (Slices 1–21 done) |
 
-**`@cyberlz/react-date-range@1.3.0`** is tagged and published on npm `latest`.
-`1.0`/`1.1`/`1.2` are stable, additive, and non-breaking. `1.3.0` adds configurable UI slots and opt-in
-CSS design tokens on top of the 1.2 input-trigger picker baseline. Future work is
-tracked separately. See [`docs/fork-roadmap.md`](docs/fork-roadmap.md) for the full plan
-and [`docs/refactor-roadmap.md`](docs/refactor-roadmap.md) for incremental refactor slices.
+**`@cyberlz/react-date-range@1.4.0`** is prepared locally for release; npm `latest`
+still serves `1.3.0` until the maintainer publishes `1.4.0`. The new minor adds
+fluid responsive calendars and input-popover placement controls on top of the 1.3
+customization baseline. Future work is tracked separately. See
+[`docs/fork-roadmap.md`](docs/fork-roadmap.md) for the full plan and
+[`docs/refactor-roadmap.md`](docs/refactor-roadmap.md) for incremental refactor slices.
 
 ## Dist-tag policy
 
