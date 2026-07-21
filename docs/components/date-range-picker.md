@@ -168,6 +168,9 @@ When the picker uses `layout="auto"`, horizontal fluid calendars with multiple m
 Use `layout="desktop"` only when you explicitly want to force the horizontal row even if the container is too narrow.
 
 - Works with any `layout` mode.
+- `widthMode="fluid"` fills the picker wrapper, not the viewport. Make sure the
+  wrapper/popover has an explicit usable width; a content-sized or clipped parent
+  can still make multi-month pickers look compressed.
 - Does not affect scroll/virtualized calendar geometry.
 
 ---

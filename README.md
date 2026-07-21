@@ -59,6 +59,12 @@ its container while preserving usable month widths. `DatePickerInput` and
 configurable `mobileBreakpoint`; see the component reference and the `#/real-world`
 demo page for complete examples.
 
+> **Container width matters.** `widthMode="fluid"` uses the width of the calendar's
+> own wrapper. If that wrapper is still content-sized, constrained by a narrow
+> parent, or positioned inside a clipped container, the calendar can still look
+> compressed or stack months. Give the popover/container an explicit usable width
+> before treating it as a library bug.
+
 ## Accessibility baseline
 
 The fork now covers the core ARIA labels and states tracked by upstream #415/#416:

@@ -132,6 +132,9 @@ Responsive layout is opt-in. Existing calendars keep the current stable referenc
 | `fluid` | Wrapper and month grid fill available width; month cells distribute evenly. |
 
 - Works with any `layout` mode.
+- `widthMode="fluid"` fills the calendar wrapper, not the viewport. Make sure the
+  wrapper/popover has an explicit usable width; a content-sized or clipped parent
+  can still make multi-month calendars look compressed.
 - With `layout="auto"`, non-scroll horizontal calendars with multiple months protect readability: if the container is narrower than `months * --rdr-calendar-month-min-width`, the months stack vertically instead of compressing.
 - `--rdr-calendar-month-min-width` defaults to `400px` and can be overridden on the calendar root or an ancestor.
 - `layout="desktop"` is the explicit escape hatch: it keeps horizontal months even when the container is narrow.

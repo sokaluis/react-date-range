@@ -136,6 +136,24 @@ npm install react@^19 react-dom@^19 date-fns@^3
 
 ---
 
+## Fluid calendar still looks compressed
+
+`widthMode="fluid"` fills the calendar or picker wrapper. It does **not** escape a
+content-sized popover, a narrow parent, or a clipped/anchored container.
+
+If a multi-month calendar still looks compressed or stacks unexpectedly:
+
+1. Give the popover/container an explicit usable width, for example
+   `min(760px, calc(100vw - 32px))` on desktop.
+2. Avoid legacy overrides against internal `.rdr*` classes when the public props
+   (`layout`, `mobileBreakpoint`, `widthMode`) can express the behavior.
+3. Use `layout="desktop"` only when you intentionally want to force horizontal
+   months even below the readable minimum width.
+
+This is usually an integration constraint, not a core calendar bug.
+
+---
+
 ## `Range.label` is not rendering as HTML
 
 `Range.label` is intentionally rendered as plain text only. No HTML is injected, making it XSS-safe by design. `Range.label` does not accept HTML and will always render as text.
