@@ -49,9 +49,12 @@ describe('DateRangeInput', () => {
     expect(declarations).toContain('dateRangeInputWrapper?: string | undefined;');
     expect(declarations).toContain('dateRangeInputTrigger?: string | undefined;');
     expect(declarations).toContain('dateRangeInputPopover?: string | undefined;');
+    expect(declarations).toContain('dateRangeInputPopoverModal?: string | undefined;');
+    expect(declarations).toContain("popoverPlacement?: PopoverPlacement | undefined;");
     expect(defaultStyles.dateRangeInputWrapper).toBe('rdrDateRangeInputWrapper');
     expect(defaultStyles.dateRangeInputTrigger).toBe('rdrDateRangeInputTrigger');
     expect(defaultStyles.dateRangeInputPopover).toBe('rdrDateRangeInputPopover');
+    expect(defaultStyles.dateRangeInputPopoverModal).toBe('rdrDateRangeInputPopoverModal');
   });
 
   test('renders a formatted complete range and placeholder on a read-only trigger', () => {
@@ -215,6 +218,59 @@ describe('DateRangeInput', () => {
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
   });
 
+  test('keeps the default popover anchored on mobile viewports', async () => {
+    const matchMedia = jest.fn().mockImplementation(query => ({
+      matches: query === '(max-width: 768px)',
+      media: query,
+      onchange: null,
+      addEventListener: jest.fn(),
+      removeEventListener: jest.fn(),
+      addListener: jest.fn(),
+      removeListener: jest.fn(),
+    }));
+    const originalMatchMedia = window.matchMedia;
+    window.matchMedia = matchMedia;
+
+    try {
+      renderDateRangeInput({ popoverLabel: 'Choose trip range' });
+      await userEvent.click(getTrigger());
+
+      const dialog = screen.getByRole('dialog', { name: 'Choose trip range' });
+      expect(dialog).not.toHaveClass('rdrDateRangeInputPopoverModal');
+      expect(window.matchMedia).not.toHaveBeenCalled();
+    } finally {
+      window.matchMedia = originalMatchMedia;
+    }
+  });
+
+  test('renders a centered fluid modal when popoverPlacement is modal', async () => {
+    renderDateRangeInput({ popoverPlacement: 'modal' });
+    await userEvent.click(getTrigger());
+
+    const dialog = screen.getByRole('dialog');
+    expect(dialog).toHaveClass('rdrDateRangeInputPopoverModal');
+    expect(dialog.querySelector('.rdrCalendarWrapper')).toHaveClass('rdrCalendarWrapperFluid');
+  });
+
+  test('uses calendarProps.mobileBreakpoint for responsive placement when input prop is omitted', async () => {
+    const originalMatchMedia = window.matchMedia;
+    window.matchMedia = jest.fn(query => ({
+      matches: query === '(max-width: 640px)',
+      media: query,
+      addEventListener: jest.fn(),
+      removeEventListener: jest.fn(),
+    }));
+
+    try {
+      renderDateRangeInput({ popoverPlacement: 'responsive', calendarProps: { shownDate, mobileBreakpoint: 640 } });
+      await userEvent.click(getTrigger());
+
+      expect(window.matchMedia).toHaveBeenCalledWith('(max-width: 640px)');
+      expect(screen.getByRole('dialog')).toHaveClass('rdrDateRangeInputPopoverModal');
+    } finally {
+      window.matchMedia = originalMatchMedia;
+    }
+  });
   test('warns in development and ignores extra ranges for the single-range MVP', async () => {
     const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
 

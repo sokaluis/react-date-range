@@ -4,8 +4,25 @@
 }
 
 .rdrDateRangePickerWrapperFluid{
+  width: 100%;
   max-width: 100%;
   min-width: 0;
+}
+
+.rdrDateRangePickerWrapperFluid:not(.rdrDateRangePickerWrapperResponsive) > .rdrDefinedRangesWrapper{
+  flex: 0 0 30%;
+  width: 30%;
+  max-width: 30%;
+  min-width: 0;
+}
+
+.rdrDateRangePickerWrapperFluid:not(.rdrDateRangePickerWrapperResponsive) > .rdrCalendarWrapperFluid{
+  flex: 1 1 70%;
+  max-width: 70%;
+}
+
+.rdrDateRangePickerWrapperFluid.rdrDateRangePickerWrapperResponsive{
+  width: 100%;
 }
 
 .rdrDateRangePickerWrapperResponsive{

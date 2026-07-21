@@ -5,6 +5,7 @@ import { format, isValid } from 'date-fns';
 import Calendar from '../Calendar';
 import defaultStyles from '../../styles';
 import usePopover from '../../hooks/usePopover';
+import { MOBILE_MAX_PX, useResponsiveLayout } from '../../hooks/useResponsiveLayout';
 
 const defaultDateDisplayFormat = 'MMM d, yyyy';
 const defaultAriaLabel = 'Select date';
@@ -29,10 +30,13 @@ function DatePickerInput(props, ref) {
     placeholder,
     disabled = false,
     calendarProps = {},
+    popoverPlacement = 'anchor',
+    mobileBreakpoint: mobileBreakpointProp,
     classNames = {},
     className,
     dir,
   } = props;
+  const mobileBreakpoint = mobileBreakpointProp ?? calendarProps.mobileBreakpoint ?? MOBILE_MAX_PX;
   const [mounted, setMounted] = useState(false);
   const [popoverStyle, setPopoverStyle] = useState(undefined);
   const styles = useMemo(
@@ -45,6 +49,9 @@ function DatePickerInput(props, ref) {
     defaultOpen,
     onOpenChange,
   });
+  const isResponsiveModal =
+    useResponsiveLayout(popoverPlacement === 'responsive' ? 'auto' : 'reference', mobileBreakpoint) === 'mobile';
+  const isModal = popoverPlacement === 'modal' || isResponsiveModal;
 
   useEffect(() => {
     setMounted(true);
@@ -52,6 +59,11 @@ function DatePickerInput(props, ref) {
 
   useEffect(() => {
     if (!open || !canUseWindow()) {
+      setPopoverStyle(undefined);
+      return;
+    }
+
+    if (isModal) {
       setPopoverStyle(undefined);
       return;
     }
@@ -66,7 +78,7 @@ function DatePickerInput(props, ref) {
       left: triggerRect.left + window.scrollX,
       minWidth: triggerRect.width,
     });
-  }, [open, triggerRef]);
+  }, [isModal, open, triggerRef]);
 
   useImperativeHandle(
     ref,
@@ -103,7 +115,7 @@ function DatePickerInput(props, ref) {
       role="dialog"
       aria-modal="true"
       aria-label={popoverLabel}
-      className={styles.datePickerInputPopover}
+      className={classnames(styles.datePickerInputPopover, isModal && styles.datePickerInputPopoverModal)}
       style={popoverStyle}
       dir={dir}
     >
@@ -114,6 +126,7 @@ function DatePickerInput(props, ref) {
         onChange={onCalendarChange}
         classNames={styles}
         dir={dir || calendarProps.dir}
+        _calendarIsFluidWidthMode={isModal}
       />
     </div>
   ) : null;

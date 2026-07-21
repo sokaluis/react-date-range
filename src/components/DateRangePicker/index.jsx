@@ -30,7 +30,7 @@ const resolvePickerLayout = ({ resolvedLayout, calendarCount, scrollOrientation,
 
 const DateRangePicker = forwardRef(function DateRangePicker(props, ref) {
   const { calendarCount, scrollOrientation, widthMode, ...inheritedProps } = props;
-  const resolvedLayout = useResponsiveLayout(props.layout);
+  const resolvedLayout = useResponsiveLayout(props.layout, props.mobileBreakpoint);
   const dateRangeRef = useRef(null);
   const [focusedRangeState, setFocusedRangeState] = useState(() => [findNextRangeIndex(props.ranges), 0]);
   const focusedRange = props.focusedRange || focusedRangeState;
@@ -102,6 +102,7 @@ const DateRangePicker = forwardRef(function DateRangePicker(props, ref) {
         {...inheritedProps}
         {...calendarProps}
         _resolvedLayout={calendarLayout}
+        _calendarIsFluidWidthMode={widthMode === 'fluid'}
         uiSlots={dateRangeUiSlots}
         onRangeFocusChange={handleRangeFocusChange}
         focusedRange={focusedRange}

@@ -28,3 +28,16 @@
   background: #fff;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
 }
+
+.rdrDatePickerInputPopoverModal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 1000;
+  width: calc(100vw - 2rem);
+  max-width: calc(100vw - 2rem);
+  max-height: calc(100vh - 2rem);
+  overflow: auto;
+  margin-top: 0;
+  transform: translate(-50%, -50%);
+}

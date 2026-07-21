@@ -266,6 +266,25 @@ describe('Calendar', () => {
       expect(container.querySelectorAll('.rdrMonth')).toHaveLength(2);
     });
 
+    test('uses mobileBreakpoint when resolving auto layout', () => {
+      const originalMatchMedia = window.matchMedia;
+      window.matchMedia = jest.fn(query => ({
+        matches: query === '(max-width: 640px)',
+        media: query,
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+      }));
+
+      try {
+        const { container } = renderCalendar({ layout: 'auto', mobileBreakpoint: 640, months: 2 });
+
+        expect(window.matchMedia).toHaveBeenCalledWith('(max-width: 640px)');
+        expect(container.firstChild).toHaveClass('rdrCalendarWrapperResponsive');
+      } finally {
+        window.matchMedia = originalMatchMedia;
+      }
+    });
+
     test('keeps virtualized scroll geometry outside the responsive layout', () => {
       const { container } = renderCalendar({
         layout: 'mobile',
@@ -276,6 +295,78 @@ describe('Calendar', () => {
 
       expect(container.firstChild).not.toHaveClass('rdrCalendarWrapperResponsive');
       expect(container.querySelector('.rdrMonthsHorizontal')).toBeInTheDocument();
+    });
+  });
+
+  describe('fluid width-mode calendar contract', () => {
+    test('does not add fluid class when _calendarIsFluidWidthMode is falsy', () => {
+      const { container } = renderCalendar();
+
+      expect(container.firstChild).toHaveClass('rdrCalendarWrapper');
+      expect(container.firstChild).not.toHaveClass('rdrCalendarWrapperFluid');
+    });
+
+    test('adds fluid class when _calendarIsFluidWidthMode is true', () => {
+      const { container } = renderCalendar({ _calendarIsFluidWidthMode: true });
+
+      expect(container.firstChild).toHaveClass('rdrCalendarWrapperFluid');
+    });
+
+    test('public widthMode="fluid" adds fluid class without private prop', () => {
+      const { container } = renderCalendar({ widthMode: 'fluid' });
+
+      expect(container.firstChild).toHaveClass('rdrCalendarWrapperFluid');
+    });
+
+    test('public widthMode="content" does not add fluid class', () => {
+      const { container } = renderCalendar({ widthMode: 'content' });
+
+      expect(container.firstChild).not.toHaveClass('rdrCalendarWrapperFluid');
+    });
+
+    test('omitted widthMode does not add fluid class', () => {
+      const { container } = renderCalendar();
+
+      expect(container.firstChild).not.toHaveClass('rdrCalendarWrapperFluid');
+    });
+
+    test('private _calendarIsFluidWidthMode still adds fluid class independently', () => {
+      const { container } = renderCalendar({ _calendarIsFluidWidthMode: true });
+
+      expect(container.firstChild).toHaveClass('rdrCalendarWrapperFluid');
+    });
+
+    test('public widthMode and private prop are OR-combined (either triggers fluid)', () => {
+      const { container } = renderCalendar({ widthMode: 'fluid', _calendarIsFluidWidthMode: false });
+
+      expect(container.firstChild).toHaveClass('rdrCalendarWrapperFluid');
+    });
+
+    test('CalendarProps exposes widthMode type declaration', () => {
+      const declarations = readTypeDeclarations();
+
+      expect(declarations).toMatch(/widthMode\?:\s*['"]content['"]\s*\|\s*['"]fluid['"]\s*\|\s*undefined/);
+    });
+
+    test('fluid styles target the calendar wrapper and months grid without responsive layout coupling', () => {
+      const scss = readCalendarComponentStyles();
+
+      expect(scss).toMatch(/\.rdrCalendarWrapperFluid\s*\{[^}]*flex:\s*1 1 0/s);
+      expect(scss).toMatch(/\.rdrCalendarWrapperFluid\s+\.rdrMonths\s*\{[^}]*width:\s*100%/s);
+      expect(scss).toMatch(/\.rdrCalendarWrapperFluid\s+\.rdrMonth\s*\{[^}]*flex:\s*1 1 0/s);
+      expect(scss).toMatch(/\.rdrCalendarWrapperFluid\s+\.rdrMonth\s*\{[^}]*min-width:\s*0/s);
+    });
+
+    test('fluid class does not affect layout orientation (horizontal months stay horizontal)', () => {
+      const { container } = renderCalendar({
+        _calendarIsFluidWidthMode: true,
+        direction: 'horizontal',
+        months: 2,
+      });
+
+      expect(container.firstChild).toHaveClass('rdrCalendarWrapperFluid');
+      expect(container.querySelector('.rdrMonthsHorizontal')).toBeInTheDocument();
+      expect(container.querySelector('.rdrMonthsVertical')).not.toBeInTheDocument();
     });
   });
 

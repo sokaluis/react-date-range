@@ -5,12 +5,12 @@ import { format as formatDate, isValid } from 'date-fns';
 import DateRange from '../DateRange';
 import defaultStyles from '../../styles';
 import usePopover from '../../hooks/usePopover';
+import { MOBILE_MAX_PX, useResponsiveLayout } from '../../hooks/useResponsiveLayout';
 
 const defaultFormat = 'yyyy-MM-dd';
 const defaultRangeKey = 'selection';
 const defaultTriggerLabel = 'Select date range';
 const defaultPopoverLabel = 'Select date range';
-
 const canUseDocument = () => typeof document !== 'undefined';
 const canUseWindow = () => typeof window !== 'undefined';
 
@@ -41,6 +41,8 @@ function DateRangeInput(props, ref) {
     format = defaultFormat,
     rangeKey = defaultRangeKey,
     calendarProps = {},
+    popoverPlacement = 'anchor',
+    mobileBreakpoint: mobileBreakpointProp,
     popoverLabel = defaultPopoverLabel,
     ariaLabels = {},
     disabled = false,
@@ -48,6 +50,7 @@ function DateRangeInput(props, ref) {
     className,
     dir,
   } = props;
+  const mobileBreakpoint = mobileBreakpointProp ?? calendarProps.mobileBreakpoint ?? MOBILE_MAX_PX;
   const popoverId = useId();
   const focusedRangeRef = useRef([0, 0]);
   const [mounted, setMounted] = useState(false);
@@ -67,6 +70,9 @@ function DateRangeInput(props, ref) {
     defaultOpen,
     onOpenChange,
   });
+  const isResponsiveModal =
+    useResponsiveLayout(popoverPlacement === 'responsive' ? 'auto' : 'reference', mobileBreakpoint) === 'mobile';
+  const isModal = popoverPlacement === 'modal' || isResponsiveModal;
 
   useEffect(() => {
     setMounted(true);
@@ -84,6 +90,11 @@ function DateRangeInput(props, ref) {
       return;
     }
 
+    if (isModal) {
+      setPopoverStyle(undefined);
+      return;
+    }
+
     const triggerRect = triggerRef.current?.getBoundingClientRect();
     if (!triggerRect) {
       return;
@@ -94,7 +105,7 @@ function DateRangeInput(props, ref) {
       left: triggerRect.left + window.scrollX,
       minWidth: triggerRect.width,
     });
-  }, [open, triggerRef]);
+  }, [isModal, open, triggerRef]);
 
   useImperativeHandle(
     ref,
@@ -154,7 +165,7 @@ function DateRangeInput(props, ref) {
       role="dialog"
       aria-modal="true"
       aria-label={ariaLabels.popover || popoverLabel}
-      className={styles.dateRangeInputPopover}
+      className={classnames(styles.dateRangeInputPopover, isModal && styles.dateRangeInputPopoverModal)}
       style={popoverStyle}
       dir={dir}
     >
@@ -165,6 +176,7 @@ function DateRangeInput(props, ref) {
         onRangeFocusChange={onRangeFocusChange}
         classNames={styles}
         dir={dir || calendarProps.dir}
+        _calendarIsFluidWidthMode={isModal}
       />
     </div>
   ) : null;

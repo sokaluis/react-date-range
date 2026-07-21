@@ -672,6 +672,7 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
       className={classnames(
         styles.calendarWrapper,
         props._calendarIsResponsiveLayout && styles.calendarWrapperResponsive,
+        props._calendarIsFluidWidthMode && styles.calendarWrapperFluid,
         dir === 'rtl' && (props.classNames?.rtl ?? styles.rtl),
         getUiSlotClassName(props.uiSlots, 'root'),
         className
@@ -846,7 +847,10 @@ const ForwardedCalendar = React.forwardRef(function Calendar(
     todayAffordance = calendarDefaultProps.todayAffordance,
     selectedDisplay,
     layout,
+    mobileBreakpoint,
+    widthMode,
     _resolvedLayout,
+    _calendarIsFluidWidthMode,
     uiSlots,
     ...rest
   },
@@ -868,8 +872,9 @@ const ForwardedCalendar = React.forwardRef(function Calendar(
     navigation: true,
     ...headerConfig,
   };
+  const effectiveIsFluidWidthMode = widthMode === 'fluid' || _calendarIsFluidWidthMode;
   const resolvedSelectedDisplay = resolveSelectedDisplay(selectedDisplay, dateDisplayFormat);
-  const responsiveLayout = useResponsiveLayout(_resolvedLayout ?? layout);
+  const responsiveLayout = useResponsiveLayout(_resolvedLayout ?? layout, mobileBreakpoint);
   const calendarLayoutProps = resolveCalendarLayoutProps({
     resolvedLayout: responsiveLayout,
     months,
@@ -912,8 +917,10 @@ const ForwardedCalendar = React.forwardRef(function Calendar(
     headerConfig: resolvedHeaderConfig,
     todayAffordance,
     selectedDisplay: resolvedSelectedDisplay,
+    mobileBreakpoint,
     uiSlots,
     _calendarIsResponsiveLayout: calendarLayoutProps.isResponsiveLayout,
+    _calendarIsFluidWidthMode: effectiveIsFluidWidthMode,
     ...rest,
   };
   const dateOptions = useMemo(

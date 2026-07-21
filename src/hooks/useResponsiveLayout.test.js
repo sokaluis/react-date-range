@@ -3,14 +3,14 @@ import { act, renderHook } from '@testing-library/react';
 import { renderToString } from 'react-dom/server';
 import { MOBILE_MAX_PX, useResponsiveLayout } from './useResponsiveLayout';
 
-const createMatchMediaMock = initialMatches => {
+const createMatchMediaMock = (initialMatches, mobileBreakpoint = MOBILE_MAX_PX) => {
   let matches = initialMatches;
   const listeners = new Set();
   const mediaQueryList = {
     get matches() {
       return matches;
     },
-    media: `(max-width: ${MOBILE_MAX_PX}px)`,
+    media: `(max-width: ${mobileBreakpoint}px)`,
     addEventListener: jest.fn((event, listener) => {
       if (event === 'change') listeners.add(listener);
     }),
@@ -68,6 +68,14 @@ describe('useResponsiveLayout', () => {
     });
 
     expect(window.matchMedia).toHaveBeenCalledWith('(max-width: 768px)');
+    expect(result.current).toBe('mobile');
+  });
+
+  test('uses a consumer-provided mobile breakpoint', () => {
+    createMatchMediaMock(true, 640);
+    const { result } = renderHook(() => useResponsiveLayout('auto', 640));
+
+    expect(window.matchMedia).toHaveBeenCalledWith('(max-width: 640px)');
     expect(result.current).toBe('mobile');
   });
 

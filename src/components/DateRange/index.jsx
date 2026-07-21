@@ -32,6 +32,7 @@ const DateRange = forwardRef(function DateRange(
     retainEndDateOnFirstSelection = dateRangeDefaultProps.retainEndDateOnFirstSelection,
     rangeColors = dateRangeDefaultProps.rangeColors,
     disabledDates = dateRangeDefaultProps.disabledDates,
+    _calendarIsFluidWidthMode,
     ...rest
   },
   ref
@@ -225,6 +226,7 @@ const DateRange = forwardRef(function DateRange(
           updatePreview(value ? calcNewSelection(value) : null);
         }}
         {...props}
+        _calendarIsFluidWidthMode={_calendarIsFluidWidthMode}
         selectablePassive={effectiveSelectablePassive}
         displayMode="dateRange"
         className={classnames(styles.dateRangeWrapper, props.className)}

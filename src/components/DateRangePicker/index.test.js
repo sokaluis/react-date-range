@@ -1,9 +1,14 @@
 import React from 'react';
+import fs from 'fs';
+import path from 'path';
 import { act, render, screen } from '@testing-library/react';
 import { addDays } from 'date-fns';
 import DateRangePicker from '../DateRangePicker/index.jsx';
 import DateRange from '../DateRange/index.jsx';
 import DefinedRange from '../DefinedRange/index.jsx';
+
+const readDateRangePickerStyles = () =>
+  fs.readFileSync(path.resolve(__dirname, './index.scss'), 'utf8');
 
 let mockLatestDateRangeProps;
 let mockLatestDefinedRangeProps;
@@ -214,6 +219,12 @@ describe('DateRangePicker hooks parity', () => {
       expect(container.firstChild).not.toHaveClass('rdrDateRangePickerWrapperFluid');
     });
 
+    test('preserves intrinsic sizing when widthMode is "content"', () => {
+      const { container } = renderDateRangePicker({ widthMode: 'content' });
+
+      expect(container.firstChild).not.toHaveClass('rdrDateRangePickerWrapperFluid');
+    });
+
     test('adds fluid class when widthMode is "fluid"', () => {
       const { container } = renderDateRangePicker({ widthMode: 'fluid' });
 
@@ -226,14 +237,22 @@ describe('DateRangePicker hooks parity', () => {
       expect(container.firstChild).not.toHaveClass('rdrDateRangePickerWrapperFluid');
     });
 
-    test('coexists fluid and responsive classes when widthMode="fluid" and layout="auto" on mobile', () => {
+    test('widthMode="fluid" does not force column layout (no responsive class)', () => {
+      const { container } = renderDateRangePicker({ widthMode: 'fluid', layout: 'desktop' });
+
+      expect(container.firstChild).toHaveClass('rdrDateRangePickerWrapperFluid');
+      expect(container.firstChild).not.toHaveClass('rdrDateRangePickerWrapperResponsive');
+    });
+
+    test('widthMode="fluid" + layout="mobile" adds both fluid and responsive classes (column fills 100% container)', () => {
       const { container } = renderDateRangePicker({
         widthMode: 'fluid',
-        layout: 'auto',
+        layout: 'mobile',
         calendarCount: 2,
       });
 
       expect(container.firstChild).toHaveClass('rdrDateRangePickerWrapperFluid');
+      expect(container.firstChild).toHaveClass('rdrDateRangePickerWrapperResponsive');
     });
 
     test('does not leak widthMode to child components', () => {
@@ -241,6 +260,60 @@ describe('DateRangePicker hooks parity', () => {
 
       expect(mockLatestDefinedRangeProps).not.toHaveProperty('widthMode');
       expect(mockLatestDateRangeProps).not.toHaveProperty('widthMode');
+    });
+
+    test('passes _calendarIsFluidWidthMode=true to DateRange when widthMode is "fluid"', () => {
+      renderDateRangePicker({ widthMode: 'fluid' });
+
+      expect(mockLatestDateRangeProps._calendarIsFluidWidthMode).toBe(true);
+    });
+
+    test('passes _calendarIsFluidWidthMode=false to DateRange when widthMode is "content"', () => {
+      renderDateRangePicker({ widthMode: 'content' });
+
+      expect(mockLatestDateRangeProps._calendarIsFluidWidthMode).toBe(false);
+    });
+
+    test('passes _calendarIsFluidWidthMode=false to DateRange when widthMode is omitted', () => {
+      renderDateRangePicker();
+
+      expect(mockLatestDateRangeProps._calendarIsFluidWidthMode).toBe(false);
+    });
+
+    test('fluid wrapper SCSS contract: width 100% fills available container width in row mode', () => {
+      const scss = readDateRangePickerStyles();
+
+      expect(scss).toMatch(/\.rdrDateRangePickerWrapperFluid\s*\{[^}]*width:\s*100%/s);
+      expect(scss).toMatch(/\.rdrDateRangePickerWrapperFluid\s*\{[^}]*max-width:\s*100%/s);
+      expect(scss).toMatch(/\.rdrDateRangePickerWrapperFluid\s*\{[^}]*min-width:\s*0/s);
+    });
+
+    test('fluid row SCSS contract: DefinedRange and calendar use a 30/70 split', () => {
+      const scss = readDateRangePickerStyles();
+
+      expect(scss).toMatch(
+        /\.rdrDateRangePickerWrapperFluid:not\(\.rdrDateRangePickerWrapperResponsive\)\s*>\s*\.rdrDefinedRangesWrapper\s*\{[^}]*flex:\s*0 0 30%/s
+      );
+      expect(scss).toMatch(
+        /\.rdrDateRangePickerWrapperFluid:not\(\.rdrDateRangePickerWrapperResponsive\)\s*>\s*\.rdrDefinedRangesWrapper\s*\{[^}]*max-width:\s*30%/s
+      );
+      expect(scss).toMatch(
+        /\.rdrDateRangePickerWrapperFluid:not\(\.rdrDateRangePickerWrapperResponsive\)\s*>\s*\.rdrCalendarWrapperFluid\s*\{[^}]*flex:\s*1 1 70%/s
+      );
+      expect(scss).toMatch(
+        /\.rdrDateRangePickerWrapperFluid:not\(\.rdrDateRangePickerWrapperResponsive\)\s*>\s*\.rdrCalendarWrapperFluid\s*\{[^}]*max-width:\s*70%/s
+      );
+    });
+
+    test('fluid row ratio does not apply to the responsive column wrapper', () => {
+      const scss = readDateRangePickerStyles();
+
+      expect(scss).not.toMatch(
+        /\.rdrDateRangePickerWrapperFluid\.rdrDateRangePickerWrapperResponsive\s*>\s*\.rdrDefinedRangesWrapper\s*\{[^}]*30%/s
+      );
+      expect(scss).not.toMatch(
+        /\.rdrDateRangePickerWrapperFluid\.rdrDateRangePickerWrapperResponsive\s*>\s*\.rdrCalendarWrapperFluid\s*\{[^}]*70%/s
+      );
     });
   });
 
@@ -255,6 +328,25 @@ describe('DateRangePicker hooks parity', () => {
       expect(mockLatestDateRangeProps._resolvedLayout).toBe('mobile');
       expect(mockLatestDateRangeProps.months).toBe(2);
       expect(mockLatestDateRangeProps.direction).toBe('vertical');
+    });
+
+    test('uses mobileBreakpoint when resolving auto layout for the wrapper', () => {
+      const originalMatchMedia = window.matchMedia;
+      window.matchMedia = jest.fn(query => ({
+        matches: query === '(max-width: 640px)',
+        media: query,
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+      }));
+
+      try {
+        const { container } = renderDateRangePicker({ layout: 'auto', mobileBreakpoint: 640 });
+
+        expect(window.matchMedia).toHaveBeenCalledWith('(max-width: 640px)');
+        expect(container.firstChild).toHaveClass('rdrDateRangePickerWrapperResponsive');
+      } finally {
+        window.matchMedia = originalMatchMedia;
+      }
     });
 
   });

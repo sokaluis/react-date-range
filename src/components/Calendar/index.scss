@@ -17,6 +17,27 @@
   max-width: 100%;
 }
 
+.rdrCalendarWrapperFluid {
+  flex: 1 1 0;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.rdrCalendarWrapperFluid .rdrMonths {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.rdrCalendarWrapperFluid .rdrMonth {
+  box-sizing: border-box;
+  flex: 1 1 0;
+  width: auto;
+  min-width: 0;
+  max-width: 100%;
+}
+
 .rdrDateDisplay{
   display: flex;
   justify-content: space-between;

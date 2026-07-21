@@ -46,6 +46,8 @@ describe('DatePickerInput', () => {
     expect(declarations).toContain('datePickerInputWrapper?: string | undefined;');
     expect(declarations).toContain('datePickerInputTrigger?: string | undefined;');
     expect(declarations).toContain('datePickerInputPopover?: string | undefined;');
+    expect(declarations).toContain('datePickerInputPopoverModal?: string | undefined;');
+    expect(declarations).toContain("popoverPlacement?: PopoverPlacement | undefined;");
   });
 
   test('renders formatted selected date and placeholder on a read-only trigger', () => {
@@ -157,6 +159,35 @@ describe('DatePickerInput', () => {
 
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
     expect(document.activeElement).toBe(trigger);
+  });
+
+  test('renders a centered fluid modal when popoverPlacement is modal', async () => {
+    renderDatePickerInput({ popoverPlacement: 'modal' });
+    await userEvent.click(getTrigger());
+
+    const dialog = screen.getByRole('dialog');
+    expect(dialog).toHaveClass('rdrDatePickerInputPopoverModal');
+    expect(dialog.querySelector('.rdrCalendarWrapper')).toHaveClass('rdrCalendarWrapperFluid');
+  });
+
+  test('uses the responsive modal at the configured breakpoint', async () => {
+    const originalMatchMedia = window.matchMedia;
+    window.matchMedia = jest.fn(query => ({
+      matches: query === '(max-width: 640px)',
+      media: query,
+      addEventListener: jest.fn(),
+      removeEventListener: jest.fn(),
+    }));
+
+    try {
+      renderDatePickerInput({ popoverPlacement: 'responsive', mobileBreakpoint: 640 });
+      await userEvent.click(getTrigger());
+
+      expect(window.matchMedia).toHaveBeenCalledWith('(max-width: 640px)');
+      expect(screen.getByRole('dialog')).toHaveClass('rdrDatePickerInputPopoverModal');
+    } finally {
+      window.matchMedia = originalMatchMedia;
+    }
   });
 
   test('wraps focus inside the popover on Shift+Tab from the first focusable control', async () => {
