@@ -14,7 +14,7 @@
 npm install @cyberlz/react-date-range
 ```
 
-> **Versioning:** the version above tracks npm `latest` and `package.json` as the source of truth. The current stable line is **1.3.x**.
+> **Versioning:** the version above tracks npm `latest` and `package.json` as the source of truth. The current stable line is **1.4.x**.
 
 Requires: `react@^18.0.0 || ^19.0.0`, `react-dom@^18.0.0 || ^19.0.0`, `date-fns@^3.0.0`.
 

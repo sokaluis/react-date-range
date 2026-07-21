@@ -1,9 +1,8 @@
-# Release Checklist — `v1.4.0` (prepared locally)
+# Release Checklist — `v1.4.0`
 
-> **Status.** `v1.4.0` is a local minor-release checkpoint for responsive fluid
-> calendars and configurable input-popover placement. It is not committed, tagged,
-> pushed, or published. The local build has regenerated `dist/`. npm `latest` remains `1.3.0` until the maintainer publishes
-> `1.4.0`.
+> **Status.** `v1.4.0` is the minor-release checkpoint for responsive fluid
+> calendars and configurable input-popover placement. The local build has
+> regenerated `dist/`. Tagging and npm publishing are still maintainer actions.
 
 See [`docs/npm-publishing.md`](npm-publishing.md) for publishing guidance and
 [`docs/release-flow.md`](release-flow.md) for the full git/tag/npm pipeline.
@@ -17,8 +16,8 @@ See [`docs/npm-publishing.md`](npm-publishing.md) for publishing guidance and
 - [x] **`demo/package.json`** dependency: `@cyberlz/react-date-range: "file:.."`.
 - [x] **`CHANGELOG.md`** has a `## [1.4.0]` section covering fluid sizing,
       popover placement, mobile breakpoints, CSS width guards, and demo updates.
-- [x] **`README.md`** and release documentation distinguish the local `1.4.0`
-      target from npm `latest` (`1.3.0`).
+- [x] **`README.md`** and release documentation describe `1.4.0` as the stable
+      release target for the npm package README.
 - [ ] CI is green on the release commit.
 - [x] `npm run build` passes and regenerates `dist/`.
 - [x] `dist/` inspection confirms generated public API/types and CSS outputs.

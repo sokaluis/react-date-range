@@ -1,6 +1,6 @@
 # Docs Site Plan — Landing, Demo & Full Documentation
 
-> **Status: ready to plan.** `@cyberlz/react-date-range@1.3.x` is the stable line after
+> **Status: ready to plan.** `@cyberlz/react-date-range@1.4.x` is the stable line after
 > maintainer publish. The local demo
 > resolves to local source during development so landed-but-unpublished changes can be validated.
 > The current adoption asset is a small public landing/demo site, followed by full component
@@ -23,7 +23,7 @@
 
 | Previous risk | Current state |
 |---------------|---------------|
-| Package was pre-release | `1.3.x` is the current stable line on npm `latest` |
+| Package was pre-release | `1.4.x` is the current stable line on npm `latest` |
 | Demo might drift from package source | `demo/` resolves `@cyberlz/react-date-range` to local `src/` during development and is type-checked |
 | Migration path was unclear | `docs/migration-from-upstream.md` exists |
 | Roadmap could overpromise | `docs/post-1.0-roadmap.md` marks future work as exploratory |
@@ -39,7 +39,7 @@ pretending future roadmap candidates are already committed features.
 |---------|---------|
 | Hero + install command | `npm install @cyberlz/react-date-range` |
 | Live demo | Interactive `<DateRangePicker />` from `demo/` |
-| Stable status badge | `1.3.x stable · maintained fork · React 18/19 · configurable UI slots` |
+| Stable status badge | `1.4.x stable · maintained fork · React 18/19 · responsive fluid calendars` |
 | Migration from upstream | Link to `docs/migration-from-upstream.md` |
 | Core docs links | README, changelog, roadmap, GitHub release |
 | npm / GitHub links | npm package, repository, issue tracker |
@@ -79,7 +79,7 @@ The demo is deployed by `.github/workflows/pages-demo.yml`.
 | Milestone | Landing status |
 |-----------|---------------|
 | `1.0.0` stable published | ✅ Done (2026-06-29) |
-| `1.3.x` stable line on npm | 🔲 Pending maintainer publish of `1.3.0` |
+| `1.4.x` stable line on npm | ✅ Release checkpoint prepared |
 | Local demo validates current source | ✅ Ready to reuse as baseline |
 | Landing copy + GitHub Pages workflow ready | ✅ Deploy |
 | Public demo URL live | ✅ Added to README |

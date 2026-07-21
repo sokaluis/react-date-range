@@ -1,9 +1,8 @@
 # @cyberlz/react-date-range
 
 > Maintained fork/rescue of [`react-date-range`](https://github.com/hypeserver/react-date-range).
-> **Release target**: `1.4.0` is prepared locally for the next minor release.
-> npm `latest` remains `1.3.0` until the maintainer publishes it. The target adds
-> fluid responsive calendar sizing and configurable input-popover placement. The
+> **Current release**: `1.4.0` is the stable minor release for fluid responsive
+> calendar sizing and configurable input-popover placement. The
 > `rc` tag remains on `1.0.0-rc.0` for historical validation. See [Dist-tag policy](#dist-tag-policy) below.
 
 ## Quick links
@@ -204,8 +203,7 @@ A **modern, maintained, production-ready** date range picker for React that:
 | **Phase 1** — Compatible rescue | Complete |
 | **Phase 3** — Core refactor | Complete (Slices 1–21 done) |
 
-**`@cyberlz/react-date-range@1.4.0`** is prepared locally for release; npm `latest`
-still serves `1.3.0` until the maintainer publishes `1.4.0`. The new minor adds
+**`@cyberlz/react-date-range@1.4.0`** is the current stable minor release. It adds
 fluid responsive calendars and input-popover placement controls on top of the 1.3
 customization baseline. Future work is tracked separately. See
 [`docs/fork-roadmap.md`](docs/fork-roadmap.md) for the full plan and
@@ -215,7 +213,7 @@ customization baseline. Future work is tracked separately. See
 
 npm has four relevant dist-tags for this package:
 
-- **`latest`** — currently points to `1.3.0`. Default install path: `npm install @cyberlz/react-date-range`.
+- **`latest`** — points to `1.4.0`. Default install path: `npm install @cyberlz/react-date-range`.
 - **`rc`** — points to `1.0.0-rc.0`. Historical release candidate for pre-release validation: `npm install @cyberlz/react-date-range@rc`.
 - **`beta`** — points to `0.1.0-beta.0`. Legacy prerelease channel.
 - **`alpha`** — points to `0.1.0-alpha.3`. Legacy prerelease channel.

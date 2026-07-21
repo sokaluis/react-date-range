@@ -47,15 +47,16 @@ docs: add release flow documentation
 | RC | `v{version}-rc.{n}` | `v1.0.0-rc.0` |
 | Stable | `v{version}` | `v1.4.0` |
 
-**Current npm stable:** `v1.3.0` is published on npm `latest`; `v1.1.1` tag
-exists at commit `843b09b` (historical, never promoted to npm `latest`).
+**Current stable target:** `v1.4.0`; `v1.1.1` tag exists at commit `843b09b`
+(historical, never promoted to npm `latest`).
 
-**Prepared release:** `v1.4.0` is a local release checkpoint for responsive fluid
-layouts and input-popover placement. It is not tagged or published yet.
+**Prepared release:** `v1.4.0` is the release checkpoint for responsive fluid
+layouts and input-popover placement. It is ready for tag/publish after the
+release commit is pushed and CI is green.
 
 **Release metadata target:** `v1.4.0`
 - `package.json` version: `1.4.0`
-- npm `latest`: `1.3.0` until the maintainer publishes `1.4.0`
+- npm `latest`: `1.4.0` after the maintainer publishes the release
 
 The `package.json` `version` field **must match** the tag version exactly.
 
@@ -127,15 +128,15 @@ git push origin v0.1.0-alpha.1
 
 **v1.2.2 published, superseded:** `v1.2.2`
 - `package.json` version: `1.2.2`
-- npm dist-tag: previous stable on `latest`, superseded by `v1.3.0`
+- npm dist-tag: previous stable, superseded by `v1.3.0`
 
 **v1.3.0 published:** `v1.3.0`
 - `package.json` version: `1.3.0`
 - npm dist-tag: `latest`
 
-**v1.4.0 prepared locally:** `v1.4.0`
+**v1.4.0 release checkpoint:** `v1.4.0`
 - `package.json` version: `1.4.0`
-- npm dist-tag: not yet published; `latest` remains `1.3.0`
+- npm dist-tag: `latest` after maintainer publish
 
 ### Step 3 — GitHub Release
 
@@ -177,7 +178,7 @@ version after publishing so `@alpha` continues to mean "newest prerelease" while
 
 | Dist-tag | Points to | Audience |
 |----------|-----------|----------|
-| `latest` | `1.3.0` | Default npm installs |
+| `latest` | `1.4.0` | Default npm installs |
 | `alpha` | `0.1.0-alpha.3` (legacy) | Existing testers: `npm install @cyberlz/react-date-range@alpha` |
 | `beta` | `0.1.0-beta.0` (legacy) | Early adopters: `npm install @cyberlz/react-date-range@beta` |
 | `rc` | `1.0.0-rc.0` (stable anchor for pre-1.0 testers) | Pre-release validation: `npm install @cyberlz/react-date-range@rc` |
@@ -191,7 +192,7 @@ npm dist-tag ls @cyberlz/react-date-range
 npm dist-tag add @cyberlz/react-date-range@0.1.0-beta.0 alpha
 
 # Promote a patch to latest after publish, if needed
-npm dist-tag add @cyberlz/react-date-range@1.3.0 latest
+npm dist-tag add @cyberlz/react-date-range@1.4.0 latest
 ```
 
 ---

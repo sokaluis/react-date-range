@@ -1,7 +1,7 @@
 {
   "name": "@cyberlz/react-date-range",
   "version": "1.4.0",
-  "description": "Modern maintained fork/rescue of react-date-range. Stable 1.3.x — configurable UI slots, opt-in design tokens, input-trigger pickers, accessibility and RTL support.",
+  "description": "Modern maintained fork/rescue of react-date-range. Stable 1.4.x — responsive fluid calendars, configurable input popovers, UI slots, tokens, accessibility and RTL support.",
   "license": "MIT",
   "author": "Luis Azocar <lazocar.dev@gmail.com>",
   "repository": {

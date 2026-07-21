@@ -49,7 +49,7 @@ Candidate direction — docs/demo only, no runtime API change.
 
 - Promote the existing [`demo/`](../demo/) into a public landing-page baseline
 - Deploy a small GitHub Pages site with install command, live `<DateRangePicker />`, and links to npm/GitHub
-- Keep the landing honest: maintained fork, stable `1.3.x` on npm `latest`, roadmap candidates are exploratory
+- Keep the landing honest: maintained fork, stable `1.4.x` on npm `latest`, roadmap candidates are exploratory
 - Add the public demo URL to `README.md` once deployed
 
 ### Full library documentation
@@ -78,7 +78,7 @@ Candidate direction — requires separate spec.
 
 ### 1.2 — Configurable UI Foundation
 
-**✅ Complete — tagged as `v1.3.0`, published on npm `latest`, and documented with a GitHub Release.**
+**✅ Complete — tagged as `v1.3.0`, documented with a GitHub Release, and superseded by the 1.4 responsive/fluid line.**
 See `docs/roadmap-gap-analysis.md` for completed feature table.
 
 - Toggle header elements (month, year, navigation arrows)
@@ -91,11 +91,10 @@ See `docs/roadmap-gap-analysis.md` for completed feature table.
 
 This foundation now unlocks the Styling System / Skins track.
 
-### 1.3 — Responsive / Mobile (future)
+### 1.3 — Responsive / Mobile
 
-Candidate direction — unscheduled, requires separate spec before release phase.
-Not started. Styling System / Skins is the recommended next spec candidate
-after `1.3.0` release handoff.
+✅ Release checkpoint prepared in `1.4.0` with responsive fluid layouts,
+container-width-aware month stacking, and configurable input popovers.
 
 - Mobile fullscreen / sheet mode
 - Responsive layout modes for Calendar and DateRangePicker
@@ -104,7 +103,7 @@ after `1.3.0` release handoff.
 ### 1.4 — Styling System (future)
 
 Candidate direction — unscheduled. Base `uiSlots` and `tokens.css` are available
-from `1.3.0`. Remaining work is higher-level styling API, size variants, and
+from `1.4.0`. Remaining work is higher-level styling API, size variants, and
 skin/template system.
 
 - Size variants (compact, comfortable, spacious)

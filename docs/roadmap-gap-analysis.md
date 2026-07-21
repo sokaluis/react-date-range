@@ -12,10 +12,10 @@
 |------|--------|-------|
 | Public landing/demo | ✅ Deployed | <https://sokaluis.github.io/react-date-range/> |
 | Public demo URL in README | ✅ Done | |
-| 1.3.x stable line | ✅ Published as `v1.3.0` | npm `latest` points to `1.3.0`; GitHub Release exists |
+| 1.4.x stable line | ✅ Release checkpoint prepared | Responsive/fluid release target; publish/tag are maintainer actions |
 | Full component docs | ✅ Complete | Component reference live at `docs/components/` |
 | Configurable UI foundation | ✅ Complete | Stable UI slots, opt-in tokens, and demo coverage prepared for `1.3.0` |
-| Responsive/mobile | 🔲 Not specced | Release target needs rescheduling after `1.3.0` |
+| Responsive/mobile | ✅ Complete for 1.4.0 | `widthMode`, input popovers, breakpoints, and fluid month stacking |
 | Styling system (1.4) | 🔲 Not specced | Depends on configurable UI foundation |
 | Advanced rules (1.6) | 🔲 Not specced | |
 | 2.x Labs | 🔲 Exploratory | |
@@ -47,8 +47,8 @@ spec before implementation (see below).
 
 ## Configurable UI foundation (complete — `1.3.0`)
 
-Foundation complete, tagged as `v1.3.0`, published on npm `latest`, and documented
-with a GitHub Release. Stable UI slots,
+Foundation complete, tagged as `v1.3.0`, documented with a GitHub Release, and
+now superseded by the `1.4.x` stable target. Stable UI slots,
 `className`/`style` per slot, and opt-in CSS token surface are all in place. This
 foundation now unlocks the Styling System / Skins track.
 
@@ -64,13 +64,13 @@ foundation now unlocks the Styling System / Skins track.
 
 ---
 
-## Responsive / Mobile (unscheduled — candidate for future)
+## Responsive / Mobile (complete — `1.4.0`)
 
-Requires separate spec. Not yet specced; no release target assigned. Styling System /
-Skins foundation is the recommended next execution candidate after `1.3.0` handoff.
+Release checkpoint prepared. The remaining Styling System / Skins foundation is the
+recommended next execution candidate after `1.4.0` handoff.
 
-- Mobile fullscreen / sheet mode
-- Responsive layout modes for Calendar and DateRangePicker
+- Configurable modal/responsive input popovers
+- Responsive/fluid layout modes for Calendar and DateRangePicker
 - Touch improvements (swipe, gesture support)
 
 ---
