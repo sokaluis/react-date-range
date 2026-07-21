@@ -79,6 +79,7 @@ function SingleDateInput() {
 - `mobileBreakpoint` defaults to `calendarProps.mobileBreakpoint`, then `768`.
 - Modal popover calendars use internal fluid sizing so they don't get compressed.
 - Modal placement uses core library behavior, not demo-only styling.
+- Popover width is capped by CSS variables, not props: `--rdr-date-picker-input-popover-anchor-max-width` and `--rdr-date-picker-input-popover-modal-max-width` default to `26rem` (about 416px), then fall back to the generic `--rdr-input-popover-anchor-max-width` / `--rdr-input-popover-modal-max-width` variables if set.
 
 ### `calendarProps`
 

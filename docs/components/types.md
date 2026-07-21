@@ -355,6 +355,22 @@ export type PopoverPlacement = 'anchor' | 'modal' | 'responsive';
 
 ---
 
+## Layout CSS variables
+
+These variables tune the responsive/fluid sizing guards without adding app-layout props to the component API.
+
+| Variable | Default | Used by |
+|----------|---------|---------|
+| `--rdr-calendar-month-min-width` | `400px` | `Calendar widthMode="fluid"` auto-stacking threshold for multi-month horizontal calendars. |
+| `--rdr-date-picker-input-popover-anchor-max-width` | `26rem` | Anchored `DatePickerInput` popover max width. |
+| `--rdr-date-picker-input-popover-modal-max-width` | `26rem` | Modal `DatePickerInput` popover max width. |
+| `--rdr-date-range-input-popover-anchor-max-width` | `52rem` | Anchored `DateRangeInput` popover max width. |
+| `--rdr-date-range-input-popover-modal-max-width` | `52rem` | Modal `DateRangeInput` popover max width. |
+| `--rdr-input-popover-anchor-max-width` | component-specific | Generic fallback for input anchored popovers. |
+| `--rdr-input-popover-modal-max-width` | component-specific | Generic fallback for input modal popovers. |
+
+---
+
 ## `ScrollOptions`
 
 Options for the infinite-scroll month loading feature.

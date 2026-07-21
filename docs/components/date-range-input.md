@@ -115,6 +115,7 @@ function WithRef() {
 - `mobileBreakpoint` defaults to `calendarProps.mobileBreakpoint`, then `768`.
 - Modal popover calendars use internal fluid sizing so they don't get compressed.
 - Modal placement uses core library behavior, not demo-only styling.
+- Popover width is capped by CSS variables, not props: `--rdr-date-range-input-popover-anchor-max-width` and `--rdr-date-range-input-popover-modal-max-width` default to `52rem` (about 832px), then fall back to the generic `--rdr-input-popover-anchor-max-width` / `--rdr-input-popover-modal-max-width` variables if set.
 
 ### `calendarProps`
 
@@ -127,6 +128,8 @@ function WithRef() {
   calendarProps={{
     months: 2,
     direction: 'horizontal',
+    layout: 'auto',
+    widthMode: 'fluid',
     dragSelectionEnabled: false,
     shownDate: new Date(2024, 0, 1),
   }}

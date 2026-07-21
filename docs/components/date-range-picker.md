@@ -163,6 +163,10 @@ Use `calendarCount` and `scrollOrientation` for the composed picker layout inste
 | Row (`reference` / `desktop`) | Wrapper fills container width; sidebar fixed at 30%, calendar flexes to 70%. |
 | Column (`mobile` / responsive) | Wrapper occupies 100% of container width. |
 
+When the picker uses `layout="auto"`, horizontal fluid calendars with multiple months also preserve the calendar month minimum width. If the available calendar side is narrower than `months * --rdr-calendar-month-min-width` (default `400px`), the months stack vertically instead of squeezing.
+
+Use `layout="desktop"` only when you explicitly want to force the horizontal row even if the container is too narrow.
+
 - Works with any `layout` mode.
 - Does not affect scroll/virtualized calendar geometry.
 
