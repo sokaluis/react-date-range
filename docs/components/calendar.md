@@ -91,7 +91,7 @@ function SingleDatePicker() {
 
 ## Responsive layout
 
-Responsive layout is opt-in. Existing calendars keep the reference 1.3.0 rendering until you pass `layout`.
+Responsive layout is opt-in. Existing calendars keep the current stable reference rendering until you pass `layout`.
 
 ```tsx
 <Calendar
