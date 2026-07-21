@@ -103,6 +103,8 @@ function App() {
   const [selectedDisplayRanges, setSelectedDisplayRanges] = useState<Range[]>([createInitialRange()]);
   const [layoutRanges, setLayoutRanges] = useState<Range[]>([createInitialRange()]);
   const [tokenRanges, setTokenRanges] = useState<Range[]>([createInitialRange()]);
+  const [formRanges, setFormRanges] = useState<Range[]>([createInitialRange()]);
+  const [submittedPayload, setSubmittedPayload] = useState<string | null>(null);
 
   // States for new demo panels
   const [a11yRanges, setA11yRanges] = useState<Range[]>([createInitialRange()]);
@@ -149,15 +151,17 @@ function App() {
     setter(date);
   };
 
-  const handleInputRangeChange = (source: string) => (rangesByKey: RangeKeyDict) => {
-    const next = rangesByKey.selection;
-    if (next) {
-      logManualQA(`${source} onChange`, {
-        startDate: toISODate(next.startDate),
-        endDate: toISODate(next.endDate),
-      });
-    }
-  };
+  const handleInputRangeChange =
+    (source: string, setter?: (ranges: Range[]) => void) => (rangesByKey: RangeKeyDict) => {
+      const next = rangesByKey.selection;
+      if (next) {
+        logManualQA(`${source} onChange`, {
+          startDate: toISODate(next.startDate),
+          endDate: toISODate(next.endDate),
+        });
+        setter?.([next]);
+      }
+    };
 
   const handleShownDateChange = (source: string) => (date: Date) => {
     logManualQA(`${source} onShownDateChange`, {
@@ -245,6 +249,26 @@ function App() {
       });
       setTokenRanges([next]);
     }
+  };
+
+  const handleFormRangeChange = (rangesByKey: RangeKeyDict) => {
+    const next = rangesByKey.selection;
+    if (next) {
+      logManualQA('Form DateRangePicker onChange', {
+        startDate: toISODate(next.startDate),
+        endDate: toISODate(next.endDate),
+      });
+      setFormRanges([next]);
+    }
+  };
+
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const range = formRanges[0];
+    setSubmittedPayload(JSON.stringify({
+      startDate: range?.startDate ? toISODate(range.startDate) : null,
+      endDate: range?.endDate ? toISODate(range.endDate) : null,
+    }, null, 2));
   };
 
   const handleLabelledChange = (rangesByKey: RangeKeyDict) => {
@@ -408,6 +432,7 @@ function App() {
         <DemoCode>
           {`<DateRangePicker
   layout="auto"
+  widthMode="fluid"
   onChange={handleChange}
   ranges={ranges}
   showPreview
@@ -425,6 +450,7 @@ function App() {
         <p>Verifies <code>displayMode="date"</code> with hook-based state.</p>
         <Calendar
           layout="auto"
+          widthMode="fluid"
           onChange={handleSingleDateChange('Calendar single-date')}
           onShownDateChange={handleShownDateChange('Calendar single-date')}
           date={singleDate}
@@ -438,6 +464,7 @@ function App() {
         <DemoCode>
           {`<Calendar
   layout="auto"
+  widthMode="fluid"
   onChange={handleSingleDateChange('Calendar single-date')}
   onShownDateChange={handleShownDateChange('Calendar single-date')}
   date={singleDate}
@@ -475,6 +502,7 @@ function App() {
         <DemoCode>
           {`<DateRangePicker
   layout="auto"
+  widthMode="fluid"
   onChange={handleSelectedDisplayChange}
   ranges={selectedDisplayRanges}
   editableDateInputs
@@ -515,6 +543,7 @@ function App() {
         <DemoCode>
           {`<DateRangePicker
   layout="auto"
+  widthMode="fluid"
   onChange={handleLayoutChange}
   ranges={layoutRanges}
   showPreview
@@ -530,6 +559,7 @@ function App() {
         <div className="demo-example">
           <Calendar
             layout="auto"
+            widthMode="fluid"
             onChange={handleInputDateChange('Calendar header/today demo', setHeaderDemoDate)}
             onShownDateChange={handleShownDateChange('Calendar header/today demo')}
             date={headerDemoDate}
@@ -553,6 +583,7 @@ function App() {
         <DemoCode>
           {`<Calendar
   layout="auto"
+  widthMode="fluid"
   onChange={handleHeaderDemoChange}
   onShownDateChange={handleShownDateChange}
   date={headerDemoDate}
@@ -601,6 +632,7 @@ function App() {
 
 <DateRangePicker
   layout="auto"
+  widthMode="fluid"
   onChange={handleSlotChange}
   ranges={slotRanges}
   showPreview
@@ -616,6 +648,7 @@ function App() {
           <div style={tokenDemoStyle}>
             <DateRangePicker
               layout="auto"
+              widthMode="fluid"
               onChange={handleTokenChange}
               ranges={tokenRanges}
               showPreview={true}
@@ -647,6 +680,7 @@ const tokenDemoStyle = {
 <div style={tokenDemoStyle}>
   <DateRangePicker
     layout="auto"
+    widthMode="fluid"
     onChange={handleTokenChange}
     ranges={tokenRanges}
     showPreview
@@ -660,7 +694,8 @@ const tokenDemoStyle = {
         <h2>DatePickerInput — Popover Trigger</h2>
         <p>
           Read-only input trigger for single-date selection. Verify click-to-open, Escape,
-          outside-click dismissal, focus return, and the controlled <code>open</code> example.
+          outside-click dismissal, focus return, and the controlled <code>open</code> example, which uses
+          responsive modal placement on mobile.
         </p>
         <div className="state-output">
           <label>
@@ -685,6 +720,8 @@ const tokenDemoStyle = {
               onOpenChange={setInputOpen}
               ariaLabel="Controlled trip date"
               popoverLabel="Choose controlled trip date"
+              popoverPlacement="responsive"
+              mobileBreakpoint={768}
               calendarProps={{ layout: 'auto', shownDate: controlledInputDate || today }}
             />
           </label>
@@ -713,6 +750,8 @@ const tokenDemoStyle = {
   onOpenChange={setInputOpen}
   ariaLabel="Controlled trip date"
   popoverLabel="Choose controlled trip date"
+  popoverPlacement="responsive"
+  mobileBreakpoint={768}
   calendarProps={{ layout: 'auto', shownDate: controlledInputDate || today }}
 />`}
         </DemoCode>
@@ -721,19 +760,26 @@ const tokenDemoStyle = {
       <section className="demo-panel">
         <h2>DateRangeInput — Popover Trigger</h2>
         <p>
-          Read-only input trigger for range selection. Verify click-to-open, Escape,
-          outside-click dismissal, focus return, and the controlled <code>open</code> example.
+          Read-only input trigger for range selection. This example opens a two-month
+          horizontal picker and verifies click-to-open, Escape, outside-click dismissal,
+          focus return, and the controlled <code>open</code> example, which uses responsive modal placement
+          on mobile.
         </p>
         <div className="state-output">
           <label>
             Uncontrolled:{' '}
             <DateRangeInput
               ranges={inputRange}
-              onChange={handleInputRangeChange('DateRangeInput uncontrolled')}
+              onChange={handleInputRangeChange('DateRangeInput uncontrolled', setInputRange)}
               ariaLabels={{ trigger: 'Trip date range' }}
               popoverLabel="Choose trip dates"
               triggerPlaceholder="Select trip dates"
-              calendarProps={{ layout: 'auto', shownDate: inputRange[0]?.startDate || today }}
+              calendarProps={{
+                layout: 'auto',
+                shownDate: inputRange[0]?.startDate || today,
+                months: 2,
+                direction: 'horizontal',
+              }}
             />
           </label>
         </div>
@@ -742,12 +788,19 @@ const tokenDemoStyle = {
             Controlled:{' '}
             <DateRangeInput
               ranges={controlledInputRange}
-              onChange={handleInputRangeChange('DateRangeInput controlled')}
+              onChange={handleInputRangeChange('DateRangeInput controlled', setControlledInputRange)}
               open={inputRangeOpen}
               onOpenChange={setInputRangeOpen}
               ariaLabels={{ trigger: 'Controlled trip date range' }}
               popoverLabel="Choose controlled trip dates"
-              calendarProps={{ layout: 'auto', shownDate: controlledInputRange[0]?.startDate || today }}
+              popoverPlacement="responsive"
+              mobileBreakpoint={768}
+              calendarProps={{
+                layout: 'auto',
+                shownDate: controlledInputRange[0]?.startDate || today,
+                months: 2,
+                direction: 'horizontal',
+              }}
             />
           </label>
         </div>
@@ -759,14 +812,24 @@ const tokenDemoStyle = {
           <code>controlledOpen = {String(inputRangeOpen)}</code>
         </p>
         <DemoCode>
-          {`{/* Uncontrolled */}
+          {`const handleInputRangeChange = (rangesByKey) => {
+  const next = rangesByKey.selection;
+  if (next) setInputRange([next]);
+};
+
+{/* Uncontrolled */}
 <DateRangeInput
   ranges={inputRange}
   onChange={handleInputRangeChange}
   ariaLabels={{ trigger: 'Trip date range' }}
   popoverLabel="Choose trip dates"
   triggerPlaceholder="Select trip dates"
-  calendarProps={{ layout: 'auto', shownDate: inputRange[0]?.startDate || today }}
+  calendarProps={{
+    layout: 'auto',
+    shownDate: inputRange[0]?.startDate || today,
+    months: 2,
+    direction: 'horizontal',
+  }}
 />
 
 {/* Controlled */}
@@ -777,7 +840,14 @@ const tokenDemoStyle = {
   onOpenChange={setInputRangeOpen}
   ariaLabels={{ trigger: 'Controlled trip date range' }}
   popoverLabel="Choose controlled trip dates"
-  calendarProps={{ layout: 'auto', shownDate: controlledInputRange[0]?.startDate || today }}
+  popoverPlacement="responsive"
+  mobileBreakpoint={768}
+  calendarProps={{
+    layout: 'auto',
+    shownDate: controlledInputRange[0]?.startDate || today,
+    months: 2,
+    direction: 'horizontal',
+  }}
 />`}
         </DemoCode>
       </section>
@@ -825,6 +895,7 @@ const tokenDemoStyle = {
         </p>
         <Calendar
           layout="auto"
+          widthMode="fluid"
           onChange={handleSingleDateChange('Calendar DateDisplay constraints')}
           onShownDateChange={handleShownDateChange('Calendar DateDisplay constraints')}
           date={singleDate}
@@ -846,6 +917,7 @@ const tokenDemoStyle = {
         <DemoCode>
           {`<Calendar
   layout="auto"
+  widthMode="fluid"
   onChange={handleSingleDateChange('Calendar DateDisplay constraints')}
   onShownDateChange={handleShownDateChange('Calendar DateDisplay constraints')}
   date={singleDate}
@@ -868,6 +940,7 @@ const tokenDemoStyle = {
         </p>
         <DateRangePicker
           layout="auto"
+          widthMode="fluid"
           onChange={handleChange}
           ranges={ranges}
           months={2}
@@ -880,6 +953,7 @@ const tokenDemoStyle = {
 
 <DateRangePicker
   layout="auto"
+  widthMode="fluid"
   onChange={handleChange}
   ranges={ranges}
   months={2}
@@ -887,6 +961,62 @@ const tokenDemoStyle = {
   locale={{ ...enUS, options: { ...enUS.options, weekStartsOn: 1 } }}
   weekStartsOn={1}
 />`}
+        </DemoCode>
+      </section>
+
+      <section className="demo-panel">
+        <h2>DateRangePicker — Form Usage</h2>
+        <p>
+          Practical example: a controlled <code>DateRangePicker</code> inside a native form.
+          Selected dates are serialized as ISO strings on submit.
+        </p>
+        <form onSubmit={handleFormSubmit} className="demo-form">
+          <DateRangePicker
+            layout="auto"
+            widthMode="fluid"
+            onChange={handleFormRangeChange}
+            ranges={formRanges}
+            showPreview={true}
+            moveRangeOnFirstSelection={false}
+            months={1}
+            direction="horizontal"
+          />
+          <button type="submit" className="demo-form-submit">Submit</button>
+        </form>
+        {submittedPayload && (
+          <div className="state-output">
+            <strong>Submitted payload:</strong>
+            <pre style={{ margin: '0.5rem 0 0' }}>{submittedPayload}</pre>
+          </div>
+        )}
+        <p className="state-output">
+          <code>
+            range = {formatDate(formRanges[0]?.startDate)} → {formatDate(formRanges[0]?.endDate)}
+          </code>
+        </p>
+        <DemoCode>
+          {`const handleSubmit = (e) => {
+  e.preventDefault();
+  const range = formRanges[0];
+  console.log({
+    startDate: range.startDate?.toISOString().split('T')[0] ?? null,
+    endDate: range.endDate?.toISOString().split('T')[0] ?? null,
+  });
+};
+
+<form onSubmit={handleSubmit}>
+  <DateRangePicker
+    layout="auto"
+    widthMode="fluid"
+    onChange={(rangesByKey) => setFormRanges([rangesByKey.selection])}
+    ranges={formRanges}
+    showPreview
+    moveRangeOnFirstSelection={false}
+    months={1}
+    direction="horizontal"
+  />
+  <button type="submit">Submit</button>
+</form>`}
         </DemoCode>
       </section>
 
@@ -916,6 +1046,7 @@ const tokenDemoStyle = {
         </p>
         <DateRangePicker
           layout="auto"
+          widthMode="fluid"
           onChange={handleA11yChange}
           ranges={a11yRanges}
           showPreview={true}
@@ -956,6 +1087,7 @@ const liveRegionSelection = (range: { startDate: Date; endDate: Date }) =>
 
 <DateRangePicker
   layout="auto"
+  widthMode="fluid"
   onChange={handleA11yChange}
   ranges={a11yRanges}
   showPreview
@@ -992,6 +1124,7 @@ const liveRegionSelection = (range: { startDate: Date; endDate: Date }) =>
         </p>
         <Calendar
           layout="auto"
+          widthMode="fluid"
           onChange={handleSingleDateChange('Calendar nav-live-region')}
           date={singleDate}
           displayMode="date"
@@ -1011,6 +1144,7 @@ const liveRegionSelection = (range: { startDate: Date; endDate: Date }) =>
         <DemoCode>
           {`<Calendar
   layout="auto"
+  widthMode="fluid"
   onChange={handleSingleDateChange('Calendar nav-live-region')}
   date={singleDate}
   displayMode="date"
@@ -1040,6 +1174,7 @@ const liveRegionSelection = (range: { startDate: Date; endDate: Date }) =>
         </p>
         <Calendar
           layout="auto"
+          widthMode="fluid"
           onChange={handlePassiveDateChange}
           date={passiveDate}
           displayMode="date"
@@ -1057,6 +1192,7 @@ const liveRegionSelection = (range: { startDate: Date; endDate: Date }) =>
         <DemoCode>
           {`<Calendar
   layout="auto"
+  widthMode="fluid"
   onChange={handlePassiveDateChange}
   date={passiveDate}
   displayMode="date"
@@ -1111,6 +1247,7 @@ const liveRegionSelection = (range: { startDate: Date; endDate: Date }) =>
         </p>
         <DateRangePicker
           layout="auto"
+          widthMode="fluid"
           onChange={handleRtlChange}
           ranges={rtlRanges}
           showPreview={true}
@@ -1137,6 +1274,7 @@ const liveRegionSelection = (range: { startDate: Date; endDate: Date }) =>
         </p>
         <Calendar
           layout="auto"
+          widthMode="fluid"
           onChange={handleRtlDateChange}
           date={rtlDate}
           displayMode="date"
@@ -1159,6 +1297,7 @@ const liveRegionSelection = (range: { startDate: Date; endDate: Date }) =>
         </p>
         <DateRangePicker
           layout="auto"
+          widthMode="fluid"
           onChange={handleLabelledChange}
           ranges={labelledRanges}
           showPreview={true}
