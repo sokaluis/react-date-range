@@ -34,12 +34,12 @@ Both are required. `styles.css` provides the structural layout; `theme/default.c
 
 ### Optional design tokens
 
-Import `theme/tokens.css` only when you want CSS custom-property overrides. It is not imported by the default styles, so existing apps keep their current output unless they opt in.
+Import `theme/variables.css` when you want CSS custom-property overrides. It is not imported by the default styles, so existing apps keep their current output unless they opt in. `theme/tokens.css` is an alias kept for backwards compatibility.
 
 ```js
 import '@cyberlz/react-date-range/styles.css';
 import '@cyberlz/react-date-range/theme/default.css';
-import '@cyberlz/react-date-range/theme/tokens.css';
+import '@cyberlz/react-date-range/theme/variables.css';
 ```
 
 Override tokens on any ancestor of the picker:

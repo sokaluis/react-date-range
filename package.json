@@ -36,6 +36,7 @@
     },
     "./styles.css": "./dist/styles.css",
     "./theme/default.css": "./dist/theme/default.css",
+    "./theme/variables.css": "./dist/theme/variables.css",
     "./theme/tokens.css": "./dist/theme/tokens.css"
   },
   "sideEffects": [
@@ -51,7 +52,7 @@
     "test:ci": "jest --testPathPatterns='Calendar|DateRange' --ci",
     "type-check": "tsc --noEmit",
     "build:js": "tsdown --config-loader unrun",
-    "build:css": "sass src/styles.scss:dist/styles.css --no-source-map && sass src/theme/default.scss:dist/theme/default.css --no-source-map && sass src/theme/tokens.css:dist/theme/tokens.css --no-source-map",
+    "build:css": "sass src/styles.scss:dist/styles.css --no-source-map && sass src/theme/default.scss:dist/theme/default.css --no-source-map && sass src/theme/variables.css:dist/theme/variables.css --no-source-map && sass src/theme/tokens.css:dist/theme/tokens.css --no-source-map",
     "build:types": "cp src/index.d.ts dist/index.d.ts",
     "build": "npm run build:js && npm run build:css && npm run build:types"
   },

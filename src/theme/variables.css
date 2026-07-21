@@ -1,0 +1,33 @@
+:root {
+  --rdr-color-primary: currentColor;
+  --rdr-color-on-primary: rgba(255, 255, 255, 0.85);
+  --rdr-color-surface: transparent;
+  --rdr-color-on-surface: currentColor;
+  --rdr-color-muted: currentColor;
+  --rdr-color-border: currentColor;
+  --rdr-color-today: #3d91ff;
+  --rdr-space-xs: initial;
+  --rdr-space-sm: initial;
+  --rdr-space-md: initial;
+  --rdr-space-lg: initial;
+  --rdr-radius-sm: initial;
+  --rdr-radius-md: initial;
+}
+
+.rdrSelected,
+.rdrInRange,
+.rdrStartEdge,
+.rdrEndEdge {
+  color: var(--rdr-color-primary);
+}
+
+.rdrDay:not(.rdrDayPassive) .rdrInRange ~ .rdrDayNumber span,
+.rdrDay:not(.rdrDayPassive) .rdrStartEdge ~ .rdrDayNumber span,
+.rdrDay:not(.rdrDayPassive) .rdrEndEdge ~ .rdrDayNumber span,
+.rdrDay:not(.rdrDayPassive) .rdrSelected ~ .rdrDayNumber span {
+  color: var(--rdr-color-on-primary);
+}
+
+.rdrDayToday .rdrDayNumber span:after {
+  background: var(--rdr-color-today);
+}

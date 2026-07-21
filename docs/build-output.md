@@ -46,6 +46,8 @@ export default defineConfig({
 | `dist/index.d.ts` | Type declarations | Copied from `src/index.d.ts` |
 | `dist/styles.css` | CSS | Main compiled styles |
 | `dist/theme/default.css` | CSS | Default theme |
+| `dist/theme/variables.css` | CSS | Optional CSS custom properties (preferred) |
+| `dist/theme/tokens.css` | CSS | Alias for `variables.css` (backwards-compatible) |
 
 ### Package resolution
 
@@ -70,7 +72,9 @@ The relevant package fields are:
       "require": "./dist/index.cjs"
     },
     "./styles.css": "./dist/styles.css",
-    "./theme/default.css": "./dist/theme/default.css"
+    "./theme/default.css": "./dist/theme/default.css",
+    "./theme/variables.css": "./dist/theme/variables.css",
+    "./theme/tokens.css": "./dist/theme/tokens.css"
   }
 }
 ```
