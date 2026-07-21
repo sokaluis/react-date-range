@@ -78,6 +78,8 @@ All CSS class-name overrides supported by every component that accepts them. Uns
 export interface ClassNames {
   dateRangeWrapper?: string | undefined;
   calendarWrapper?: string | undefined;
+  calendarWrapperResponsive?: string | undefined;
+  calendarWrapperFluid?: string | undefined;
   dateDisplay?: string | undefined;
   dateDisplayItem?: string | undefined;
   dateDisplayItemActive?: string | undefined;
@@ -85,9 +87,11 @@ export interface ClassNames {
   datePickerInputWrapper?: string | undefined;
   datePickerInputTrigger?: string | undefined;
   datePickerInputPopover?: string | undefined;
+  datePickerInputPopoverModal?: string | undefined;
   dateRangeInputWrapper?: string | undefined;
   dateRangeInputTrigger?: string | undefined;
   dateRangeInputPopover?: string | undefined;
+  dateRangeInputPopoverModal?: string | undefined;
   monthAndYearWrapper?: string | undefined;
   monthAndYearPickers?: string | undefined;
   liveRegion?: string | undefined;
@@ -129,6 +133,8 @@ export interface ClassNames {
   inputRange?: string | undefined;
   inputRangeInput?: string | undefined;
   dateRangePickerWrapper?: string | undefined;
+  dateRangePickerWrapperFluid?: string | undefined;
+  dateRangePickerWrapperResponsive?: string | undefined;
   staticRangeLabel?: string | undefined;
   staticRangeSelected?: string | undefined;
   monthName?: string | undefined;
@@ -143,6 +149,8 @@ export interface ClassNames {
 |------|------|----------------|
 | `dateRangeWrapper` | `string \| undefined` | `DateRange` root |
 | `calendarWrapper` | `string \| undefined` | `Calendar` root |
+| `calendarWrapperResponsive` | `string \| undefined` | Responsive `Calendar` root |
+| `calendarWrapperFluid` | `string \| undefined` | Fluid `Calendar` root |
 | `dateDisplay` | `string \| undefined` | Date display row |
 | `dateDisplayItem` | `string \| undefined` | Individual start/end display |
 | `dateDisplayItemActive` | `string \| undefined` | Focused display item |
@@ -150,9 +158,11 @@ export interface ClassNames {
 | `datePickerInputWrapper` | `string \| undefined` | `DatePickerInput` root |
 | `datePickerInputTrigger` | `string \| undefined` | Trigger button |
 | `datePickerInputPopover` | `string \| undefined` | Popover container |
+| `datePickerInputPopoverModal` | `string \| undefined` | Centered modal popover container |
 | `dateRangeInputWrapper` | `string \| undefined` | `DateRangeInput` root |
 | `dateRangeInputTrigger` | `string \| undefined` | Trigger button |
 | `dateRangeInputPopover` | `string \| undefined` | Popover container |
+| `dateRangeInputPopoverModal` | `string \| undefined` | Centered modal popover container |
 | `monthAndYearWrapper` | `string \| undefined` | Picker header |
 | `monthAndYearPickers` | `string \| undefined` | Month/year select containers |
 | `liveRegion` | `string \| undefined` | `aria-live` region |
@@ -194,6 +204,8 @@ export interface ClassNames {
 | `inputRange` | `string \| undefined` | Individual numeric range input |
 | `inputRangeInput` | `string \| undefined` | Numeric input field |
 | `dateRangePickerWrapper` | `string \| undefined` | `DateRangePicker` root |
+| `dateRangePickerWrapperFluid` | `string \| undefined` | Fluid `DateRangePicker` root |
+| `dateRangePickerWrapperResponsive` | `string \| undefined` | Responsive `DateRangePicker` root |
 | `staticRangeLabel` | `string \| undefined` | Preset label |
 | `staticRangeSelected` | `string \| undefined` | Selected preset |
 | `monthName` | `string \| undefined` | Month name in picker |
@@ -324,6 +336,22 @@ export interface AriaLabelsShape {
 | `dateRangePicker` | `string \| false \| undefined` | `false` opts out of the dialog label |
 | `liveRegionMonthYear` | `(date: Date) => string \| undefined` | Custom month/year announcement |
 | `liveRegionSelection` | `(range: { startDate: Date; endDate: Date }) => string \| undefined` | Custom range selection announcement |
+
+---
+
+## `PopoverPlacement`
+
+Controls popover positioning for `DatePickerInput` and `DateRangeInput`.
+
+```ts
+export type PopoverPlacement = 'anchor' | 'modal' | 'responsive';
+```
+
+| Value | Behavior |
+|-------|----------|
+| `'anchor'` | Popover anchored to the trigger element. |
+| `'modal'` | Popover always centered in the viewport. |
+| `'responsive'` | `'anchor'` above `mobileBreakpoint`, `'modal'` at or below it. |
 
 ---
 

@@ -48,12 +48,37 @@ function SingleDateInput() {
 | `dateDisplayFormat` | `string \| undefined` | `'MMM d, yyyy'` | no |
 | `ariaLabel` | `string \| undefined` | `'Select date'` | no |
 | `popoverLabel` | `string \| undefined` | `'Choose date'` | no |
+| `popoverPlacement` | `'anchor' \| 'modal' \| 'responsive' \| undefined` | `'anchor'` | no |
+| `mobileBreakpoint` | `number \| undefined` | `calendarProps.mobileBreakpoint`, then `768` | no |
 | `placeholder` | `string \| undefined` | none | no |
 | `disabled` | `boolean \| undefined` | `false` | no |
 | `calendarProps` | `Omit<CalendarProps, 'date' \| 'onChange'> \| undefined` | none | no |
 | `classNames` | `Partial<ClassNames> \| undefined` | `{}` | no |
 | `className` | `string \| undefined` | none | no |
 | `dir` | `'ltr' \| 'rtl' \| undefined` | inherit | no |
+
+### Popover placement
+
+`popoverPlacement` controls where the calendar popover appears. Default is `'anchor'` — the popover positions itself relative to the trigger input.
+
+```tsx
+<DatePickerInput
+  popoverPlacement="responsive"
+  mobileBreakpoint={640}
+  date={date}
+  onChange={setDate}
+/>
+```
+
+| Value | Behavior |
+|-------|----------|
+| `anchor` / omitted | Popover anchored to the trigger input. |
+| `modal` | Popover always centered in the viewport. |
+| `responsive` | `anchor` above `mobileBreakpoint`, `modal` at or below it. |
+
+- `mobileBreakpoint` defaults to `calendarProps.mobileBreakpoint`, then `768`.
+- Modal popover calendars use internal fluid sizing so they don't get compressed.
+- Modal placement uses core library behavior, not demo-only styling.
 
 ### `calendarProps`
 

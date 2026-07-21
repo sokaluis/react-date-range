@@ -25,6 +25,7 @@ export default function MyForm() {
   return (
     <form onSubmit={handleSubmit}>
       <DateRangePicker
+        widthMode="fluid"
         ranges={ranges}
         onChange={(rangesByKey) => setRanges([rangesByKey.selection])}
       />

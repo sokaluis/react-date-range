@@ -47,6 +47,7 @@ function PresetRangePicker() {
 
 | Prop | Type | Default | Required |
 |------|------|---------|----------|
+| `widthMode` | `'content' \| 'fluid' \| undefined` | `'content'` | no |
 | `calendarCount` | `1 \| 2 \| undefined` | `1` | no |
 | `layout` | `'reference' \| 'auto' \| 'mobile' \| 'desktop' \| undefined` | `'reference'` | no |
 | `scrollOrientation` | `'horizontal' \| 'vertical' \| undefined` | `'vertical'` | no |
@@ -95,9 +96,11 @@ Use `layout="auto"` for an SSR-safe mobile foundation without changing existing 
 | Mode | Behavior |
 |------|----------|
 | `reference` / omitted / invalid | Existing rendering. |
-| `auto` | Starts as `reference`, then applies mobile at `(max-width: 768px)`. |
+| `auto` | Starts as `reference`, then applies mobile at `(max-width: mobileBreakpoint)`. |
 | `mobile` | Adds responsive wrapper classes; multiple calendars stack vertically. |
 | `desktop` | Keeps non-mobile behavior. |
+
+`mobileBreakpoint` is inherited from `CalendarProps`; it only affects `layout="auto"` and defaults to `768`.
 
 `scroll.enabled` keeps existing virtualized behavior. On mobile, defined ranges become full width and custom input ranges stack their input above the label.
 
@@ -140,6 +143,28 @@ Use `calendarCount` and `scrollOrientation` for the composed picker layout inste
 - `calendarCount` is intentionally constrained to `1 | 2`; unsupported runtime values fall back to `1`.
 - `scrollOrientation` accepts `'vertical'` or `'horizontal'`; unsupported runtime values fall back to `'vertical'`.
 - When `scroll.enabled` is `true`, the picker leaves existing scroll calendar `months` and `direction` behavior unchanged.
+
+---
+
+## Fluid width
+
+`widthMode` is independent from `layout`. Use `"fluid"` when the picker should fill available container width:
+
+```tsx
+<DateRangePicker
+  widthMode="fluid"
+  ranges={ranges}
+  onChange={(rangesByKey) => setRanges([rangesByKey.selection])}
+/>
+```
+
+| Layout | `fluid` behavior |
+|--------|-----------------|
+| Row (`reference` / `desktop`) | Wrapper fills container width; sidebar fixed at 30%, calendar flexes to 70%. |
+| Column (`mobile` / responsive) | Wrapper occupies 100% of container width. |
+
+- Works with any `layout` mode.
+- Does not affect scroll/virtualized calendar geometry.
 
 ---
 

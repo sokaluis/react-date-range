@@ -60,6 +60,7 @@ function SingleDatePicker() {
 | `layout` | `'reference' \| 'auto' \| 'mobile' \| 'desktop' \| undefined` | `'reference'` | no |
 | `maxDate` | `Date \| undefined` | 20 years after today | no |
 | `minDate` | `Date \| undefined` | 100 years before today | no |
+| `mobileBreakpoint` | `number \| undefined` | `768` | no |
 | `monthDisplayFormat` | `string \| undefined` | `'MMM yyyy'` | no |
 | `months` | `number \| undefined` | `1` | no |
 | `navigatorRenderer` | `((currFocusedDate: Date, changeShownDate: (value: Date \| number \| string, mode?: 'set' \| 'setYear' \| 'setMonth' \| 'monthOffset') => void, props: CalendarProps) => React.JSX.Element) \| undefined` | none | no |
@@ -84,6 +85,7 @@ function SingleDatePicker() {
 | `uiSlots` | `UiSlots \| undefined` | `{}` | no |
 | `weekdayDisplayFormat` | `string \| undefined` | `'E'` | no |
 | `weekStartsOn` | `0 \| 1 \| 2 \| 3 \| 4 \| 5 \| 6 \| undefined` | none | no |
+| `widthMode` | `'content' \| 'fluid' \| undefined` | `'content'` | no |
 
 ---
 
@@ -102,11 +104,36 @@ Responsive layout is opt-in. Existing calendars keep the reference 1.3.0 renderi
 | Mode | Behavior |
 |------|----------|
 | `reference` / omitted / invalid | Existing rendering. |
-| `auto` | Starts as `reference`, then applies mobile at `(max-width: 768px)`. |
+| `auto` | Starts as `reference`, then applies mobile at `(max-width: mobileBreakpoint)`. |
 | `mobile` | Adds `rdrCalendarWrapperResponsive`; multiple months stack vertically. |
 | `desktop` | Keeps non-mobile behavior. |
 
+`mobileBreakpoint` only affects `layout="auto"` and defaults to `768`.
+
 `scroll.enabled` keeps the existing virtualized geometry and bypasses responsive layout handling.
+
+---
+
+## Fluid width
+
+`widthMode` is independent from `layout`. Use `"fluid"` when the calendar should fill available container width instead of shrinking to intrinsic content size:
+
+```tsx
+<Calendar
+  widthMode="fluid"
+  date={date}
+  onChange={setDate}
+/>
+```
+
+| Mode | Behavior |
+|------|----------|
+| `content` / omitted | Intrinsic inline-flex sizing; wrapper grows to content. |
+| `fluid` | Wrapper and month grid fill available width; month cells distribute evenly. |
+
+- Works with any `layout` mode.
+- Modal input calendars (`DatePickerInput`, `DateRangeInput` with `popoverPlacement="responsive"`) use internal fluid sizing automatically.
+- Does not affect scroll/virtualized calendar geometry.
 
 ---
 

@@ -85,11 +85,36 @@ function WithRef() {
 | `rangeKey` | `string \| undefined` | `'selection'` | no |
 | `calendarProps` | `Omit<DateRangeProps, 'ranges' \| 'onChange' \| 'moveRangeOnFirstSelection' \| 'retainEndDateOnFirstSelection' \| 'classNames' \| 'className' \| 'disabledDates'> \| undefined` | none | no |
 | `popoverLabel` | `string \| undefined` | `'Select date range'` | no |
+| `popoverPlacement` | `'anchor' \| 'modal' \| 'responsive' \| undefined` | `'anchor'` | no |
+| `mobileBreakpoint` | `number \| undefined` | `calendarProps.mobileBreakpoint`, then `768` | no |
 | `ariaLabels` | `{ trigger?: string \| undefined; popover?: string \| undefined; } \| undefined` | `{}` | no |
 | `disabled` | `boolean \| undefined` | `false` | no |
 | `classNames` | `Partial<ClassNames> \| undefined` | `{}` | no |
 | `className` | `string \| undefined` | none | no |
 | `dir` | `'ltr' \| 'rtl' \| undefined` | inherit | no |
+
+### Popover placement
+
+`popoverPlacement` controls where the calendar popover appears. Default is `'anchor'` — the popover positions itself relative to the trigger input.
+
+```tsx
+<DateRangeInput
+  popoverPlacement="responsive"
+  mobileBreakpoint={640}
+  ranges={ranges}
+  onChange={handleChange}
+/>
+```
+
+| Value | Behavior |
+|-------|----------|
+| `anchor` / omitted | Popover anchored to the trigger input. |
+| `modal` | Popover always centered in the viewport. |
+| `responsive` | `anchor` above `mobileBreakpoint`, `modal` at or below it. |
+
+- `mobileBreakpoint` defaults to `calendarProps.mobileBreakpoint`, then `768`.
+- Modal popover calendars use internal fluid sizing so they don't get compressed.
+- Modal placement uses core library behavior, not demo-only styling.
 
 ### `calendarProps`
 
@@ -100,6 +125,8 @@ function WithRef() {
   ranges={ranges}
   onChange={handleChange}
   calendarProps={{
+    months: 2,
+    direction: 'horizontal',
     dragSelectionEnabled: false,
     shownDate: new Date(2024, 0, 1),
   }}
