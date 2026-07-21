@@ -79,11 +79,11 @@ The demo is deployed by `.github/workflows/pages-demo.yml`.
 | Milestone | Landing status |
 |-----------|---------------|
 | `1.0.0` stable published | ✅ Done (2026-06-29) |
-| `1.4.x` stable line on npm | ✅ Release checkpoint prepared |
+| `1.4.x` stable line on npm | ✅ Published as `v1.4.0` |
 | Local demo validates current source | ✅ Ready to reuse as baseline |
 | Landing copy + GitHub Pages workflow ready | ✅ Deploy |
 | Public demo URL live | ✅ Added to README |
-| Full docs expanded | Announce more broadly |
+| Full docs expanded | ✅ Component reference live |
 
 ---
 

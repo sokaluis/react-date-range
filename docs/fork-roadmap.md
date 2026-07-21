@@ -7,7 +7,7 @@
 
 ## Current release meaning
 
-`1.0.0-rc.0` was validated (consumer spikes passed: React 18/19, SSR CJS+ESM, tree-shaking). `1.0.0` stable was published; `v1.4.0` is the current stable target for npm `latest` (`v1.1.1` tag exists but was never promoted to npm).
+`1.0.0-rc.0` was validated (consumer spikes passed: React 18/19, SSR CJS+ESM, tree-shaking). `1.0.0` stable was published; `v1.4.0` is the current npm `latest` stable line (`v1.1.1` tag exists but was never promoted to npm).
 
 > **Stable = internal refactor complete, public API frozen, no breaking changes planned.**
 
@@ -28,7 +28,8 @@ until they have a concrete spec and maintainer decision.
 | **1.1.x — Accessibility + RTL + cross-month UX** | Core labels/states, RTL layout, cross-month `selectablePassive`, multi-range labels | ✅ Complete (v1.1.0 published; v1.1.1 tag exists, never promoted to npm) | `1.1.x` |
 | **1.2.x — Input-trigger pickers + range labels** | `DatePickerInput`, `DateRangeInput`, `Range.label`, shared `usePopover`, demo coverage | ✅ Published as `v1.2.0`; superseded by later stable lines | `1.2.x` |
 | **1.3.x — Configurable UI foundation** | Stable UI slots, `classNames`/`styles` hooks, opt-in CSS tokens, demo token fix | ✅ Complete; superseded by the 1.4 responsive/fluid line | `1.3.x` |
-| **1.4.x — Responsive fluid layouts** | `widthMode`, configurable popover placement, mobile breakpoints, real-world demo examples | ✅ Release checkpoint prepared | `1.4.x` |
+| **1.4.x — Responsive fluid layouts** | `widthMode`, configurable popover placement, mobile breakpoints, real-world demo examples | ✅ Published as `v1.4.0`; current stable line | `1.4.x` |
+| **1.5.x — Styling DX / Composition** | shadcn-inspired recipes, explicit day state hooks, reduced CSS import burden, Tailwind-first optional examples | 🔲 Not specced | Candidate |
 
 ---
 

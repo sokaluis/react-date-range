@@ -13,8 +13,12 @@
   addressed in `1.0.x` maintenance regardless of any roadmap phase.
 - **No new framework wrappers before a framework-agnostic core.** Any Vue/Svelte/Solid
   wrapper is only viable after extracting `@cyberlz/date-range-core` (see 2.x/Labs).
-- **Skins require tokens/slots first.** Visual variants (classic, booking, dashboard, etc.)
-  cannot be built cleanly until the styling API and slot system from `1.4` are in place.
+- **Composition before skins.** Visual variants (classic, booking, dashboard, etc.)
+  only become maintainable after the base Calendar exposes stable state hooks,
+  recipe-level docs, and app-friendly styling escape hatches.
+- **Tailwind is optional, not required.** The library should become easier to style
+  from Tailwind apps, but Tailwind must not become a required runtime or build-time
+  dependency for every consumer.
 
 ---
 
@@ -45,7 +49,7 @@ but it should happen before asking external users to evaluate the library.
 
 Live URL: <https://sokaluis.github.io/react-date-range/>
 
-Candidate direction — docs/demo only, no runtime API change.
+Completed direction — docs/demo only, no runtime API change.
 
 - Promote the existing [`demo/`](../demo/) into a public landing-page baseline
 - Deploy a small GitHub Pages site with install command, live `<DateRangePicker />`, and links to npm/GitHub
@@ -54,12 +58,12 @@ Candidate direction — docs/demo only, no runtime API change.
 
 ### Full library documentation
 
-Candidate direction — requires docs inventory and examples.
+**✅ Complete — component reference lives in [`docs/components/`](components/).**
 
 - Component docs for `Calendar`, `DateRange`, `DateRangePicker`, `DefinedRange`, and exported helpers
 - Props tables backed by `src/index.d.ts`, with examples for common use cases
 - Migration guide from upstream kept current with package releases
-- Styling/customization guide covering CSS imports, theme CSS, future CSS variables, and slot/className plans
+- Styling/customization guide covering CSS imports, theme CSS, CSS variables, and slot/className plans
 - Accessibility guide for keyboard navigation, ARIA expectations, and known follow-up work
 - Troubleshooting page for SSR, CJS/ESM imports, date-fns locales, and bundler integration
 
@@ -89,31 +93,46 @@ See `docs/roadmap-gap-analysis.md` for completed feature table.
 - Stable `className`/`style` slots per component region
 - CSS token surface for colors, spacing, radius
 
-This foundation now unlocks the Styling System / Skins track.
+This foundation now unlocks the `1.5` Styling DX / composition track.
 
-### 1.3 — Responsive / Mobile
+### 1.3 / 1.4 — Responsive / Mobile
 
-✅ Release checkpoint prepared in `1.4.0` with responsive fluid layouts,
-container-width-aware month stacking, and configurable input popovers.
+**✅ Complete — `v1.4.0` is published on npm as the current stable line.**
+
+Delivered responsive fluid layouts, container-width-aware month stacking, configurable
+input popovers, and real-world demo examples.
 
 - Mobile fullscreen / sheet mode
 - Responsive layout modes for Calendar and DateRangePicker
-- Touch improvements (swipe, gesture support)
+- Touch improvements (swipe, gesture support) remain a future enhancement.
 
-### 1.4 — Styling System (future)
+### 1.5 — shadcn-inspired Styling DX / Composition
 
-Candidate direction — unscheduled. Base `uiSlots` and `tokens.css` are available
-from `1.4.0`. Remaining work is higher-level styling API, size variants, and
-skin/template system.
+Candidate direction — next recommended roadmap track. This is inspired by
+shadcn/ui's composable Calendar model, but it is **not** a `react-day-picker`
+rewrite and does **not** make Tailwind mandatory.
 
-- Size variants (compact, comfortable, spacious)
-- Icon slots for nav arrows, clear button, etc.
-- Skin/template system (classic, booking, dashboard, etc.)
+- Recipe-first docs: basic Calendar, date range picker, popover, presets,
+  disabled dates, mobile, travel booking, brand theming, and custom day content.
+- Reduce the need for consumers to import the full `styles.css` when they only
+  need structural behavior plus their own styling.
+- Keep `styles.css` as the backward-compatible default import.
+- Promote `theme/variables.css` as the preferred theme-variable surface;
+  `theme/tokens.css` remains a compatibility alias.
+- Add explicit `data-rdr-*` day/range states so host apps can target stable
+  state attributes instead of internal class names.
+- Evolve `dayContentRenderer` in a backward-compatible way so renderers can
+  receive useful day state (`today`, `selected`, `rangeStart`, `rangeMiddle`,
+  `rangeEnd`, `disabled`, `passive`, `preview`, etc.).
+- Publish Tailwind-first recipes/examples that use `classNames`, `uiSlots`,
+  CSS variables, and `data-rdr-*` states without requiring Tailwind globally.
+- Clarify the styling hierarchy: base CSS, theme variables, props (`color`,
+  `rangeColors`), `classNames`, `uiSlots`, and host-app CSS/Tailwind overrides.
 
-### 1.5 — Templates / Skins
+### 1.6 — Templates / Skins
 
-Candidate direction — requires `1.4` tokens/slots foundation first. Not started until
-the styling API is stable.
+Candidate direction — requires `1.5` Styling DX and state hooks first. Not started
+until the styling API is stable.
 
 Potential directions (not exhaustive or committed):
 
@@ -123,7 +142,7 @@ Potential directions (not exhaustive or committed):
 - Dashboard — dense, utility-focused
 - Mobile — touch-first, full-width
 
-### 1.6 — Advanced Rules
+### 1.7 — Advanced Rules
 
 Candidate direction — requires separate spec.
 
@@ -131,6 +150,16 @@ Candidate direction — requires separate spec.
 - Min / max range length (number of days)
 - Business days mode and holiday calendar support
 - Validation hooks (onChange validation, range constraints)
+
+### Future / v2 — Modern facade or headless mode
+
+Candidate direction — only after the `1.x` compatibility surface is stable.
+
+- Optional facade inspired by DayPicker/shadcn mental model:
+  `mode`, `selected`, `onSelect`, `numberOfMonths`.
+- Possible headless or Tailwind-first mode if real consumers need it.
+- No immediate migration to `react-day-picker`; that remains a high-cost rewrite
+  with compatibility risk.
 
 ---
 
@@ -157,7 +186,7 @@ features or APIs are not implied to be copied or replicated.
 | react-day-picker | Hook-based API, CSS class conventions, date constraint model |
 | MUI X Date Pickers | Slot-based composition, field components, validation layer |
 | Mantine | CSS variables theming, hook-based controls, preset ranges |
-| shadcn/ui + Radix | Primitive composition, className slot pattern, accessibility defaults |
+| shadcn/ui + Radix | Primitive composition, className/data-state styling, accessibility defaults, Tailwind-friendly recipes |
 | Ant Design | Form integration patterns, preset ranges, range picker variants |
 | Kendo UI / DevExtreme / Syncfusion / PrimeReact | Enterprise feature coverage (business days, disabled rules, validation hooks) |
 
@@ -169,7 +198,7 @@ case-by-case basis during spec for each phase.
 ## Next steps
 
 - Each `1.x` phase needs a separate spec before becoming a committed release phase.
-- Landing page and full docs need their own small docs/demo plan before deployment.
+- The next recommended spec candidate is `1.5` shadcn-inspired Styling DX / Composition.
 - The 2.x/Labs track is aspirational and depends on 1.x evolution track completion.
 - Bugfixes and maintenance continue in parallel regardless of roadmap phase.
-- See `docs/roadmap-gap-analysis.md` for configurable UI foundation details and gap tracking.
+- See `docs/roadmap-gap-analysis.md` for completed vs open roadmap state.
