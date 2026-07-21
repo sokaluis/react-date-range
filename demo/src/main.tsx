@@ -1,4 +1,4 @@
-import { StrictMode, useState, type CSSProperties } from 'react';
+import { StrictMode, useState, useEffect, type CSSProperties } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
   Calendar,
@@ -86,10 +86,319 @@ function liveRegionSelection(range: { startDate: Date; endDate: Date }): string 
 }
 
 // ---------------------------------------------------------------------------
+// Hash routing
+// ---------------------------------------------------------------------------
+
+function useHash(): string {
+  const [hash, setHash] = useState(() => window.location.hash);
+  useEffect(() => {
+    const handler = () => setHash(window.location.hash);
+    window.addEventListener('hashchange', handler);
+    return () => window.removeEventListener('hashchange', handler);
+  }, []);
+  return hash;
+}
+
+// ---------------------------------------------------------------------------
+// Real-World Examples
+// ---------------------------------------------------------------------------
+
+function RealWorldExamples() {
+  const [appointmentDate, setAppointmentDate] = useState<Date | undefined>(today);
+  const [reportRange, setReportRange] = useState<Range[]>([createInitialRange()]);
+  const [reportOpen, setReportOpen] = useState(false);
+  const [bookingRange, setBookingRange] = useState<Range[]>([createInitialRange()]);
+  const [formCheckinDate, setFormCheckinDate] = useState<Date | undefined>(today);
+  const [formStayRange, setFormStayRange] = useState<Range[]>([createInitialRange()]);
+  const [submittedPayload, setSubmittedPayload] = useState<string | null>(null);
+
+  const handleReportRangeChange = (rangesByKey: RangeKeyDict) => {
+    const next = rangesByKey.selection;
+    if (next) setReportRange([next]);
+  };
+
+  const handleBookingChange = (rangesByKey: RangeKeyDict) => {
+    const next = rangesByKey.selection;
+    if (next) setBookingRange([next]);
+  };
+
+  const handleFormStayChange = (rangesByKey: RangeKeyDict) => {
+    const next = rangesByKey.selection;
+    if (next) setFormStayRange([next]);
+  };
+
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const range = formStayRange[0];
+    setSubmittedPayload(JSON.stringify({
+      checkinDate: formCheckinDate ? toISODate(formCheckinDate) : null,
+      stayRange: {
+        startDate: range?.startDate ? toISODate(range.startDate) : null,
+        endDate: range?.endDate ? toISODate(range.endDate) : null,
+      },
+    }, null, 2));
+  };
+
+  const stayNights = (() => {
+    const r = bookingRange[0];
+    if (!r?.startDate || !r?.endDate) return null;
+    return Math.round((r.endDate.getTime() - r.startDate.getTime()) / (1000 * 60 * 60 * 24));
+  })();
+
+  return (
+    <>
+      {/* Hero */}
+      <section className="hero">
+        <h1 className="hero-title">Real-World Examples</h1>
+        <p className="hero-subtitle">
+          Product-focused usage patterns for DatePicker and DateRange components.
+          Each example demonstrates a concrete UI scenario you can drop into your application.
+        </p>
+        <nav className="hero-nav">
+          <a href="#" className="hero-nav-link">← Back to API demo</a>
+        </nav>
+      </section>
+
+      {/* 1. DatePickerInput — Appointment / Due Date */}
+      <section className="demo-panel">
+        <h2>Appointment / Due Date Picker</h2>
+        <p>
+          Single-date selection for task deadlines, appointment booking, or check-in dates.{' '}
+          Uses <code>DatePickerInput</code> with responsive modal placement on mobile.
+        </p>
+        <div
+          className="demo-example"
+          style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '0.75rem' }}
+        >
+          <DatePickerInput
+            date={appointmentDate}
+            onChange={setAppointmentDate}
+            popoverPlacement="responsive"
+            mobileBreakpoint={768}
+            ariaLabel="Due date"
+            popoverLabel="Choose due date"
+            placeholder="Select a due date"
+            calendarProps={{ layout: 'auto', widthMode: 'fluid', shownDate: appointmentDate || today }}
+          />
+          <div className="state-output" style={{ marginTop: 0, width: '100%' }}>
+            <strong>Due by:</strong>{' '}
+            {appointmentDate ? formatDate(appointmentDate) : '(no date selected)'}
+          </div>
+        </div>
+        <DemoCode>
+          {`<DatePickerInput
+  date={appointmentDate}
+  onChange={setAppointmentDate}
+  popoverPlacement="responsive"
+  mobileBreakpoint={768}
+  ariaLabel="Due date"
+  popoverLabel="Choose due date"
+  placeholder="Select a due date"
+  calendarProps={{ layout: 'auto', widthMode: 'fluid', shownDate: appointmentDate || today }}
+/>`}
+        </DemoCode>
+      </section>
+
+      {/* 2. DateRangeInput — Report / Dashboard Filter */}
+      <section className="demo-panel">
+        <h2>Report / Dashboard Date Range Filter</h2>
+        <p>
+          Filter analytics or reports by a date range. Uses <code>DateRangeInput</code> with{' '}
+          controlled open state and modal placement so the two-month picker has room to breathe.
+        </p>
+        <div
+          className="demo-example"
+          style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '0.75rem' }}
+        >
+          <DateRangeInput
+            ranges={reportRange}
+            onChange={handleReportRangeChange}
+            open={reportOpen}
+            onOpenChange={setReportOpen}
+            ariaLabels={{ trigger: 'Report date range' }}
+            popoverLabel="Select report period"
+            triggerPlaceholder="Select date range"
+            popoverPlacement="modal"
+            calendarProps={{
+              layout: 'auto',
+              widthMode: 'fluid',
+              shownDate: reportRange[0]?.startDate || today,
+              months: 2,
+              direction: 'horizontal',
+            }}
+          />
+          <div className="state-output" style={{ marginTop: 0, width: '100%' }}>
+            <strong>
+              {reportRange[0]?.startDate && reportRange[0]?.endDate
+                ? `Showing data from ${formatDate(reportRange[0].startDate)} to ${formatDate(reportRange[0].endDate)}`
+                : 'All time (no range selected)'}
+            </strong>
+          </div>
+        </div>
+        <DemoCode>
+          {`<DateRangeInput
+  ranges={reportRange}
+  onChange={handleReportRangeChange}
+  open={reportOpen}
+  onOpenChange={setReportOpen}
+  ariaLabels={{ trigger: 'Report date range' }}
+  popoverLabel="Select report period"
+  triggerPlaceholder="Select date range"
+  popoverPlacement="modal"
+  calendarProps={{
+    layout: 'auto',
+    widthMode: 'fluid',
+    shownDate: reportRange[0]?.startDate || today,
+    months: 2,
+    direction: 'horizontal',
+  }}
+/>`}
+        </DemoCode>
+      </section>
+
+      {/* 3. DateRangePicker — Booking / Travel */}
+      <section className="demo-panel">
+        <h2>Booking / Travel Date Range</h2>
+        <p>
+          Select travel dates or a leave request period. Uses <code>DateRangePicker</code> with{' '}
+          <code>widthMode=&quot;fluid&quot;</code> for full-width responsive behaviour and a summary
+          showing the stay duration.
+        </p>
+        <div className="demo-example">
+          <div className="demo-real-world-picker">
+            <DateRangePicker
+              layout="auto"
+              widthMode="fluid"
+              onChange={handleBookingChange}
+              ranges={bookingRange}
+              showPreview
+              moveRangeOnFirstSelection={false}
+              months={2}
+              direction="horizontal"
+            />
+          </div>
+        </div>
+        <div className="state-output">
+          {bookingRange[0]?.startDate && bookingRange[0]?.endDate ? (
+            <>
+              <strong>
+                {formatDate(bookingRange[0].startDate)} → {formatDate(bookingRange[0].endDate)}
+              </strong>
+              {stayNights != null && (
+                <span style={{ marginLeft: '0.75rem', color: '#1e40af' }}>
+                  ({stayNights} night{stayNights !== 1 ? 's' : ''})
+                </span>
+              )}
+            </>
+          ) : (
+            'Select your travel dates'
+          )}
+        </div>
+        <DemoCode>
+          {`<DateRangePicker
+  layout="auto"
+  widthMode="fluid"
+  onChange={handleBookingChange}
+  ranges={bookingRange}
+  showPreview
+  moveRangeOnFirstSelection={false}
+  months={2}
+  direction="horizontal"
+/>`}
+        </DemoCode>
+      </section>
+
+      {/* 4. Form Submission — Serialized Dates */}
+      <section className="demo-panel">
+        <h2>Form Submission with Serialized Dates</h2>
+        <p>
+          Practical form collecting a single check-in date and a stay date range. On submit, both
+          values are serialized to ISO date strings ready for an API call.
+        </p>
+        <form className="demo-form" onSubmit={handleFormSubmit}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+            <label style={{ fontWeight: 600, fontSize: '0.85rem' }}>Check-in date</label>
+            <DatePickerInput
+              date={formCheckinDate}
+              onChange={setFormCheckinDate}
+              ariaLabel="Check-in date"
+              popoverLabel="Choose check-in date"
+              placeholder="Select check-in date"
+              calendarProps={{ layout: 'auto', widthMode: 'fluid', shownDate: formCheckinDate || today }}
+            />
+          </div>
+          <div
+            className="demo-real-world-picker"
+            style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}
+          >
+            <label style={{ fontWeight: 600, fontSize: '0.85rem' }}>Stay dates</label>
+            <DateRangePicker
+              layout="auto"
+              widthMode="fluid"
+              onChange={handleFormStayChange}
+              ranges={formStayRange}
+              showPreview
+              moveRangeOnFirstSelection={false}
+              months={2}
+              direction="horizontal"
+            />
+          </div>
+          <button type="submit" className="demo-form-submit">Submit Booking</button>
+        </form>
+        {submittedPayload && (
+          <div className="state-output" style={{ marginTop: '1rem' }}>
+            <strong>API payload:</strong>
+            <pre style={{ margin: '0.5rem 0 0' }}>{submittedPayload}</pre>
+          </div>
+        )}
+        <DemoCode>
+          {`const handleSubmit = (e) => {
+  e.preventDefault();
+  const range = formStayRange[0];
+  const payload = {
+    checkinDate: formCheckinDate?.toISOString().split('T')[0] ?? null,
+    stayRange: {
+      startDate: range?.startDate?.toISOString().split('T')[0] ?? null,
+      endDate: range?.endDate?.toISOString().split('T')[0] ?? null,
+    },
+  };
+  // POST /api/bookings with payload
+};
+
+<form onSubmit={handleSubmit}>
+  <DatePickerInput
+    date={formCheckinDate}
+    onChange={setFormCheckinDate}
+    ariaLabel="Check-in date"
+    popoverLabel="Choose check-in date"
+    placeholder="Select check-in date"
+    calendarProps={{ layout: 'auto', widthMode: 'fluid', shownDate: formCheckinDate || today }}
+  />
+  <DateRangePicker
+    layout="auto"
+    widthMode="fluid"
+    onChange={(rangesByKey) => setFormStayRange([rangesByKey.selection])}
+    ranges={formStayRange}
+    showPreview
+    moveRangeOnFirstSelection={false}
+    months={2}
+    direction="horizontal"
+  />
+  <button type="submit">Submit Booking</button>
+</form>`}
+        </DemoCode>
+      </section>
+    </>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // App
 // ---------------------------------------------------------------------------
 
 function App() {
+  const hash = useHash();
+  const isRealWorld = hash === '#/real-world';
   const [ranges, setRanges] = useState<Range[]>([createInitialRange()]);
   const [singleDate, setSingleDate] = useState<Date | undefined>(today);
   const [headerDemoDate, setHeaderDemoDate] = useState<Date | undefined>(today);
@@ -314,6 +623,35 @@ function App() {
     '--rdr-color-today': '#f97316',
   } as CSSProperties;
 
+  if (isRealWorld) {
+    return (
+      <div className="container">
+        <RealWorldExamples />
+        <footer>
+          <p>
+            <a href="#">← Back to API demo</a>
+            {' · '}
+            <a
+              href="https://github.com/sokaluis/react-date-range"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              GitHub
+            </a>
+            {' · '}
+            <a
+              href="https://www.npmjs.com/package/@cyberlz/react-date-range"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              npm
+            </a>
+          </p>
+        </footer>
+      </div>
+    );
+  }
+
   return (
     <div className="container">
       {/* Landing hero — docs/adoption */}
@@ -330,6 +668,9 @@ function App() {
           </a>
         </p>
         <div className="install-block hero-install">npm install @cyberlz/react-date-range</div>
+        <nav className="hero-nav">
+          <a href="#/real-world" className="hero-nav-link">View real-world examples →</a>
+        </nav>
       </section>
 
       <section className="docs-panel" aria-labelledby="docs-title">
