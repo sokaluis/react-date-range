@@ -108,6 +108,7 @@ function RealWorldExamples() {
   const [reportRange, setReportRange] = useState<Range[]>([createInitialRange()]);
   const [reportOpen, setReportOpen] = useState(false);
   const [bookingRange, setBookingRange] = useState<Range[]>([createInitialRange()]);
+  const [travelSearchRange, setTravelSearchRange] = useState<Range[]>([createInitialRange()]);
   const [formCheckinDate, setFormCheckinDate] = useState<Date | undefined>(today);
   const [formStayRange, setFormStayRange] = useState<Range[]>([createInitialRange()]);
   const [submittedPayload, setSubmittedPayload] = useState<string | null>(null);
@@ -120,6 +121,11 @@ function RealWorldExamples() {
   const handleBookingChange = (rangesByKey: RangeKeyDict) => {
     const next = rangesByKey.selection;
     if (next) setBookingRange([next]);
+  };
+
+  const handleTravelSearchChange = (rangesByKey: RangeKeyDict) => {
+    const next = rangesByKey.selection;
+    if (next) setTravelSearchRange([next]);
   };
 
   const handleFormStayChange = (rangesByKey: RangeKeyDict) => {
@@ -308,7 +314,82 @@ function RealWorldExamples() {
         </DemoCode>
       </section>
 
-      {/* 4. Form Submission — Serialized Dates */}
+      {/* 4. Travel Search Popover — Responsive Container */}
+      <section className="demo-panel">
+        <h2>Travel Search Popover with Responsive Container</h2>
+        <p>
+          A production-style travel search popover: the calendar is centered in a real-width
+          container, uses two months on desktop, and relies on public responsive props instead of
+          overriding internal <code>.rdr*</code> classes.
+        </p>
+        <div className="demo-travel-search-shell" aria-label="Travel search date example">
+          <div className="demo-travel-search-fields">
+            <div>
+              <span className="demo-field-label">From</span>
+              <strong>Buenos Aires</strong>
+            </div>
+            <div>
+              <span className="demo-field-label">To</span>
+              <strong>Madrid</strong>
+            </div>
+            <div>
+              <span className="demo-field-label">Dates</span>
+              <strong>
+                {formatDate(travelSearchRange[0]?.startDate)} →{' '}
+                {formatDate(travelSearchRange[0]?.endDate)}
+              </strong>
+            </div>
+          </div>
+          <div className="demo-travel-search-popover">
+            <DateRangePicker
+              layout="auto"
+              mobileBreakpoint={768}
+              widthMode="fluid"
+              onChange={handleTravelSearchChange}
+              ranges={travelSearchRange}
+              showDateDisplay={false}
+              showPreview
+              moveRangeOnFirstSelection={false}
+              months={2}
+              direction="horizontal"
+              minDate={today}
+            />
+          </div>
+        </div>
+        <div className="demo-callout">
+          <p>
+            <strong>Integration note:</strong> <code>widthMode=&quot;fluid&quot;</code> fills the
+            picker wrapper, not the viewport. Give your popover a real usable width before assuming
+            the calendar needs custom CSS. Prefer <code>layout</code>, <code>mobileBreakpoint</code>,
+            <code>widthMode</code>, and <code>showDateDisplay</code> over local <code>.rdr*</code>{' '}
+            overrides.
+          </p>
+        </div>
+        <DemoCode>
+          {`<div className="travel-search-popover">
+  <DateRangePicker
+    layout="auto"
+    mobileBreakpoint={768}
+    widthMode="fluid"
+    onChange={handleTravelSearchChange}
+    ranges={travelSearchRange}
+    showDateDisplay={false}
+    showPreview
+    moveRangeOnFirstSelection={false}
+    months={2}
+    direction="horizontal"
+    minDate={today}
+  />
+</div>
+
+/* The wrapper owns the available width. */
+.travel-search-popover {
+  width: min(760px, calc(100vw - 32px));
+}`}
+        </DemoCode>
+      </section>
+
+      {/* 5. Form Submission — Serialized Dates */}
       <section className="demo-panel">
         <h2>Form Submission with Serialized Dates</h2>
         <p>
