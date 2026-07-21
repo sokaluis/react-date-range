@@ -51,7 +51,7 @@ placement without breaking the existing reference layout.
 
 Minor release. Adds the Configurable UI Foundation as an additive customization
 surface: stable host class/style slots, documented `classNames` hooks, and an
-opt-in CSS token layer for theme overrides. Existing apps that import only the
+opt-in CSS variables layer for theme overrides. Existing apps that import only the
 base styles and default theme keep their current styling behavior.
 
 ### Added
@@ -60,7 +60,7 @@ base styles and default theme keep their current styling behavior.
   `DateRangePicker`, including host class/style hooks for calendar regions,
   range wrappers, day cells, navigation, defined ranges, and input-trigger
   pickers.
-- Added the optional `@cyberlz/react-date-range/theme/tokens.css` export for
+- Added the optional `@cyberlz/react-date-range/theme/variables.css` export for
   CSS custom-property theming without changing the default theme import path.
 - Expanded styling documentation and demo coverage for slot class overrides,
   inline styles, and token-based theme overrides.

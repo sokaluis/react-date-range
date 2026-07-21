@@ -245,7 +245,7 @@ npm run build          # tsdown (JS, multi-entry + unbundle) + sass (CSS) + type
 | `dist/styles.css` | Compiled CSS (import separately) |
 | `dist/index.d.ts` | TypeScript declarations |
 | `dist/theme/default.css` | Default theme CSS |
-| `dist/theme/variables.css` | Optional CSS custom-property token layer (preferred) |
+| `dist/theme/variables.css` | Optional CSS custom properties layer |
 | `dist/theme/tokens.css` | Alias for `variables.css` (backwards-compatible) |
 
 **Consumer import (ESM / TSX):**
