@@ -83,6 +83,8 @@ const calendarDefaultProps = {
   todayAffordance: 'highlight',
 };
 
+const FLUID_MONTH_MIN_WIDTH_PX = 400;
+
 const uninitializedTargetProp = Symbol('uninitializedTargetProp');
 
 const getDateOptions = ({ locale, weekStartsOn }) => {
@@ -137,6 +139,16 @@ const resolveCalendarLayoutProps = ({ resolvedLayout, months, direction, scroll 
   };
 };
 
+const getFluidMonthMinWidth = element => {
+  if (typeof window === 'undefined' || typeof window.getComputedStyle !== 'function') {
+    return FLUID_MONTH_MIN_WIDTH_PX;
+  }
+
+  const value = window.getComputedStyle(element).getPropertyValue('--rdr-calendar-month-min-width');
+  const parsed = Number.parseFloat(value);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : FLUID_MONTH_MIN_WIDTH_PX;
+};
+
 const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
   const dateOptions = props._calendarDateOptions;
   const styles = props._calendarStyles;
@@ -158,10 +170,39 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
   const focusTimerRef = useRef(null);
   const focusToDateRef = useRef(null);
   const previousTargetPropRef = useRef(uninitializedTargetProp);
+  const [shouldStackFluidMonths, setShouldStackFluidMonths] = useState(false);
 
   useEffect(() => {
     focusedDateRef.current = focusedDate;
   }, [focusedDate]);
+
+  useEffect(() => {
+    if (!props._calendarCanAutoStackFluidMonths) {
+      setShouldStackFluidMonths(false);
+      return undefined;
+    }
+
+    const element = calendarWrapperRef.current;
+    if (!element || typeof window === 'undefined' || typeof window.ResizeObserver === 'undefined') {
+      setShouldStackFluidMonths(false);
+      return undefined;
+    }
+
+    const updateStacking = () => {
+      const { width } = element.getBoundingClientRect();
+      const minWidth = getFluidMonthMinWidth(element) * props.months;
+      setShouldStackFluidMonths(width > 0 && width < minWidth);
+    };
+
+    updateStacking();
+
+    const resizeObserver = new window.ResizeObserver(updateStacking);
+    resizeObserver.observe(element);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [props._calendarCanAutoStackFluidMonths, props.months]);
 
   const estimateMonthSize = useCallback(
     index => {
@@ -652,7 +693,8 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
     preview,
     _calendarScrollArea: scrollArea,
   } = props;
-  const isVertical = direction === 'vertical';
+  const effectiveDirection = shouldStackFluidMonths ? 'vertical' : direction;
+  const isVertical = effectiveDirection === 'vertical';
   const monthAndYearRenderer = navigatorRenderer || renderMonthAndYear;
   const dateDisplay = showDateDisplay ? renderDateDisplay() : null;
   const isDateDisplayBottom = props.selectedDisplay?.placement === 'bottom';
@@ -738,6 +780,7 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
                     }>
                   <Month
                     {...props}
+                    direction={effectiveDirection}
                     onPreviewChange={onPreviewChange || updatePreview}
                     preview={preview || previewState}
                     ranges={ranges}
@@ -783,7 +826,8 @@ const CalendarContent = React.forwardRef(function CalendarContent(props, ref) {
             }
             return (
               <Month
-                {...props}
+                  {...props}
+                  direction={effectiveDirection}
                 onPreviewChange={onPreviewChange || updatePreview}
                 preview={preview || previewState}
                 ranges={ranges}
@@ -851,6 +895,7 @@ const ForwardedCalendar = React.forwardRef(function Calendar(
     widthMode,
     _resolvedLayout,
     _calendarIsFluidWidthMode,
+    _calendarCanAutoStackFluidMonths,
     uiSlots,
     ...rest
   },
@@ -873,6 +918,12 @@ const ForwardedCalendar = React.forwardRef(function Calendar(
     ...headerConfig,
   };
   const effectiveIsFluidWidthMode = widthMode === 'fluid' || _calendarIsFluidWidthMode;
+  const canAutoStackFluidMonths =
+    effectiveIsFluidWidthMode &&
+    !scroll.enabled &&
+    months > 1 &&
+    direction === 'horizontal' &&
+    (layout === 'auto' || _calendarCanAutoStackFluidMonths);
   const resolvedSelectedDisplay = resolveSelectedDisplay(selectedDisplay, dateDisplayFormat);
   const responsiveLayout = useResponsiveLayout(_resolvedLayout ?? layout, mobileBreakpoint);
   const calendarLayoutProps = resolveCalendarLayoutProps({
@@ -921,6 +972,7 @@ const ForwardedCalendar = React.forwardRef(function Calendar(
     uiSlots,
     _calendarIsResponsiveLayout: calendarLayoutProps.isResponsiveLayout,
     _calendarIsFluidWidthMode: effectiveIsFluidWidthMode,
+    _calendarCanAutoStackFluidMonths: canAutoStackFluidMonths,
     ...rest,
   };
   const dateOptions = useMemo(

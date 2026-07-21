@@ -11,6 +11,8 @@ const defaultFormat = 'yyyy-MM-dd';
 const defaultRangeKey = 'selection';
 const defaultTriggerLabel = 'Select date range';
 const defaultPopoverLabel = 'Select date range';
+const anchorPopoverMaxWidth =
+  'min(var(--rdr-date-range-input-popover-anchor-max-width, var(--rdr-input-popover-anchor-max-width, 52rem)), calc(100vw - 2rem))';
 const canUseDocument = () => typeof document !== 'undefined';
 const canUseWindow = () => typeof window !== 'undefined';
 
@@ -103,7 +105,8 @@ function DateRangeInput(props, ref) {
     setPopoverStyle({
       top: triggerRect.bottom + window.scrollY,
       left: triggerRect.left + window.scrollX,
-      minWidth: triggerRect.width,
+      minWidth: `min(${triggerRect.width}px, var(--rdr-date-range-input-popover-anchor-max-width, var(--rdr-input-popover-anchor-max-width, 52rem)), calc(100vw - 2rem))`,
+      maxWidth: anchorPopoverMaxWidth,
     });
   }, [isModal, open, triggerRef]);
 

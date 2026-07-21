@@ -103,6 +103,7 @@ const DateRangePicker = forwardRef(function DateRangePicker(props, ref) {
         {...calendarProps}
         _resolvedLayout={calendarLayout}
         _calendarIsFluidWidthMode={widthMode === 'fluid'}
+        _calendarCanAutoStackFluidMonths={props.layout === 'auto'}
         uiSlots={dateRangeUiSlots}
         onRangeFocusChange={handleRangeFocusChange}
         focusedRange={focusedRange}

@@ -33,6 +33,7 @@ const DateRange = forwardRef(function DateRange(
     rangeColors = dateRangeDefaultProps.rangeColors,
     disabledDates = dateRangeDefaultProps.disabledDates,
     _calendarIsFluidWidthMode,
+    _calendarCanAutoStackFluidMonths,
     ...rest
   },
   ref
@@ -227,6 +228,7 @@ const DateRange = forwardRef(function DateRange(
         }}
         {...props}
         _calendarIsFluidWidthMode={_calendarIsFluidWidthMode}
+        _calendarCanAutoStackFluidMonths={_calendarCanAutoStackFluidMonths}
         selectablePassive={effectiveSelectablePassive}
         displayMode="dateRange"
         className={classnames(styles.dateRangeWrapper, props.className)}

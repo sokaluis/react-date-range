@@ -243,6 +243,33 @@ describe('DateRangeInput', () => {
     }
   });
 
+  test('caps anchored popover width when the trigger is very wide', async () => {
+    renderDateRangeInput({ popoverLabel: 'Choose trip range' });
+    const trigger = getTrigger();
+    trigger.getBoundingClientRect = jest.fn(() => ({
+      bottom: 40,
+      height: 32,
+      left: 16,
+      right: 928,
+      top: 8,
+      width: 912,
+      x: 16,
+      y: 8,
+      toJSON: () => {},
+    }));
+
+    await userEvent.click(trigger);
+
+    const dialog = await screen.findByRole('dialog', { name: 'Choose trip range' });
+    expect(dialog).not.toHaveClass('rdrDateRangeInputPopoverModal');
+    expect(dialog).toHaveStyle({
+      minWidth:
+        'min(912px, var(--rdr-date-range-input-popover-anchor-max-width, var(--rdr-input-popover-anchor-max-width, 52rem)), calc(100vw - 2rem))',
+      maxWidth:
+        'min(var(--rdr-date-range-input-popover-anchor-max-width, var(--rdr-input-popover-anchor-max-width, 52rem)), calc(100vw - 2rem))',
+    });
+  });
+
   test('renders a centered fluid modal when popoverPlacement is modal', async () => {
     renderDateRangeInput({ popoverPlacement: 'modal' });
     await userEvent.click(getTrigger());

@@ -10,6 +10,8 @@ import { MOBILE_MAX_PX, useResponsiveLayout } from '../../hooks/useResponsiveLay
 const defaultDateDisplayFormat = 'MMM d, yyyy';
 const defaultAriaLabel = 'Select date';
 const defaultPopoverLabel = 'Choose date';
+const anchorPopoverMaxWidth =
+  'min(var(--rdr-date-picker-input-popover-anchor-max-width, var(--rdr-input-popover-anchor-max-width, 26rem)), calc(100vw - 2rem))';
 
 const canUseDocument = () => typeof document !== 'undefined';
 const canUseWindow = () => typeof window !== 'undefined';
@@ -76,7 +78,8 @@ function DatePickerInput(props, ref) {
     setPopoverStyle({
       top: triggerRect.bottom + window.scrollY,
       left: triggerRect.left + window.scrollX,
-      minWidth: triggerRect.width,
+      minWidth: `min(${triggerRect.width}px, var(--rdr-date-picker-input-popover-anchor-max-width, var(--rdr-input-popover-anchor-max-width, 26rem)), calc(100vw - 2rem))`,
+      maxWidth: anchorPopoverMaxWidth,
     });
   }, [isModal, open, triggerRef]);
 

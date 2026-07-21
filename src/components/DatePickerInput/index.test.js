@@ -89,6 +89,33 @@ describe('DatePickerInput', () => {
     expect(dialog).toContainElement(document.activeElement);
   });
 
+  test('caps anchored popover width when the trigger is very wide', async () => {
+    renderDatePickerInput({ popoverLabel: 'Choose check-in date' });
+    const trigger = getTrigger();
+    trigger.getBoundingClientRect = jest.fn(() => ({
+      bottom: 40,
+      height: 32,
+      left: 16,
+      right: 928,
+      top: 8,
+      width: 912,
+      x: 16,
+      y: 8,
+      toJSON: () => {},
+    }));
+
+    await userEvent.click(trigger);
+
+    const dialog = await screen.findByRole('dialog', { name: 'Choose check-in date' });
+    expect(dialog).not.toHaveClass('rdrDatePickerInputPopoverModal');
+    expect(dialog).toHaveStyle({
+      minWidth:
+        'min(912px, var(--rdr-date-picker-input-popover-anchor-max-width, var(--rdr-input-popover-anchor-max-width, 26rem)), calc(100vw - 2rem))',
+      maxWidth:
+        'min(var(--rdr-date-picker-input-popover-anchor-max-width, var(--rdr-input-popover-anchor-max-width, 26rem)), calc(100vw - 2rem))',
+    });
+  });
+
   test('supports defaultOpen and closes on trigger toggle', async () => {
     renderDatePickerInput({ defaultOpen: true });
     const trigger = getTrigger();

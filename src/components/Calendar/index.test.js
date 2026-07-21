@@ -1,7 +1,7 @@
 import React from 'react';
 import fs from 'fs';
 import path from 'path';
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import Calendar from '../Calendar/index.jsx';
 import DateDisplay from '../DateDisplay/index.jsx';
 import { isSameDay } from 'date-fns';
@@ -351,6 +351,7 @@ describe('Calendar', () => {
     test('fluid styles target the calendar wrapper and months grid without responsive layout coupling', () => {
       const scss = readCalendarComponentStyles();
 
+      expect(scss).toMatch(/--rdr-calendar-month-min-width:\s*400px/);
       expect(scss).toMatch(/\.rdrCalendarWrapperFluid\s*\{[^}]*flex:\s*1 1 0/s);
       expect(scss).toMatch(/\.rdrCalendarWrapperFluid\s+\.rdrMonths\s*\{[^}]*width:\s*100%/s);
       expect(scss).toMatch(/\.rdrCalendarWrapperFluid\s+\.rdrMonth\s*\{[^}]*flex:\s*1 1 0/s);
@@ -367,6 +368,117 @@ describe('Calendar', () => {
       expect(container.firstChild).toHaveClass('rdrCalendarWrapperFluid');
       expect(container.querySelector('.rdrMonthsHorizontal')).toBeInTheDocument();
       expect(container.querySelector('.rdrMonthsVertical')).not.toBeInTheDocument();
+    });
+
+    test('auto fluid horizontal months stack vertically when container cannot preserve month min-width', async () => {
+      const originalResizeObserver = window.ResizeObserver;
+      const originalGetBoundingClientRect = HTMLElement.prototype.getBoundingClientRect;
+      window.ResizeObserver = class ResizeObserverMock {
+        constructor(callback) {
+          this.callback = callback;
+        }
+        observe() {
+          this.callback();
+        }
+        disconnect() {}
+      };
+      HTMLElement.prototype.getBoundingClientRect = jest.fn(() => ({
+        width: 700,
+        height: 0,
+        top: 0,
+        right: 700,
+        bottom: 0,
+        left: 0,
+      }));
+
+      try {
+        const { container } = renderCalendar({
+          layout: 'auto',
+          widthMode: 'fluid',
+          direction: 'horizontal',
+          months: 2,
+        });
+
+        await waitFor(() => expect(container.querySelector('.rdrMonthsVertical')).toBeInTheDocument());
+        expect(container.querySelector('.rdrMonthsHorizontal')).not.toBeInTheDocument();
+      } finally {
+        window.ResizeObserver = originalResizeObserver;
+        HTMLElement.prototype.getBoundingClientRect = originalGetBoundingClientRect;
+      }
+    });
+
+    test('auto fluid horizontal months stay horizontal when container preserves month min-width', async () => {
+      const originalResizeObserver = window.ResizeObserver;
+      const originalGetBoundingClientRect = HTMLElement.prototype.getBoundingClientRect;
+      window.ResizeObserver = class ResizeObserverMock {
+        constructor(callback) {
+          this.callback = callback;
+        }
+        observe() {
+          this.callback();
+        }
+        disconnect() {}
+      };
+      HTMLElement.prototype.getBoundingClientRect = jest.fn(() => ({
+        width: 900,
+        height: 0,
+        top: 0,
+        right: 900,
+        bottom: 0,
+        left: 0,
+      }));
+
+      try {
+        const { container } = renderCalendar({
+          layout: 'auto',
+          widthMode: 'fluid',
+          direction: 'horizontal',
+          months: 2,
+        });
+
+        await waitFor(() => expect(container.querySelector('.rdrMonthsHorizontal')).toBeInTheDocument());
+        expect(container.querySelector('.rdrMonthsVertical')).not.toBeInTheDocument();
+      } finally {
+        window.ResizeObserver = originalResizeObserver;
+        HTMLElement.prototype.getBoundingClientRect = originalGetBoundingClientRect;
+      }
+    });
+
+    test('explicit desktop fluid layout does not auto-stack even when narrow', async () => {
+      const originalResizeObserver = window.ResizeObserver;
+      const originalGetBoundingClientRect = HTMLElement.prototype.getBoundingClientRect;
+      window.ResizeObserver = class ResizeObserverMock {
+        constructor(callback) {
+          this.callback = callback;
+        }
+        observe() {
+          this.callback();
+        }
+        disconnect() {}
+      };
+      HTMLElement.prototype.getBoundingClientRect = jest.fn(() => ({
+        width: 700,
+        height: 0,
+        top: 0,
+        right: 700,
+        bottom: 0,
+        left: 0,
+      }));
+
+      try {
+        const { container } = renderCalendar({
+          layout: 'desktop',
+          widthMode: 'fluid',
+          direction: 'horizontal',
+          months: 2,
+        });
+
+        await waitFor(() => expect(container.querySelector('.rdrMonthsHorizontal')).toBeInTheDocument());
+        expect(container.querySelector('.rdrMonthsVertical')).not.toBeInTheDocument();
+      } finally {
+        window.ResizeObserver = originalResizeObserver;
+        HTMLElement.prototype.getBoundingClientRect = originalGetBoundingClientRect;
+      }
     });
   });
 
